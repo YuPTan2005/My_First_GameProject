@@ -84,6 +84,15 @@ public:
 	/** Handles jump pressed inputs from either controls or UI interfaces */
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoJumpEnd();
+	
+	virtual void NotifyHit(class UPrimitiveComponent* MyComp, 
+		AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, 
+		FVector HitLocation, FVector HitNormal, FVector NormalImpulse, 
+		const FHitResult& Hit) override;
+	
+	int StateNumber = 1;
+	const int8 MaxStateNumber = 3;
+	void ResetState();
 
 public:
 

@@ -48,6 +48,15 @@ AD4_HD3_CustomProjectCharacter::AD4_HD3_CustomProjectCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+	
+	GetCharacterMovement()->MaxWalkSpeed = 800;
+	
+	GetCharacterMovement()->NavAgentProps.bCanFly = true;
+	this->GetCharacterMovement()->BrakingDecelerationFlying = 2000;
+	this->GetCharacterMovement()->MaxFlySpeed = 1000;
+	
+	GetCharacterMovement()->bCheatFlying = false;
+	GetCharacterMovement()->NavAgentProps.bCanWalk = true;
 }
 
 void AD4_HD3_CustomProjectCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -56,8 +65,8 @@ void AD4_HD3_CustomProjectCharacter::SetupPlayerInputComponent(UInputComponent* 
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
 		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::DoJumpStart);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &AD4_HD3_CustomProjectCharacter::DoJumpEnd);
 
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AD4_HD3_CustomProjectCharacter::Move);
@@ -97,16 +106,31 @@ void AD4_HD3_CustomProjectCharacter::DoMove(float Right, float Forward)
 		// find out which way is forward
 		const FRotator Rotation = GetController()->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		const FRotator PitchYawRotation(Rotation.Pitch, Rotation.Yaw, 0);
 
 		// get forward vector
-		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-
+		const FVector WalkingForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		// get right vector 
-		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-		// add movement 
-		AddMovementInput(ForwardDirection, Forward);
-		AddMovementInput(RightDirection, Right);
+		const FVector WalkingRightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		
+		const FVector FlyingForwardDirection = FRotationMatrix(PitchYawRotation).GetUnitAxis(EAxis::X);
+		const FVector FlyingRightDirection = FRotationMatrix(PitchYawRotation).GetUnitAxis(EAxis::Y);
+		
+		switch (GetCharacterMovement()->MovementMode)
+		{
+		case MOVE_Falling:
+			AddMovementInput(WalkingForwardDirection, Forward);
+			AddMovementInput(WalkingRightDirection, Right);
+			break;
+		case MOVE_Walking:
+			AddMovementInput(WalkingForwardDirection, Forward);
+			AddMovementInput(WalkingRightDirection, Right);
+			break;
+		case MOVE_Flying:
+			AddMovementInput(FlyingForwardDirection, Forward);
+			AddMovementInput(FlyingRightDirection, Right);
+			break;
+		}
 	}
 }
 
@@ -123,11 +147,55 @@ void AD4_HD3_CustomProjectCharacter::DoLook(float Yaw, float Pitch)
 void AD4_HD3_CustomProjectCharacter::DoJumpStart()
 {
 	// signal the character to jump
-	Jump();
+	if (StateNumber <= MaxStateNumber)
+	{
+		StateNumber++;
+		
+		Jump();
+		
+		switch (StateNumber) {
+		case 1:
+			break;
+		case 2:
+			GetCharacterMovement()->SetMovementMode(MOVE_Flying);
+			bUseControllerRotationYaw = true;
+			bUseControllerRotationPitch = true;
+			GetCharacterMovement()->bOrientRotationToMovement = false;
+			break;
+		case 3:
+			GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+			bUseControllerRotationYaw = false;
+			bUseControllerRotationPitch = false;
+			GetCharacterMovement()->bOrientRotationToMovement = true;
+			ResetState();
+			break;
+		}
+	}
 }
 
 void AD4_HD3_CustomProjectCharacter::DoJumpEnd()
 {
 	// signal the character to stop jumping
 	StopJumping();
+}
+
+void AD4_HD3_CustomProjectCharacter::NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other,
+	class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal,
+	FVector NormalImpulse, const FHitResult& Hit)
+{
+	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
+	
+	if (HitNormal.Z >= GetCharacterMovement()->GetWalkableFloorZ())
+	{
+		GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+		bUseControllerRotationYaw = false;
+		bUseControllerRotationPitch = false;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		ResetState();
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::ResetState()
+{
+	StateNumber = 0;
 }
