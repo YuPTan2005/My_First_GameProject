@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "D4_HD3_CustomProjectCharacter.generated.h"
 
+class IEdible;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputAction;
@@ -48,14 +49,25 @@ protected:
 	/** Mouse Look Input Action */
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* MouseLookAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* EatAction;
 
 public:
 
 	/** Constructor */
-	AD4_HD3_CustomProjectCharacter();	
+	AD4_HD3_CustomProjectCharacter();
 
 protected:
 
+	int Damage = 10;
+	int Health = 100;
+	int MaxHealth = 100;
+	int Experience = 0;
+	int MaxExperienceLevel = 100;
+	int Level = 0;
+	int UpgradeFactor = 3;
+	
 	/** Initialize input action bindings */
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -93,6 +105,11 @@ public:
 	int StateNumber = 1;
 	const int8 MaxStateNumber = 3;
 	void ResetState();
+	
+	void Eat(IEdible* Food);
+	void GainExperience(int ExperienceAmount);
+	void Upgrade(int CurrentLevel);
+	int CalculateIncreaseAmount(int Attribute);
 
 public:
 

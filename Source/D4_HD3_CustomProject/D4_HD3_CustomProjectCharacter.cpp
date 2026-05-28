@@ -11,6 +11,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "D4_HD3_CustomProject.h"
+#include "Edible.h"
 
 AD4_HD3_CustomProjectCharacter::AD4_HD3_CustomProjectCharacter()
 {
@@ -198,4 +199,33 @@ void AD4_HD3_CustomProjectCharacter::NotifyHit(class UPrimitiveComponent* MyComp
 void AD4_HD3_CustomProjectCharacter::ResetState()
 {
 	StateNumber = 0;
+}
+
+void AD4_HD3_CustomProjectCharacter::Eat(IEdible* Food)
+{
+	Food->EatenBy_Implementation(this);
+}
+
+void AD4_HD3_CustomProjectCharacter::GainExperience(int ExperienceAmount)
+{
+	Experience += ExperienceAmount;
+	if (Experience >= MaxExperienceLevel)
+	{
+		Experience -= MaxExperienceLevel;
+		Upgrade(Level);
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::Upgrade(int CurrentLevel)
+{
+	Level++;
+	Damage += CalculateIncreaseAmount(Damage);
+	MaxHealth += CalculateIncreaseAmount(MaxHealth);
+	Health += MaxHealth;
+}
+
+// Function to calculate the upgrade degree, larger level has smaller degree
+int AD4_HD3_CustomProjectCharacter::CalculateIncreaseAmount(int Attribute)
+{
+	return Attribute * UpgradeFactor * (1 / (2 ^ Level));
 }
