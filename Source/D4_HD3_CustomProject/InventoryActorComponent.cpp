@@ -37,7 +37,7 @@ bool UInventoryActorComponent::UseItemAtIndex(int32 Index, AD4_HD3_CustomProject
 		return false;
 	}
 	AFood* UsedItem = InventoryItems[Index];
-	UsedItem->EatenBy_Implementation(Character);
+	Character->Eat(UsedItem);
 	InventoryItems.RemoveAt(Index);
 	return true;
 }

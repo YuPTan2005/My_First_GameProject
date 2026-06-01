@@ -99,6 +99,14 @@ void AD4_HD3_CustomProjectCharacter::BeginPlay()
 			InventoryWidget->Owner = this;
 		}
 	}
+	
+	if (PlayerUIClass)
+	{
+		PlayerUI = Cast<UPlayerUI>(CreateWidget(GetGameInstance(), PlayerUIClass));
+		PlayerUI->Player = this;
+		PlayerUI->UpdateValues();
+		PlayerUI->AddToViewport();
+	}
 }
 
 void AD4_HD3_CustomProjectCharacter::Move(const FInputActionValue& Value)
@@ -296,6 +304,7 @@ void AD4_HD3_CustomProjectCharacter::UseItem(int32 Index)
 {
 	InventoryComponent->UseItemAtIndex(Index, this);
 	InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
+	PlayerUI->UpdateValues();
 }
 
 void AD4_HD3_CustomProjectCharacter::ToggleInventory()

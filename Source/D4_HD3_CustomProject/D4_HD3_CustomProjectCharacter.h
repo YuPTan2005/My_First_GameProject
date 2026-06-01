@@ -6,6 +6,7 @@
 #include "InventoryActorComponent.h"
 #include "InventoryWidget.h"
 #include "PickupFood.h"
+#include "PlayerUI.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "D4_HD3_CustomProjectCharacter.generated.h"
@@ -69,13 +70,7 @@ public:
 	TSubclassOf<UInventoryWidget> InventoryWidgetClass;
 
 protected:
-
-	int Damage = 10;
-	int Health = 100;
-	int MaxHealth = 100;
-	int Experience = 0;
-	int MaxExperienceLevel = 100;
-	int Level = 0;
+	
 	int UpgradeFactor = 3;
 	bool bIsInventoryOpen;
 	TArray<APickupFood*> CollectibleFood;
@@ -84,6 +79,9 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	virtual void BeginPlay() override;
+	
+	void Upgrade(int CurrentLevel);
+	int CalculateIncreaseAmount(int Attribute);
 
 protected:
 
@@ -125,8 +123,6 @@ public:
 	
 	void Eat(IEdible* Food);
 	void GainExperience(int ExperienceAmount);
-	void Upgrade(int CurrentLevel);
-	int CalculateIncreaseAmount(int Attribute);
 	
 	UInventoryActorComponent* InventoryComponent;
 	UInventoryWidget* InventoryWidget;
@@ -140,6 +136,18 @@ public:
 	
 	void AddCollectibleFood(APickupFood* Food);
 	void RemoveCollectibleFood(APickupFood* Food);
+	
+	float Damage = 10;
+	float Health = 100;
+	float MaxHealth = 100;
+	float Experience = 0;
+	float MaxExperienceLevel = 100;
+	int Level = 0;
+	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UPlayerUI> PlayerUIClass;
+	UPROPERTY(EditAnywhere)
+	UPlayerUI* PlayerUI;
 
 public:
 
