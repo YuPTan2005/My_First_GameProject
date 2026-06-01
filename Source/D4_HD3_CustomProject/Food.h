@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Edible.h"
-#include "FoodPickupUI.h"
-#include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
 #include "Food.generated.h"
 
@@ -17,37 +15,30 @@ class D4_HD3_CUSTOMPROJECT_API AFood : public AActor, public IEdible
 public:	
 	// Sets default values for this actor's properties
 	AFood();
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UStaticMeshComponent* MeshComponent;
+	
+protected:
+	int ExperienceAmount;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	USphereComponent* PickupCollider;
+	FString FoodName;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UFoodPickupUI> PickupUIClass;
-	
-	int ExperienceAmount = 0;
-	
-	UFoodPickupUI* SpawnedUI;
+	FString FoodDescription;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
-	UFUNCTION()
-	void OnOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	
-	UFUNCTION()
-	void OnEndOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, 
-		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
 	virtual void EatenBy_Implementation(ACharacter* Character) override;
-	virtual void AddPickupUI_Implementation() override;
+	
+	void SetName(FString Name);
+	void SetDescription(FString Description);
+	
+	FString GetName();
+	FString GetDescription();
 
 };

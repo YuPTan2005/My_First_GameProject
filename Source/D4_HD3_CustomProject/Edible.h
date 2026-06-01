@@ -26,7 +26,4 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void EatenBy(ACharacter* Character);
 	
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void AddPickupUI();
-	
 };
