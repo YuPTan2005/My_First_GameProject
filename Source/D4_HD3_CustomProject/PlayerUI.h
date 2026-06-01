@@ -23,12 +23,23 @@ public:
 	
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* ExperienceBar;
-	
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* CurrentExperienceText;
-	
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* MaxExperienceText;
+	
+	UPROPERTY(meta = (BindWidget))
+	UProgressBar* HealthBar;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* CurrentHealthText;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* MaxHealthText;
+	
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* LevelText;
+	
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* DamageText;
 	
 	void UpdateValues();
 };
