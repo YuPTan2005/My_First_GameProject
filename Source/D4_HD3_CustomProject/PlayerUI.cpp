@@ -23,5 +23,7 @@ void UPlayerUI::UpdateValues()
 		LevelText->SetText(FText::FromString(FString::FromInt(Player->Level)));
 		
 		DamageText->SetText(FText::FromString(FString::FromInt(Player->Damage)));
+		
+		StarvationBar->SetPercent(Player->StarvationValue / Player->MaxStarvationValue);
 	}
 }
