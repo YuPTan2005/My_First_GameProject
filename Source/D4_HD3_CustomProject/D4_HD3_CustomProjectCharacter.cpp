@@ -12,6 +12,7 @@
 #include "InputActionValue.h"
 #include "D4_HD3_CustomProject.h"
 #include "Edible.h"
+#include "Food.h"
 
 AD4_HD3_CustomProjectCharacter::AD4_HD3_CustomProjectCharacter()
 {
@@ -56,8 +57,8 @@ AD4_HD3_CustomProjectCharacter::AD4_HD3_CustomProjectCharacter()
 	this->GetCharacterMovement()->BrakingDecelerationFlying = 2000;
 	this->GetCharacterMovement()->MaxFlySpeed = 1000;
 	
-	GetCharacterMovement()->bCheatFlying = false;
-	GetCharacterMovement()->NavAgentProps.bCanWalk = true;
+	InventoryComponent = CreateDefaultSubobject<UInventoryActorComponent>(TEXT("Inventory Component"));
+	bIsInventoryOpen = false;
 }
 
 void AD4_HD3_CustomProjectCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -75,10 +76,28 @@ void AD4_HD3_CustomProjectCharacter::SetupPlayerInputComponent(UInputComponent* 
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AD4_HD3_CustomProjectCharacter::Look);
+		
+		EnhancedInputComponent->BindAction(CollectAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Collect);
+		
+		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::ToggleInventory);
 	}
 	else
 	{
 		UE_LOG(LogD4_HD3_CustomProject, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (InventoryWidgetClass)
+		{
+			InventoryWidget = CreateWidget<UInventoryWidget>(PlayerController, InventoryWidgetClass);
+			InventoryWidget->Owner = this;
+		}
 	}
 }
 
@@ -180,9 +199,31 @@ void AD4_HD3_CustomProjectCharacter::DoJumpEnd()
 	StopJumping();
 }
 
+void AD4_HD3_CustomProjectCharacter::Collect()
+{
+	if (CollectibleFood.Num() > 0 && !InventoryComponent->IsFull())
+	{
+		APickupFood* PickupFood = CollectibleFood[0];
+		AFood* FoodToAdd;
+		if (!PickupFood->Food)
+		{
+			FoodToAdd = NewObject<AFood>();
+		}
+		else
+		{
+			FoodToAdd = CollectibleFood[0]->Food;
+		}
+		if (AddItem(FoodToAdd))
+		{
+			CollectibleFood.RemoveAt(0);
+			PickupFood->Collected();
+		}
+	}
+}
+
 void AD4_HD3_CustomProjectCharacter::NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other,
-	class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal,
-	FVector NormalImpulse, const FHitResult& Hit)
+                                               class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal,
+                                               FVector NormalImpulse, const FHitResult& Hit)
 {
 	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 	
@@ -228,4 +269,65 @@ void AD4_HD3_CustomProjectCharacter::Upgrade(int CurrentLevel)
 int AD4_HD3_CustomProjectCharacter::CalculateIncreaseAmount(int Attribute)
 {
 	return Attribute * UpgradeFactor * (1 / (2 ^ Level));
+}
+
+AFood* AD4_HD3_CustomProjectCharacter::GetItemAtIndex(int32 Index)
+{
+	return InventoryComponent->GetItemAtIndex(Index);
+}
+
+void AD4_HD3_CustomProjectCharacter::DeleteItemAtIndex(int32 Index)
+{
+	InventoryComponent->DeleteItemAtIndex(Index);
+	InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
+}
+
+bool AD4_HD3_CustomProjectCharacter::AddItem(AFood* NewItem)
+{
+	if (InventoryComponent->AddItem(NewItem))
+	{
+		InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
+		return true;
+	}
+	return false;
+}
+
+void AD4_HD3_CustomProjectCharacter::UseItem(int32 Index)
+{
+	InventoryComponent->UseItemAtIndex(Index, this);
+	InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
+}
+
+void AD4_HD3_CustomProjectCharacter::ToggleInventory()
+{
+	APlayerController* PlayerController = Cast<APlayerController>(Controller);
+	if (!PlayerController)
+		return;
+	
+	if (bIsInventoryOpen) {
+		InventoryWidget->RemoveFromParent();
+		PlayerController->SetShowMouseCursor(false);
+		PlayerController->SetInputMode(FInputModeGameOnly());
+	}
+	else
+	{
+		InventoryWidget->AddToViewport();
+		InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
+		PlayerController->SetShowMouseCursor(true);
+		FInputModeUIOnly InputMode;
+		InputMode.SetWidgetToFocus(InventoryWidget->TakeWidget());
+		PlayerController->SetInputMode(InputMode);
+	}
+	
+	bIsInventoryOpen = !bIsInventoryOpen;
+}
+
+void AD4_HD3_CustomProjectCharacter::AddCollectibleFood(APickupFood* Food)
+{
+	CollectibleFood.Add(Food);
+}
+
+void AD4_HD3_CustomProjectCharacter::RemoveCollectibleFood(APickupFood* Food)
+{
+	CollectibleFood.RemoveSingle(Food);
 }

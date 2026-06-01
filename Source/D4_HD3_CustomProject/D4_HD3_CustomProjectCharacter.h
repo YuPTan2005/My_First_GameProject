@@ -3,10 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InventoryActorComponent.h"
+#include "InventoryWidget.h"
+#include "PickupFood.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "D4_HD3_CustomProjectCharacter.generated.h"
 
+class AFood;
 class IEdible;
 class USpringArmComponent;
 class UCameraComponent;
@@ -51,12 +55,18 @@ protected:
 	UInputAction* MouseLookAction;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
-	UInputAction* EatAction;
+	UInputAction* CollectAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* InventoryAction;
 
 public:
 
 	/** Constructor */
 	AD4_HD3_CustomProjectCharacter();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UInventoryWidget> InventoryWidgetClass;
 
 protected:
 
@@ -67,9 +77,13 @@ protected:
 	int MaxExperienceLevel = 100;
 	int Level = 0;
 	int UpgradeFactor = 3;
+	bool bIsInventoryOpen;
+	TArray<APickupFood*> CollectibleFood;
 	
 	/** Initialize input action bindings */
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+	virtual void BeginPlay() override;
 
 protected:
 
@@ -97,6 +111,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoJumpEnd();
 	
+	UFUNCTION(BlueprintCallable, Category="Input")
+	virtual void Collect();
+	
 	virtual void NotifyHit(class UPrimitiveComponent* MyComp, 
 		AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, 
 		FVector HitLocation, FVector HitNormal, FVector NormalImpulse, 
@@ -110,6 +127,19 @@ public:
 	void GainExperience(int ExperienceAmount);
 	void Upgrade(int CurrentLevel);
 	int CalculateIncreaseAmount(int Attribute);
+	
+	UInventoryActorComponent* InventoryComponent;
+	UInventoryWidget* InventoryWidget;
+	
+	void ToggleInventory();
+	
+	AFood* GetItemAtIndex(int32 Index);
+	void DeleteItemAtIndex(int32 Index);
+	bool AddItem(AFood* NewItem);
+	void UseItem(int32 Index);
+	
+	void AddCollectibleFood(APickupFood* Food);
+	void RemoveCollectibleFood(APickupFood* Food);
 
 public:
 
