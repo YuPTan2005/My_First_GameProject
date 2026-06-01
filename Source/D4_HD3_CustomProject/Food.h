@@ -17,13 +17,16 @@ public:
 	AFood();
 	
 protected:
-	int ExperienceAmount;
+	float ExperienceAmount;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString FoodName;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString FoodDescription;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float StarvationAmount;
 
 protected:
 	// Called when the game starts or when spawned

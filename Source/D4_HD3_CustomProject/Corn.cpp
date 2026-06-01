@@ -8,4 +8,5 @@ ACorn::ACorn()
 	FoodName = "Corn";
 	FoodDescription = "Increase your experience amount by 20.";
 	ExperienceAmount = 20;
+	StarvationAmount = 8;
 }

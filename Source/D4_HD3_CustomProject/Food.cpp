@@ -14,6 +14,7 @@ AFood::AFood()
 	ExperienceAmount = 0;
 	FoodName = "Default food";
 	FoodDescription = "Just a food";
+	StarvationAmount = 0;
 }
 
 // Called when the game starts or when spawned
@@ -30,6 +31,7 @@ void AFood::EatenBy_Implementation(ACharacter* Character)
 	if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(Character))
 	{
 		Player->GainExperience(ExperienceAmount);
+		Player->GainStarvation(StarvationAmount);
 	}
 }
 

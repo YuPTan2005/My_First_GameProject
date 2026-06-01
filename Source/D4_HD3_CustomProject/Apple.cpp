@@ -9,4 +9,5 @@ AApple::AApple()
 	FoodName = "Apple";
 	FoodDescription = "Increase your experience amount by 10.";
 	ExperienceAmount = 10;
+	StarvationAmount = 5;
 }
