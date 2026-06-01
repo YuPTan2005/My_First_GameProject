@@ -6,23 +6,7 @@
 // Sets default values
 AApple::AApple()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = false;
-	
+	FoodName = "Apple";
+	FoodDescription = "Increase your experience amount by 10.";
 	ExperienceAmount = 10;
-}
-
-// Called when the game starts or when spawned
-void AApple::BeginPlay()
-{
-	Super::BeginPlay();
-	
-	PickupCollider->OnComponentBeginOverlap.AddDynamic(this, &AApple::OnOverlap);
-}
-
-// Called every frame
-void AApple::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
 }

@@ -15,13 +15,5 @@ class D4_HD3_CUSTOMPROJECT_API AApple : public AFood
 public:	
 	// Sets default values for this actor's properties
 	AApple();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+	
 };
