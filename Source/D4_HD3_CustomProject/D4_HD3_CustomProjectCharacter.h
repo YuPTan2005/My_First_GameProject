@@ -7,7 +7,7 @@
 #include "InventoryWidget.h"
 #include "PickupFood.h"
 #include "PlayerUI.h"
-#include "StarvationDeathUI.h"
+#include "StarvationUI.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "D4_HD3_CustomProjectCharacter.generated.h"
@@ -75,6 +75,8 @@ protected:
 	bool bIsInventoryOpen;
 	TArray<APickupFood*> CollectibleFood;
 	
+	APlayerController* PlayerController;
+	
 	/** Initialize input action bindings */
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
@@ -90,7 +92,8 @@ protected:
 	bool bIsCountDownCalled = false;
 	void DeathCountDown();
 	void Dead();
-	
+	void ShowDeathUI();
+	FTimerHandle ShowDeathUITimer;
 
 protected:
 
@@ -164,9 +167,14 @@ public:
 	UPlayerUI* PlayerUI;
 	
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UStarvationDeathUI> StarvationUIClass;
+	TSubclassOf<UStarvationUI> StarvationUIClass;
 	UPROPERTY(EditAnywhere)
-	UStarvationDeathUI* StarvationUI;
+	UStarvationUI* StarvationUI;
+	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> DeathUIClass;
+	UPROPERTY(EditAnywhere)
+	UUserWidget* DeathUI;
 
 public:
 

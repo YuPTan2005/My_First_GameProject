@@ -91,11 +91,12 @@ void AD4_HD3_CustomProjectCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController)
 	{
 		if (StarvationUIClass)
 		{
-			StarvationUI = CreateWidget<UStarvationDeathUI>(PlayerController, StarvationUIClass);
+			StarvationUI = CreateWidget<UStarvationUI>(PlayerController, StarvationUIClass);
 		}
 		
 		if (InventoryWidgetClass)
@@ -334,7 +335,33 @@ void AD4_HD3_CustomProjectCharacter::DeathCountDown()
 
 void AD4_HD3_CustomProjectCharacter::Dead()
 {
-	// Death UI and go back to main menu
+	StarvationUI->RemoveFromParent();
+	GetMesh()->SetCollisionProfileName("Ragdoll");
+	GetMesh()->SetSimulatePhysics(true);
+	GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
+	GetWorldTimerManager().SetTimer(
+		ShowDeathUITimer,
+		this,
+		&AD4_HD3_CustomProjectCharacter::ShowDeathUI,
+		2.0f,
+		false
+		);
+	if (PlayerController)
+	{
+		FInputModeUIOnly InputMode;
+		PlayerController->SetInputMode(InputMode);
+	}
+	// Go back to main menu
+}
+
+void AD4_HD3_CustomProjectCharacter::ShowDeathUI()
+{
+	DeathUI = CreateWidget(PlayerController, DeathUIClass);
+	DeathUI->AddToViewport();
+	if (PlayerController)
+	{
+		PlayerController->SetShowMouseCursor(true);
+	}
 }
 
 AFood* AD4_HD3_CustomProjectCharacter::GetItemAtIndex(int32 Index)
@@ -367,7 +394,7 @@ void AD4_HD3_CustomProjectCharacter::UseItem(int32 Index)
 
 void AD4_HD3_CustomProjectCharacter::ToggleInventory()
 {
-	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+	if (PlayerController)
 	{
 		if (bIsInventoryOpen) 
 		{
