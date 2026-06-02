@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "StarvationDeathUI.h"
+#include "StarvationUI.h"
 
 
-void UStarvationDeathUI::TriggerAnimation()
+void UStarvationUI::TriggerAnimation()
 {
 	if (Pulse)
 	{
@@ -12,7 +12,7 @@ void UStarvationDeathUI::TriggerAnimation()
 	}
 }
 
-void UStarvationDeathUI::EndAnimation()
+void UStarvationUI::EndAnimation()
 {
 	if (Pulse)
 	{

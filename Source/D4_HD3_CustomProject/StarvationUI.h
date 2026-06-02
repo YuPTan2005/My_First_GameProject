@@ -2,16 +2,15 @@
 
 #pragma once
 
-#include "Animation/WidgetAnimation.h"
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "StarvationDeathUI.generated.h"
+#include "StarvationUI.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class D4_HD3_CUSTOMPROJECT_API UStarvationDeathUI : public UUserWidget
+class D4_HD3_CUSTOMPROJECT_API UStarvationUI : public UUserWidget
 {
 	GENERATED_BODY()
 	
