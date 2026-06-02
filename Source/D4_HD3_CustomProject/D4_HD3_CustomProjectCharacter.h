@@ -175,6 +175,8 @@ public:
 	TSubclassOf<UUserWidget> DeathUIClass;
 	UPROPERTY(EditAnywhere)
 	UUserWidget* DeathUI;
+	
+	void DealDamage(float DamageTook);
 
 public:
 

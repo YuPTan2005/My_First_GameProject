@@ -425,3 +425,13 @@ void AD4_HD3_CustomProjectCharacter::RemoveCollectibleFood(APickupFood* Food)
 {
 	CollectibleFood.RemoveSingle(Food);
 }
+
+void AD4_HD3_CustomProjectCharacter::DealDamage(float DamageTook)
+{
+	Health = FMath::Clamp(Health - DamageTook, 0, MaxHealth);
+	
+	if (Health <= 0)
+	{
+		Dead();
+	}
+}
