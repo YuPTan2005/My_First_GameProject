@@ -97,14 +97,12 @@ void AD4_HD3_CustomProjectCharacter::BeginPlay()
 		{
 			StarvationUI = CreateWidget<UStarvationDeathUI>(PlayerController, StarvationUIClass);
 		}
-	
-
+		
 		if (InventoryWidgetClass)
 		{
 			InventoryWidget = CreateWidget<UInventoryWidget>(PlayerController, InventoryWidgetClass);
 			InventoryWidget->Owner = this;
 		}
-	
 	
 		if (PlayerUIClass)
 		{
@@ -369,26 +367,26 @@ void AD4_HD3_CustomProjectCharacter::UseItem(int32 Index)
 
 void AD4_HD3_CustomProjectCharacter::ToggleInventory()
 {
-	APlayerController* PlayerController = Cast<APlayerController>(Controller);
-	if (!PlayerController)
-		return;
-	
-	if (bIsInventoryOpen) {
-		InventoryWidget->RemoveFromParent();
-		PlayerController->SetShowMouseCursor(false);
-		PlayerController->SetInputMode(FInputModeGameOnly());
-	}
-	else
+	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
-		InventoryWidget->AddToViewport();
-		InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
-		PlayerController->SetShowMouseCursor(true);
-		FInputModeUIOnly InputMode;
-		InputMode.SetWidgetToFocus(InventoryWidget->TakeWidget());
-		PlayerController->SetInputMode(InputMode);
+		if (bIsInventoryOpen) 
+		{
+			InventoryWidget->RemoveFromParent();
+			PlayerController->SetShowMouseCursor(false);
+			PlayerController->SetInputMode(FInputModeGameOnly());
+		}
+		else
+		{
+			InventoryWidget->AddToViewport();
+			InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
+			PlayerController->SetShowMouseCursor(true);
+			FInputModeUIOnly InputMode;
+			InputMode.SetWidgetToFocus(InventoryWidget->TakeWidget());
+			PlayerController->SetInputMode(InputMode);
+		}
+		
+		bIsInventoryOpen = !bIsInventoryOpen;
 	}
-	
-	bIsInventoryOpen = !bIsInventoryOpen;
 }
 
 void AD4_HD3_CustomProjectCharacter::AddCollectibleFood(APickupFood* Food)

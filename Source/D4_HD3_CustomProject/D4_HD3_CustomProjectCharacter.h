@@ -71,7 +71,6 @@ public:
 	TSubclassOf<UInventoryWidget> InventoryWidgetClass;
 
 protected:
-	
 	int UpgradeFactor = 3;
 	bool bIsInventoryOpen;
 	TArray<APickupFood*> CollectibleFood;
@@ -157,7 +156,7 @@ public:
 	
 	float MaxStarvationValue = 30;
 	float StarvationValue = 30;
-	float StarvationDecrement = -1;
+	float StarvationDecrement = -5;
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UPlayerUI> PlayerUIClass;
