@@ -267,7 +267,7 @@ void AD4_HD3_CustomProjectCharacter::GainExperience(float ExperienceAmount)
 	if (Experience >= MaxExperienceLevel)
 	{
 		Experience -= MaxExperienceLevel;
-		Upgrade(Level);
+		Upgrade();
 	}
 }
 
@@ -280,7 +280,7 @@ void AD4_HD3_CustomProjectCharacter::GainStarvation(float StarvationAmount)
 	}
 }
 
-void AD4_HD3_CustomProjectCharacter::Upgrade(int CurrentLevel)
+void AD4_HD3_CustomProjectCharacter::Upgrade()
 {
 	Damage += CalculateIncreaseAmount(Damage);
 	MaxHealth += 20;

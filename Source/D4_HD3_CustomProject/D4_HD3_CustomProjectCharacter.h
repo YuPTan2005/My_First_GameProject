@@ -82,7 +82,7 @@ protected:
 	
 	virtual void BeginPlay() override;
 	
-	void Upgrade(int CurrentLevel);
+	void Upgrade();
 	int CalculateIncreaseAmount(float Attribute);
 	
 	virtual void Tick(float DeltaSeconds) override;
