@@ -19,7 +19,10 @@ public class D4_HD3_CustomProject : ModuleRules
 			"GameplayStateTreeModule",
 			"UMG",
 			"Slate",
-			"SlateCore"
+			"SlateCore",
+			"NavigationSystem",
+			"AIModule",
+			"GameplayTasks"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
