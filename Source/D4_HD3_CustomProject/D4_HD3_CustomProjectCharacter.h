@@ -7,6 +7,7 @@
 #include "InventoryWidget.h"
 #include "PickupFood.h"
 #include "PlayerUI.h"
+#include "StarvationDeathUI.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "D4_HD3_CustomProjectCharacter.generated.h"
@@ -81,7 +82,16 @@ protected:
 	virtual void BeginPlay() override;
 	
 	void Upgrade(int CurrentLevel);
-	int CalculateIncreaseAmount(int Attribute);
+	int CalculateIncreaseAmount(float Attribute);
+	
+	virtual void Tick(float DeltaSeconds) override;
+	
+	FTimerHandle DeathTimerHandle;
+	int CountDownTime = 10;
+	bool bIsCountDownCalled = false;
+	void DeathCountDown();
+	void Dead();
+	
 
 protected:
 
@@ -122,7 +132,8 @@ public:
 	void ResetState();
 	
 	void Eat(IEdible* Food);
-	void GainExperience(int ExperienceAmount);
+	void GainExperience(float ExperienceAmount);
+	void GainStarvation(float StarvationAmount);
 	
 	UInventoryActorComponent* InventoryComponent;
 	UInventoryWidget* InventoryWidget;
@@ -142,12 +153,21 @@ public:
 	float MaxHealth = 100;
 	float Experience = 0;
 	float MaxExperienceLevel = 100;
-	int Level = 0;
+	float Level = 0;
+	
+	float MaxStarvationValue = 30;
+	float StarvationValue = 30;
+	float StarvationDecrement = -1;
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UPlayerUI> PlayerUIClass;
 	UPROPERTY(EditAnywhere)
 	UPlayerUI* PlayerUI;
+	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UStarvationDeathUI> StarvationUIClass;
+	UPROPERTY(EditAnywhere)
+	UStarvationDeathUI* StarvationUI;
 
 public:
 

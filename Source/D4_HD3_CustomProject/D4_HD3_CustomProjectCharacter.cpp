@@ -93,19 +93,26 @@ void AD4_HD3_CustomProjectCharacter::BeginPlay()
 	
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
+		if (StarvationUIClass)
+		{
+			StarvationUI = CreateWidget<UStarvationDeathUI>(PlayerController, StarvationUIClass);
+		}
+	
+
 		if (InventoryWidgetClass)
 		{
 			InventoryWidget = CreateWidget<UInventoryWidget>(PlayerController, InventoryWidgetClass);
 			InventoryWidget->Owner = this;
 		}
-	}
 	
-	if (PlayerUIClass)
-	{
-		PlayerUI = Cast<UPlayerUI>(CreateWidget(GetGameInstance(), PlayerUIClass));
-		PlayerUI->Player = this;
-		PlayerUI->UpdateValues();
-		PlayerUI->AddToViewport();
+	
+		if (PlayerUIClass)
+		{
+			PlayerUI = Cast<UPlayerUI>(CreateWidget(PlayerController, PlayerUIClass));
+			PlayerUI->Player = this;
+			PlayerUI->UpdateValues();
+			PlayerUI->AddToViewport();
+		}
 	}
 }
 
@@ -255,7 +262,7 @@ void AD4_HD3_CustomProjectCharacter::Eat(IEdible* Food)
 	Food->EatenBy_Implementation(this);
 }
 
-void AD4_HD3_CustomProjectCharacter::GainExperience(int ExperienceAmount)
+void AD4_HD3_CustomProjectCharacter::GainExperience(float ExperienceAmount)
 {
 	Experience += ExperienceAmount;
 	if (Experience >= MaxExperienceLevel)
@@ -265,18 +272,71 @@ void AD4_HD3_CustomProjectCharacter::GainExperience(int ExperienceAmount)
 	}
 }
 
+void AD4_HD3_CustomProjectCharacter::GainStarvation(float StarvationAmount)
+{
+	StarvationValue += StarvationAmount;
+	if (StarvationValue > MaxStarvationValue)
+	{
+		StarvationValue = MaxStarvationValue;
+	}
+}
+
 void AD4_HD3_CustomProjectCharacter::Upgrade(int CurrentLevel)
 {
-	Level++;
 	Damage += CalculateIncreaseAmount(Damage);
-	MaxHealth += CalculateIncreaseAmount(MaxHealth);
-	Health += MaxHealth;
+	MaxHealth += 20;
+	Health = MaxHealth;
+	Level += 1;
 }
 
 // Function to calculate the upgrade degree, larger level has smaller degree
-int AD4_HD3_CustomProjectCharacter::CalculateIncreaseAmount(int Attribute)
+int AD4_HD3_CustomProjectCharacter::CalculateIncreaseAmount(float Attribute)
 {
-	return Attribute * UpgradeFactor * (1 / (2 ^ Level));
+	return FMath::CeilToInt(Attribute * UpgradeFactor * (1.0f / FMath::Pow(2, Level)));
+}
+
+void AD4_HD3_CustomProjectCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	
+	if (StarvationValue < 0 && !bIsCountDownCalled)
+	{
+		bIsCountDownCalled = true;
+		DeathCountDown();
+	}
+	else if (StarvationValue >= 0)
+	{
+		StarvationValue += StarvationDecrement * DeltaSeconds;
+		PlayerUI->UpdateValues();
+		if (bIsCountDownCalled)
+		{
+			GetWorldTimerManager().ClearTimer(DeathTimerHandle);
+			bIsCountDownCalled = false;
+			StarvationUI->RemoveFromParent();
+		}
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::DeathCountDown()
+{
+	GetWorldTimerManager().SetTimer(
+		DeathTimerHandle,
+		this,
+		&AD4_HD3_CustomProjectCharacter::Dead,
+		10.0f,
+		false
+		);
+	
+	if (StarvationUI)
+	{
+		StarvationUI->AddToViewport();
+		StarvationUI->TriggerAnimation();
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::Dead()
+{
+	// Death UI and go back to main menu
 }
 
 AFood* AD4_HD3_CustomProjectCharacter::GetItemAtIndex(int32 Index)
