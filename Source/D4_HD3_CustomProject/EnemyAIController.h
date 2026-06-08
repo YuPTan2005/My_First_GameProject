@@ -34,7 +34,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	float LoseSightRadius = SightRadius + 50;
 	UPROPERTY(EditAnywhere)
-	float FieldOfView = 45;
+	float FieldOfView = 90;
 	UPROPERTY(EditAnywhere)
 	float PatrolDistance = 6000;
 	UPROPERTY(EditAnywhere)

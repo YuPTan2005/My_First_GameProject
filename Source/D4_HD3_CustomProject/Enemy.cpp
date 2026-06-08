@@ -86,6 +86,7 @@ void AEnemy::Attack(AActor* Target)
 
 void AEnemy::Dead()
 {
+	Ragdoll();
 	Destroy();
 }
 
