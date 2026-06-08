@@ -25,10 +25,10 @@ public:
 	virtual FRotator GetControlRotation() const override;
 	void GenerateNewRandomLocation();
 	UFUNCTION()
-	void OnSensesUpdated(const TArray<AActor*>& UpdatedActors);
+	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
 	
 	UPROPERTY(EditAnywhere)
-	float SightRadius = 500;
+	float SightRadius = 1500;
 	UPROPERTY(EditAnywhere)
 	float SightAge = 3.5;
 	UPROPERTY(EditAnywhere)
@@ -36,7 +36,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	float FieldOfView = 45;
 	UPROPERTY(EditAnywhere)
-	float PatrolDistance = 2000;
+	float PatrolDistance = 6000;
 	UPROPERTY(EditAnywhere)
 	UAISenseConfig_Sight* SightConfiguration;
 	UPROPERTY(EditAnywhere)

@@ -28,7 +28,7 @@ void AEnemyAIController::BeginPlay()
 	NavigationSystem = Cast<UNavigationSystemV1>(GetWorld()->GetNavigationSystem());
 	UseBlackboard(AIBlackboard, BlackboardComponent);
 	RunBehaviorTree(BehaviourTree);
-	GetPerceptionComponent()->OnPerceptionUpdated.AddDynamic(this, &AEnemyAIController::OnSensesUpdated);
+	GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AEnemyAIController::OnTargetPerceptionUpdated);
 	BlackboardComponent->SetValueAsBool("Attack", false);
 }
 
@@ -61,23 +61,28 @@ void AEnemyAIController::GenerateNewRandomLocation()
 		NavigationSystem->GetRandomReachablePointInRadius
 		   (GetPawn()->GetActorLocation(), PatrolDistance,
 		   ReturnLocation);
-		BlackboardComponent->SetValueAsVector("PatrolPoint",
+		BlackboardComponent->SetValueAsVector("PatrolDestination",
 		   ReturnLocation.Location);
 	}
 }
 
-void AEnemyAIController::OnSensesUpdated(const TArray<AActor*>& UpdatedActors)
+void AEnemyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
 	TargetPlayer = nullptr;
 	BlackboardComponent->SetValueAsBool("ChasePlayer", false);
-	for(AActor* Actor : UpdatedActors)
-	{
-		if(APawn* SensedPawn = Cast<APawn>(Actor)) {
-			if(SensedPawn->IsPlayerControlled()) {
+	if(APawn* SensedPawn = Cast<APawn>(Actor)) {
+		if(SensedPawn->IsPlayerControlled()) {
+			if (Stimulus.WasSuccessfullySensed())
+			{
 				TargetPlayer = SensedPawn;
 				BlackboardComponent->SetValueAsBool("ChasePlayer", true);
 				BlackboardComponent->SetValueAsVector("PlayerPosition",
 				   TargetPlayer->GetActorLocation());
+			}
+			else
+			{
+				TargetPlayer = nullptr;
+				BlackboardComponent->SetValueAsBool("ChasePlayer", false);
 			}
 		}
 	}
@@ -88,9 +93,17 @@ void AEnemyAIController::UpdateAttackCheck()
 	BlackboardComponent->SetValueAsBool("AttackPossible", false);
 	if (TargetPlayer && GetPawn())
 	{
-		if (FVector::Dist(TargetPlayer->GetActorLocation(), GetPawn()->GetActorLocation()) < 500)
+		if (AEnemy* CurrentPawn = Cast<AEnemy>(GetPawn()))
 		{
-			BlackboardComponent->SetValueAsBool("ShootPossible", true);
+			if (FVector::Dist(TargetPlayer->GetActorLocation(), GetPawn()->GetActorLocation()) <= 200)
+			{
+				if (GEngine)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("Attack possible is true")));
+				}
+				BlackboardComponent->SetValueAsBool("AttackPossible", true);
+				CurrentPawn->bCanAttack = true;
+			}
 		}
 	}
 }
