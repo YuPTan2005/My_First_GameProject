@@ -44,6 +44,9 @@ public:
 
 	bool bCanAttack;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAnimMontage* AttackMontage;
+	
 	void Attack(AActor* Target);
 	
 	bool bIsDead;

@@ -97,10 +97,6 @@ void AEnemyAIController::UpdateAttackCheck()
 		{
 			if (FVector::Dist(TargetPlayer->GetActorLocation(), GetPawn()->GetActorLocation()) <= 200)
 			{
-				if (GEngine)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("Attack possible is true")));
-				}
 				BlackboardComponent->SetValueAsBool("AttackPossible", true);
 				CurrentPawn->bCanAttack = true;
 			}

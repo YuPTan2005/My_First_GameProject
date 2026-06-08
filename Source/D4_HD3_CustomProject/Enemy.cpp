@@ -72,8 +72,15 @@ void AEnemy::Attack(AActor* Target)
 {
 	if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(Target))
 	{
-		Player->DealDamage(DamageValue);
-		bCanAttack = false;
+		if (AttackMontage)
+		{
+			if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+			{
+				AnimInstance->Montage_Play(AttackMontage);
+				Player->DealDamage(DamageValue);
+				bCanAttack = false;
+			}
+		}
 	}
 }
 
