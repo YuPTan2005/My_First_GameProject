@@ -150,7 +150,6 @@ public:
 	void AddCollectibleFood(APickupFood* Food);
 	void RemoveCollectibleFood(APickupFood* Food);
 	
-	float Damage = 10;
 	float Health = 100;
 	float MaxHealth = 100;
 	float Experience = 0;
@@ -159,7 +158,7 @@ public:
 	
 	float MaxStarvationValue = 30;
 	float StarvationValue = 30;
-	float StarvationDecrement = -5;
+	float StarvationDecrement = 0;
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UPlayerUI> PlayerUIClass;
@@ -177,6 +176,25 @@ public:
 	UUserWidget* DeathUI;
 	
 	void DealDamage(float DamageTook);
+	
+	bool bCanAttack;
+	
+	UPROPERTY(EditAnywhere)
+	float AttackCoolDown = 1.0f;
+	UPROPERTY(EditAnywhere)
+	float AttackDistance = 200;
+	UPROPERTY(EditAnywhere)
+	float Damage = 10;
+	
+	float AttackTimer = AttackCoolDown;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UInputAction* AttackAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAnimMontage* AttackAnims;
+	
+	void Attack();
 
 public:
 

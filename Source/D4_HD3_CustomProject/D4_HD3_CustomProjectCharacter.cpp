@@ -12,7 +12,9 @@
 #include "InputActionValue.h"
 #include "D4_HD3_CustomProject.h"
 #include "Edible.h"
+#include "Enemy.h"
 #include "Food.h"
+#include "Kismet/GameplayStatics.h"
 
 AD4_HD3_CustomProjectCharacter::AD4_HD3_CustomProjectCharacter()
 {
@@ -80,6 +82,8 @@ void AD4_HD3_CustomProjectCharacter::SetupPlayerInputComponent(UInputComponent* 
 		EnhancedInputComponent->BindAction(CollectAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Collect);
 		
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::ToggleInventory);
+		
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Attack);
 	}
 	else
 	{
@@ -314,6 +318,11 @@ void AD4_HD3_CustomProjectCharacter::Tick(float DeltaSeconds)
 			StarvationUI->RemoveFromParent();
 		}
 	}
+	
+	if (AttackTimer < AttackCoolDown)
+	{
+		AttackTimer += DeltaSeconds;
+	}
 }
 
 void AD4_HD3_CustomProjectCharacter::DeathCountDown()
@@ -433,5 +442,48 @@ void AD4_HD3_CustomProjectCharacter::DealDamage(float DamageTook)
 	if (Health <= 0)
 	{
 		Dead();
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::Attack()
+{
+	if (AttackTimer >= AttackCoolDown)
+	{
+		AttackTimer = 0;
+		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+		{
+			if (AttackAnims)
+			{
+				int AnimIndex = FMath::RandRange(0, AttackAnims->GetNumSections() - 1);
+				AnimInstance->Montage_Play(AttackAnims);
+				AnimInstance->Montage_JumpToSection(AttackAnims->GetSectionName(AnimIndex), AttackAnims);
+			}
+		}
+		
+		TArray<FHitResult> HitResults;
+		const FVector Start = GetActorLocation();
+		const FVector End = Start + GetActorForwardVector() * AttackDistance;
+		const FCollisionShape CubeShape = FCollisionShape::MakeBox(FVector(AttackDistance));
+		const bool bSweep = GetWorld()->SweepMultiByChannel(HitResults, End, End, GetActorQuat(), 
+			ECC_WorldDynamic, CubeShape);
+
+		TArray<AActor*> HitThisPunch;
+			
+		for (FHitResult HitResult : HitResults)
+		{
+			if (HitResult.GetActor() != this && !HitThisPunch.Contains(HitResult.GetActor()))
+			{
+				HitThisPunch.Add(HitResult.GetActor());
+				AEnemy* HitEnemy = Cast<AEnemy>(HitResult.GetActor());
+				if (HitEnemy)
+				{
+					HitEnemy->DealDamage(Damage);
+					if (GEngine)
+					{
+						GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("Someone gets hit!")));
+					}
+				}
+			}
+		}
 	}
 }
