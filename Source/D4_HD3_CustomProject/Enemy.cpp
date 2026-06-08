@@ -7,13 +7,17 @@
 #include "D4_HD3_CustomProjectCharacter.h"
 #include "EnemyAIController.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AEnemy::AEnemy()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	bCanAttack = false;
+	bIsDead = false;
 	
+	GetCharacterMovement()->MaxWalkSpeed = 400;
 }
 
 // Called when the game starts or when spawned
@@ -52,7 +56,15 @@ void AEnemy::DealDamage(float Damage)
 
 	if (CurrentHealth <= 0)
 	{
-		Destroy();
+		bIsDead = true;
+		Ragdoll();
+		GetWorld()->GetTimerManager().SetTimer(
+			DeadTimer,
+			this,
+			&AEnemy::Dead,
+			5.0f,
+			false
+			);
 	}
 }
 
@@ -61,6 +73,12 @@ void AEnemy::Attack(AActor* Target)
 	if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(Target))
 	{
 		Player->DealDamage(DamageValue);
+		bCanAttack = false;
 	}
+}
+
+void AEnemy::Dead()
+{
+	Destroy();
 }
 

@@ -35,7 +35,7 @@ public:
 	float MaxHealth = 100;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float DamageValue = 100;
+	float DamageValue = 1;
 
 	void DealDamage(float Damage);
 	
@@ -45,5 +45,10 @@ public:
 	bool bCanAttack;
 	
 	void Attack(AActor* Target);
+	
+	bool bIsDead;
+	
+	FTimerHandle DeadTimer;
+	void Dead();
 
 };
