@@ -11,9 +11,12 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "D4_HD3_CustomProject.h"
+#include "D4_HD3_CustomProjectGameMode.h"
+#include "DeathUI.h"
 #include "Edible.h"
 #include "Enemy.h"
 #include "Food.h"
+#include "RespawnPosition.h"
 #include "Kismet/GameplayStatics.h"
 
 AD4_HD3_CustomProjectCharacter::AD4_HD3_CustomProjectCharacter()
@@ -94,28 +97,24 @@ void AD4_HD3_CustomProjectCharacter::SetupPlayerInputComponent(UInputComponent* 
 void AD4_HD3_CustomProjectCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void AD4_HD3_CustomProjectCharacter::Destroyed()
+{
+	Super::Destroyed();
 	
-	PlayerController = Cast<APlayerController>(GetController());
+	Cast<AD4_HD3_CustomProjectGameMode>(GetWorld()->GetAuthGameMode())->RespawnPlayer(this);
+}
+
+void AD4_HD3_CustomProjectCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	
+	PlayerController = Cast<AD4_HD3_CustomProjectPlayerController>(GetController());
 	if (PlayerController)
 	{
-		if (StarvationUIClass)
-		{
-			StarvationUI = CreateWidget<UStarvationUI>(PlayerController, StarvationUIClass);
-		}
-		
-		if (InventoryWidgetClass)
-		{
-			InventoryWidget = CreateWidget<UInventoryWidget>(PlayerController, InventoryWidgetClass);
-			InventoryWidget->Owner = this;
-		}
-	
-		if (PlayerUIClass)
-		{
-			PlayerUI = Cast<UPlayerUI>(CreateWidget(PlayerController, PlayerUIClass));
-			PlayerUI->Player = this;
-			PlayerUI->UpdateValues();
-			PlayerUI->AddToViewport();
-		}
+		PlayerController->AttachUIWidget(this);
+		PlayerUI->UpdateValues();
 	}
 }
 
@@ -307,7 +306,7 @@ void AD4_HD3_CustomProjectCharacter::Tick(float DeltaSeconds)
 		bIsCountDownCalled = true;
 		DeathCountDown();
 	}
-	else if (StarvationValue >= 0)
+	else if (StarvationValue >= 0 && PlayerUI)
 	{
 		StarvationValue += StarvationDecrement * DeltaSeconds;
 		PlayerUI->UpdateValues();
@@ -344,7 +343,11 @@ void AD4_HD3_CustomProjectCharacter::DeathCountDown()
 
 void AD4_HD3_CustomProjectCharacter::Dead()
 {
-	StarvationUI->RemoveFromParent();
+	if (StarvationUI && StarvationUI->IsInViewport())
+	{
+		StarvationUI->RemoveFromParent();
+	}
+	bIsDead = true;
 	GetMesh()->SetCollisionProfileName("Ragdoll");
 	GetMesh()->SetSimulatePhysics(true);
 	GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
@@ -357,19 +360,21 @@ void AD4_HD3_CustomProjectCharacter::Dead()
 		);
 	if (PlayerController)
 	{
-		FInputModeUIOnly InputMode;
-		PlayerController->SetInputMode(InputMode);
+		PlayerController->SetInputMode(FInputModeUIOnly());
+		PlayerController->SetShowMouseCursor(true);
 	}
-	// Go back to main menu
 }
 
 void AD4_HD3_CustomProjectCharacter::ShowDeathUI()
 {
-	DeathUI = CreateWidget(PlayerController, DeathUIClass);
-	DeathUI->AddToViewport();
-	if (PlayerController)
+	if (DeathUI)
 	{
-		PlayerController->SetShowMouseCursor(true);
+		DeathUI->AddToViewport();
+		DeathUI->Owner = this;
+		if (PlayerController)
+		{
+			PlayerController->SetShowMouseCursor(true);
+		}
 	}
 }
 
@@ -439,7 +444,7 @@ void AD4_HD3_CustomProjectCharacter::DealDamage(float DamageTook)
 {
 	Health = FMath::Clamp(Health - DamageTook, 0, MaxHealth);
 	
-	if (Health <= 0)
+	if (Health <= 0 && !bIsDead)
 	{
 		Dead();
 	}

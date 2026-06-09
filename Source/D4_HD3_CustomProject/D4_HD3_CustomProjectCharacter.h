@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "D4_HD3_CustomProjectPlayerController.h"
+#include "DeathUI.h"
 #include "InventoryActorComponent.h"
 #include "InventoryWidget.h"
 #include "PickupFood.h"
@@ -66,21 +68,21 @@ public:
 
 	/** Constructor */
 	AD4_HD3_CustomProjectCharacter();
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UInventoryWidget> InventoryWidgetClass;
 
 protected:
 	int UpgradeFactor = 3;
 	bool bIsInventoryOpen;
 	TArray<APickupFood*> CollectibleFood;
 	
-	APlayerController* PlayerController;
-	
+	AD4_HD3_CustomProjectPlayerController* PlayerController;
 	/** Initialize input action bindings */
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	virtual void BeginPlay() override;
+	
+	virtual void Destroyed() override;
+	
+	virtual void PossessedBy(AController* NewController) override;
 	
 	void Upgrade();
 	int CalculateIncreaseAmount(float Attribute);
@@ -160,20 +162,11 @@ public:
 	float StarvationValue = 30;
 	float StarvationDecrement = 0;
 	
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UPlayerUI> PlayerUIClass;
-	UPROPERTY(EditAnywhere)
+	bool bIsDead = false;
+
 	UPlayerUI* PlayerUI;
-	
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UStarvationUI> StarvationUIClass;
-	UPROPERTY(EditAnywhere)
 	UStarvationUI* StarvationUI;
-	
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UUserWidget> DeathUIClass;
-	UPROPERTY(EditAnywhere)
-	UUserWidget* DeathUI;
+	UDeathUI* DeathUI;
 	
 	void DealDamage(float DamageTook);
 	
