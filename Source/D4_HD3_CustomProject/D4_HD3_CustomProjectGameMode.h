@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "D4_HD3_CustomProjectGameMode.generated.h"
 
+class UDeathUI;
 /**
  *  Simple GameMode for a third person game
  */
@@ -18,6 +19,10 @@ public:
 	
 	/** Constructor */
 	AD4_HD3_CustomProjectGameMode();
+	
+public:
+	void RespawnPlayer(ACharacter* Player);
+	
 };
 
 

@@ -7,6 +7,8 @@
 #include "InputMappingContext.h"
 #include "Blueprint/UserWidget.h"
 #include "D4_HD3_CustomProject.h"
+#include "D4_HD3_CustomProjectCharacter.h"
+#include "InventoryWidget.h"
 #include "Widgets/Input/SVirtualJoystick.h"
 
 void AD4_HD3_CustomProjectPlayerController::BeginPlay()
@@ -64,4 +66,54 @@ bool AD4_HD3_CustomProjectPlayerController::ShouldUseTouchControls() const
 {
 	// are we on a mobile platform? Should we force touch?
 	return SVirtualJoystick::ShouldDisplayTouchInterface() || bForceTouchControls;
+}
+
+void AD4_HD3_CustomProjectPlayerController::AttachUIWidget(ACharacter* NewPlayerCharacter)
+{
+	if (AD4_HD3_CustomProjectCharacter* PlayerCharacter = Cast<AD4_HD3_CustomProjectCharacter>(NewPlayerCharacter))
+	{
+		if (!StarvationUI && StarvationUIClass)
+		{
+			StarvationUI = CreateWidget<UStarvationUI>(this, StarvationUIClass);
+		}
+		
+		if (!InventoryWidget && InventoryWidgetClass)
+		{
+			InventoryWidget = CreateWidget<UInventoryWidget>(this, InventoryWidgetClass);
+		}
+	
+		if (!PlayerUI && PlayerUIClass)
+		{
+			PlayerUI = Cast<UPlayerUI>(CreateWidget(this, PlayerUIClass));
+			PlayerUI->AddToViewport();
+		}
+	
+		if (!DeathUI && DeathUIClass)
+		{
+			DeathUI = Cast<UDeathUI>(CreateWidget(this, DeathUIClass));
+		}
+		
+		if (StarvationUI)
+		{
+			PlayerCharacter->StarvationUI = StarvationUI;
+		}
+		
+		if (InventoryWidget)
+		{
+			PlayerCharacter->InventoryWidget = InventoryWidget;
+			InventoryWidget->Owner = PlayerCharacter;
+		}
+		
+		if (PlayerUI)
+		{
+			PlayerCharacter->PlayerUI = PlayerUI;
+			PlayerUI->Player = PlayerCharacter;
+		}
+		
+		if (DeathUI)
+		{
+			PlayerCharacter->DeathUI = DeathUI;
+			DeathUI->Owner = PlayerCharacter;
+		}
+	}
 }

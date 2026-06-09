@@ -3,6 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DeathUI.h"
+#include "InventoryWidget.h"
+#include "PlayerUI.h"
+#include "StarvationUI.h"
 #include "GameFramework/PlayerController.h"
 #include "D4_HD3_CustomProjectPlayerController.generated.h"
 
@@ -49,4 +53,27 @@ protected:
 	/** Returns true if the player should use UMG touch controls */
 	bool ShouldUseTouchControls() const;
 
+public:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UPlayerUI> PlayerUIClass;
+	UPROPERTY()
+	UPlayerUI* PlayerUI;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UInventoryWidget> InventoryWidgetClass;
+	UPROPERTY()
+	UInventoryWidget* InventoryWidget;
+	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UStarvationUI> StarvationUIClass;
+	UPROPERTY()
+	UStarvationUI* StarvationUI;
+	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UDeathUI> DeathUIClass;
+	UPROPERTY()
+	UDeathUI* DeathUI;
+	
+	void AttachUIWidget(ACharacter* NewPlayerCharacter);
+	
 };
