@@ -483,10 +483,6 @@ void AD4_HD3_CustomProjectCharacter::Attack()
 				if (HitEnemy)
 				{
 					HitEnemy->DealDamage(Damage);
-					if (GEngine)
-					{
-						GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("Someone gets hit!")));
-					}
 				}
 			}
 		}
