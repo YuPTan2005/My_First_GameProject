@@ -3,8 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EnemyStatusComponent.h"
 #include "GameFramework/Character.h"
 #include "Enemy.generated.h"
+
+
+class UEnemyStatus;
 
 UCLASS()
 class D4_HD3_CUSTOMPROJECT_API AEnemy : public ACharacter
@@ -38,6 +42,14 @@ public:
 	float DamageValue = 10;
 
 	void DealDamage(float Damage);
+	
+	UEnemyStatusComponent* StatusComponent;
+	UEnemyStatus* StatusWidget;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UUserWidget> EnemyStatusClass;
+	
+	void UpdateStatus();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int AttackInterval = 3;
