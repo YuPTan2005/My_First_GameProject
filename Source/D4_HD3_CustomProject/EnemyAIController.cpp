@@ -3,6 +3,7 @@
 
 #include "EnemyAIController.h"
 
+#include "D4_HD3_CustomProjectCharacter.h"
 #include "Enemy.h"
 
 AEnemyAIController::AEnemyAIController()
@@ -95,10 +96,14 @@ void AEnemyAIController::UpdateAttackCheck()
 	{
 		if (AEnemy* CurrentPawn = Cast<AEnemy>(GetPawn()))
 		{
-			if (FVector::Dist(TargetPlayer->GetActorLocation(), GetPawn()->GetActorLocation()) <= 200)
+			if (AD4_HD3_CustomProjectCharacter* TargetCharacter = Cast<AD4_HD3_CustomProjectCharacter>(TargetPlayer))
 			{
-				BlackboardComponent->SetValueAsBool("AttackPossible", true);
-				CurrentPawn->bCanAttack = true;
+				if (FVector::Dist(TargetPlayer->GetActorLocation(), GetPawn()->GetActorLocation()) <= 200 &&
+					!TargetCharacter->bIsDead)
+				{
+					BlackboardComponent->SetValueAsBool("AttackPossible", true);
+					CurrentPawn->bCanAttack = true;
+				}
 			}
 		}
 	}
