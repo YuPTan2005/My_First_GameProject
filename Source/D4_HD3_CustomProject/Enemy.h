@@ -35,7 +35,7 @@ public:
 	float MaxHealth = 100;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float DamageValue = 1;
+	float DamageValue = 10;
 
 	void DealDamage(float Damage);
 	
