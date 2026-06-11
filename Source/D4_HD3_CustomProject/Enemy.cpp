@@ -66,7 +66,7 @@ void AEnemy::Tick(float DeltaTime)
 		{
 			float Distance = FVector::Dist(CameraManager->GetCameraLocation(), GetActorLocation());
 			
-			float MinDistance = 500.0f;
+			float MinDistance = 200.0f;
 			float MaxDistance = 8000.0f;
 
 			float TargetScale = FMath::GetMappedRangeValueClamped(

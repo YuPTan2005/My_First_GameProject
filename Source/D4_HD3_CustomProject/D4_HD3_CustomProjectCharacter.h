@@ -160,7 +160,7 @@ public:
 	
 	float MaxStarvationValue = 30;
 	float StarvationValue = 30;
-	float StarvationDecrement = 0;
+	float StarvationDecrement = -1;
 	
 	bool bIsDead = false;
 
