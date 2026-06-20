@@ -3,9 +3,9 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class D4_HD3_CustomProjectTarget : TargetRules
+public class FirstGameProjectTarget : TargetRules
 {
-	public D4_HD3_CustomProjectTarget(TargetInfo Target) : base(Target)
+	public FirstGameProjectTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V6;
