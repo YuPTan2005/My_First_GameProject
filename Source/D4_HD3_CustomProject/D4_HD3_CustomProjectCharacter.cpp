@@ -103,7 +103,13 @@ void AD4_HD3_CustomProjectCharacter::Destroyed()
 {
 	Super::Destroyed();
 	
-	Cast<AD4_HD3_CustomProjectGameMode>(GetWorld()->GetAuthGameMode())->RespawnPlayer(this);
+	if (UWorld* World = GetWorld())
+	{
+		if (AGameModeBase* GameMode = World->GetAuthGameMode())
+		{
+			Cast<AD4_HD3_CustomProjectGameMode>(GameMode)->RespawnPlayer(this);
+		}
+	}
 }
 
 void AD4_HD3_CustomProjectCharacter::PossessedBy(AController* NewController)

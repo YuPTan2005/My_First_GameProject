@@ -13,27 +13,35 @@ AD4_HD3_CustomProjectGameMode::AD4_HD3_CustomProjectGameMode()
 
 void AD4_HD3_CustomProjectGameMode::RespawnPlayer(ACharacter* Player)
 {
-	if (AActor* RespawnPos = UGameplayStatics::GetActorOfClass(GetWorld(), ARespawnPosition::StaticClass()))
+	if (!Player)
 	{
-		FTransform SpawnTransform = RespawnPos->GetActorTransform();
-		FVector SpawnLocation = SpawnTransform.GetLocation();
-		FRotator SpawnRotation = SpawnTransform.Rotator();
+		return;
+	}
 	
-		AActor* SpawnedActor = GetWorld()->SpawnActor(
-			Player->GetClass(),
-			&SpawnLocation,
-			&SpawnRotation
-		);
-	
-		if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+	if (UWorld* WorldObj = GetWorld())
+	{
+		if (AActor* RespawnPos = UGameplayStatics::GetActorOfClass(WorldObj, ARespawnPosition::StaticClass()))
 		{
-			if (APawn* SpawnedPawn = Cast<APawn>(SpawnedActor))
+			FTransform SpawnTransform = RespawnPos->GetActorTransform();
+			FVector SpawnLocation = SpawnTransform.GetLocation();
+			FRotator SpawnRotation = SpawnTransform.Rotator();
+	
+			AActor* SpawnedActor = WorldObj->SpawnActor(
+				Player->GetClass(),
+				&SpawnLocation,
+				&SpawnRotation
+			);
+	
+			if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
 			{
-				PlayerController->Possess(SpawnedPawn);
-			}
+				if (APawn* SpawnedPawn = Cast<APawn>(SpawnedActor))
+				{
+					PlayerController->Possess(SpawnedPawn);
+				}
 			
-			PlayerController->SetInputMode(FInputModeGameOnly());
-			PlayerController->SetShowMouseCursor(false);
+				PlayerController->SetInputMode(FInputModeGameOnly());
+				PlayerController->SetShowMouseCursor(false);
+			}
 		}
 	}
 }
