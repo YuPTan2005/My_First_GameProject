@@ -35,10 +35,10 @@ void AEnemyAIController::BeginPlay()
 	{
 		ControlledCharacter->bIsFlying = true;
 		ControlledCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Flying);
+		BlackboardComponent->SetValueAsVector("PatrolDestination", ControlledCharacter->GetActorLocation());
 	}
 	GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AEnemyAIController::OnTargetPerceptionUpdated);
 	BlackboardComponent->SetValueAsBool("Attack", false);
-	BlackboardComponent->SetValueAsVector("PatrolDestination", GetPawn()->GetActorLocation());
 	BlackboardComponent->SetValueAsBool("Landing", false);
 }
 
