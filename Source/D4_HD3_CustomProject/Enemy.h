@@ -10,7 +10,7 @@
 
 class UEnemyStatus;
 
-UCLASS()
+UCLASS(Abstract)
 class D4_HD3_CUSTOMPROJECT_API AEnemy : public ACharacter
 {
 	GENERATED_BODY()
