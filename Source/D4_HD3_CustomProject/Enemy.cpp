@@ -17,15 +17,20 @@ AEnemy::AEnemy()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	bCanAttack = false;
+	bIsFlying = false;
 	bIsDead = false;
 	
-	GetCharacterMovement()->MaxWalkSpeed = 400;
+	GetCharacterMovement()->MaxWalkSpeed = 300;
 	
 	StatusComponent = CreateDefaultSubobject<UEnemyStatusComponent>(TEXT("Health Bar Component"));
 	StatusComponent->SetupAttachment(GetMesh(), FName("head"));
 	
 	StatusComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	StatusComponent->SetDrawSize(FVector2D(200.0f, 20.0f));
+	
+	GetCharacterMovement()->NavAgentProps.bCanFly = true;
+	this->GetCharacterMovement()->BrakingDecelerationFlying = 2000;
+	this->GetCharacterMovement()->MaxFlySpeed = 450;
 }
 
 // Called when the game starts or when spawned
@@ -93,6 +98,20 @@ void AEnemy::Ragdoll()
 	Cast<AEnemyAIController>(GetController())->BrainComponent->PauseLogic("Ragdolling!");
 }
 
+void AEnemy::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
+{
+	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
+	
+	if (PrevMovementMode == MOVE_Flying && GetCharacterMovement()->MovementMode == MOVE_Walking)
+	{
+		FRotator CurrentRotation = GetActorRotation();
+		CurrentRotation.Pitch = 0.0f;
+		SetActorRotation(CurrentRotation);
+
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+	}
+}
+
 void AEnemy::DealDamage(float Damage)
 {
 	CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.0f, MaxHealth);
@@ -120,18 +139,60 @@ void AEnemy::UpdateStatus()
 	}
 }
 
+void AEnemy::DisplayFlyLaunchMontage()
+{
+	if (FlyLaunchMontage)
+	{
+		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+		{
+			AnimInstance->Montage_Play(FlyLaunchMontage);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ControlledCharacter doesn't have anim instance"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("FlyLaunchMontage in EnemyAIController hasn't been assigned"));
+	}
+}
+
+void AEnemy::DisplayLandingMontage()
+{
+	if (LandingMontage)
+	{
+		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+		{
+			AnimInstance->Montage_Play(LandingMontage);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ControlledCharacter doesn't have anim instance"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("LandingMontage in EnemyAIController hasn't been assigned"));
+	}
+}
+
 void AEnemy::Attack(AActor* Target)
 {
 	if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(Target))
 	{
-		if (AttackMontage)
+		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
 		{
-			if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+			if (GetCharacterMovement()->MovementMode == MOVE_Walking && WalkAttackMontage)
 			{
-				AnimInstance->Montage_Play(AttackMontage);
-				Player->DealDamage(DamageValue);
-				bCanAttack = false;
+				AnimInstance->Montage_Play(WalkAttackMontage);
 			}
+			else if (GetCharacterMovement()->MovementMode == MOVE_Flying && FlyAttackMontage)
+			{
+				AnimInstance->Montage_Play(FlyAttackMontage);
+			}
+			Player->DealDamage(DamageValue);
+			bCanAttack = false;
 		}
 	}
 }

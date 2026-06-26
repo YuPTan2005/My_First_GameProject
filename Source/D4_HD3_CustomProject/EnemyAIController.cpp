@@ -5,6 +5,7 @@
 
 #include "D4_HD3_CustomProjectCharacter.h"
 #include "Enemy.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AEnemyAIController::AEnemyAIController()
 {
@@ -26,11 +27,19 @@ void AEnemyAIController::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	ControlledCharacter = Cast<AEnemy>(GetPawn());
 	NavigationSystem = Cast<UNavigationSystemV1>(GetWorld()->GetNavigationSystem());
 	UseBlackboard(AIBlackboard, BlackboardComponent);
-	RunBehaviorTree(BehaviourTree);
+	RunBehaviorTree(FlyBehaviourTree);
+	if (ControlledCharacter)
+	{
+		ControlledCharacter->bIsFlying = true;
+		ControlledCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Flying);
+	}
 	GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AEnemyAIController::OnTargetPerceptionUpdated);
 	BlackboardComponent->SetValueAsBool("Attack", false);
+	BlackboardComponent->SetValueAsVector("PatrolDestination", GetPawn()->GetActorLocation());
+	BlackboardComponent->SetValueAsBool("Landing", false);
 }
 
 void AEnemyAIController::Tick(float DeltaSeconds)
@@ -54,7 +63,57 @@ FRotator AEnemyAIController::GetControlRotation() const
 	return Super::GetControlRotation();
 }
 
-void AEnemyAIController::GenerateNewRandomLocation()
+void AEnemyAIController::OnLanding()
+{
+	GetPawn()->SetActorRotation(GetControlRotation());
+	
+	if (ControlledCharacter)
+	{
+		ControlledCharacter->bIsFlying = false;
+		ControlledCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+		ControlledCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
+		ControlledCharacter->DisplayLandingMontage();
+	}
+	RunBehaviorTree(WalkBehaviourTree);
+	BlackboardComponent->SetValueAsBool("Landing", false);
+}
+
+void AEnemyAIController::OnFlying()
+{
+	if (ControlledCharacter)
+	{
+		ControlledCharacter->bIsFlying = true;
+		ControlledCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Flying);
+		ControlledCharacter->GetCharacterMovement()->bOrientRotationToMovement = true;
+		ControlledCharacter->DisplayFlyLaunchMontage();
+	}
+	RunBehaviorTree(FlyBehaviourTree);
+	BlackboardComponent->SetValueAsBool("FlyLaunch", false);
+}
+
+void AEnemyAIController::DecideMovementMode()
+{
+	// Decide to fly or walk after complete last patrol
+	if (ControlledCharacter)
+	{
+		if (FMath::RandBool()) // Decide to walk
+		{
+			if (ControlledCharacter->bIsFlying) // Change from flying to walking
+			{
+				BlackboardComponent->SetValueAsBool("Landing", true);
+			}
+		}
+		else // Decide to fly
+		{
+			if (!ControlledCharacter->bIsFlying)
+			{
+				BlackboardComponent->SetValueAsBool("FlyLaunch", true);
+			}
+		}
+	}
+}
+
+void AEnemyAIController::GenerateNewRandomLocationLand()
 {
 	if(NavigationSystem && GetPawn())
 	{
@@ -67,14 +126,39 @@ void AEnemyAIController::GenerateNewRandomLocation()
 	}
 }
 
+void AEnemyAIController::GenerateNewRandomLocationMidAir()
+{
+	if (APawn* ControlledPawn = GetPawn())
+	{
+		UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
+		if (NavSys)
+		{
+			FNavLocation RandomNavPoint;
+			FVector Origin = ControlledPawn->GetActorLocation();
+		
+			if (NavSys->GetRandomReachablePointInRadius(Origin, PatrolDistance, RandomNavPoint))
+			{
+				FVector MidAirLocation = RandomNavPoint.Location;
+			
+				float HoverHeight = FMath::RandRange(200.0f, MaxPatrolHeight); 
+				MidAirLocation.Z += HoverHeight;
+
+				BlackboardComponent->SetValueAsVector("PatrolDestination", MidAirLocation);
+			}
+		}
+	}
+}
+
 void AEnemyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
 	TargetPlayer = nullptr;
 	BlackboardComponent->SetValueAsBool("ChasePlayer", false);
 	if(APawn* SensedPawn = Cast<APawn>(Actor)) {
 		if(SensedPawn->IsPlayerControlled()) {
-			if (Stimulus.WasSuccessfullySensed())
+			if (ControlledCharacter && Stimulus.WasSuccessfullySensed())
 			{
+				ControlledCharacter->GetCharacterMovement()->MaxWalkSpeed = EnemyIncreasedWalkSpeed;
+				ControlledCharacter->GetCharacterMovement()->MaxFlySpeed = EnemyIncreasedFlySpeed;
 				TargetPlayer = SensedPawn;
 				BlackboardComponent->SetValueAsBool("ChasePlayer", true);
 				BlackboardComponent->SetValueAsVector("PlayerPosition",
@@ -82,6 +166,8 @@ void AEnemyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus St
 			}
 			else
 			{
+				ControlledCharacter->GetCharacterMovement()->MaxWalkSpeed = EnemyOriginalWalkSpeed;
+				ControlledCharacter->GetCharacterMovement()->MaxFlySpeed = EnemyOriginalFlySpeed;
 				TargetPlayer = nullptr;
 				BlackboardComponent->SetValueAsBool("ChasePlayer", false);
 			}
@@ -98,7 +184,7 @@ void AEnemyAIController::UpdateAttackCheck()
 		{
 			if (AD4_HD3_CustomProjectCharacter* TargetCharacter = Cast<AD4_HD3_CustomProjectCharacter>(TargetPlayer))
 			{
-				if (FVector::Dist(TargetPlayer->GetActorLocation(), GetPawn()->GetActorLocation()) <= 200 &&
+				if (FVector::Dist(TargetPlayer->GetActorLocation(), GetPawn()->GetActorLocation()) <= 250 &&
 					!TargetCharacter->bIsDead)
 				{
 					BlackboardComponent->SetValueAsBool("AttackPossible", true);

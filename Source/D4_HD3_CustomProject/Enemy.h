@@ -31,6 +31,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void Ragdoll();
+	
+	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CurrentHealth = 100;
@@ -57,9 +59,20 @@ public:
 	bool bCanAttack;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAnimMontage* AttackMontage;
+	UAnimMontage* WalkAttackMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAnimMontage* FlyAttackMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAnimMontage* LandingMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UAnimMontage* FlyLaunchMontage;
+	
+	void DisplayFlyLaunchMontage();
+	void DisplayLandingMontage();
 	
 	void Attack(AActor* Target);
+	
+	bool bIsFlying;
 	
 	bool bIsDead;
 	
