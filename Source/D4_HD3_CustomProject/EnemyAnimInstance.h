@@ -19,6 +19,9 @@ public:
 	AEnemy* Character;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bIsFlying;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float Speed;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)

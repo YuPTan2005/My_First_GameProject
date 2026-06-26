@@ -16,6 +16,7 @@ void UEnemyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	
 	if (Character)
 	{
+		bIsFlying = Character->bIsFlying;
 		Speed = Character->GetVelocity().Length();
 		bCanAttack = Character->bCanAttack;
 		bIsDead = Character->bIsDead;
