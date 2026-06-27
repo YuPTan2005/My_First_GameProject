@@ -120,7 +120,17 @@ void AEnemy::DealDamage(float Damage)
 	if (CurrentHealth <= 0 && !bIsDead)
 	{
 		bIsDead = true;
-		Ragdoll();
+		
+		SetActorRotation(FRotator(0.0f, GetActorRotation().Yaw, 0.0f));
+		
+		if (AAIController* AIController = Cast<AAIController>(GetController()))
+		{
+			UBrainComponent* AIBrainComponent = AIController->GetBrainComponent();
+			if (AIBrainComponent && AIBrainComponent->IsRunning())
+			{
+				AIBrainComponent->StopLogic(TEXT("Character Dead"));
+			}
+		}
 		GetWorld()->GetTimerManager().SetTimer(
 			DeadTimer,
 			this,
