@@ -52,19 +52,19 @@ FVector ASpawningObject::GetRandomSpawnPoint()
 		FVector SphereCenter = SpawnSphereArea->GetComponentLocation();
 		float Radius = SpawnSphereArea->GetUnscaledSphereRadius();
 		float MeshRadius = 0.0f;
-		// Avoid to near to the center of the mesh
+		// Avoid too near to the center of the mesh
 		if (UStaticMesh* StaticMesh = MeshComponent->GetStaticMesh())
 		{
-			MeshRadius = StaticMesh->GetBounds().SphereRadius + 10.0f;
+			MeshRadius = StaticMesh->GetBounds().SphereRadius;
 		}
 		
 		FVector RandomDirection = FMath::VRand();
 		RandomDirection.Z = 0.0f; 
 		RandomDirection.Normalize();
 		
-		float RandomRadius = FMath::FRandRange(0.0f, Radius) + 50.0f;
-
-		return SphereCenter + MeshRadius + RandomDirection * RandomRadius;
+		float RandomRadius = FMath::FRandRange(0.0f, Radius);
+		
+		return SphereCenter + (RandomDirection * (MeshRadius + RandomRadius));
 	}
 	
 	UE_LOG(LogTemp, Error, TEXT("No SphereComponent created for SpawningTree"));
