@@ -81,14 +81,14 @@ bool ASpawningObject::SpawnFood()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 		
-		APickupFood* PickupFoodSpawned = GetWorld()->
-			SpawnActor<APickupFood>(PickupFoodClass, SpawnLocation, SpawnRotation, SpawnParams);
-		AFood* FoodSpawned = GetWorld()->
-			SpawnActor<AFood>(FoodToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
-		
-		PickupFoodSpawned->Food = FoodSpawned;
 		if (FoodMesh && FoodMaterial && PickupUIClass)
 		{
+			APickupFood* PickupFoodSpawned = GetWorld()->
+			SpawnActor<APickupFood>(PickupFoodClass, SpawnLocation, SpawnRotation, SpawnParams);
+			AFood* FoodSpawned = GetWorld()->
+				SpawnActor<AFood>(FoodToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+		
+			PickupFoodSpawned->Food = FoodSpawned;
 			PickupFoodSpawned->MeshComponent->SetStaticMesh(FoodMesh);
 			PickupFoodSpawned->MeshComponent->SetMaterial(0, FoodMaterial);
 			PickupFoodSpawned->PickupUIClass = PickupUIClass;
