@@ -22,7 +22,8 @@ public class D4_HD3_CustomProject : ModuleRules
 			"SlateCore",
 			"NavigationSystem",
 			"AIModule",
-			"GameplayTasks"
+			"GameplayTasks",
+			"EnvironmentQueryEditor"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
