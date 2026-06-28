@@ -30,12 +30,11 @@ void AEnemyAIController::BeginPlay()
 	ControlledCharacter = Cast<AEnemy>(GetPawn());
 	NavigationSystem = Cast<UNavigationSystemV1>(GetWorld()->GetNavigationSystem());
 	UseBlackboard(AIBlackboard, BlackboardComponent);
-	RunBehaviorTree(FlyBehaviourTree);
+	RunBehaviorTree(WalkBehaviourTree);
 	if (ControlledCharacter)
 	{
-		ControlledCharacter->bIsFlying = true;
-		ControlledCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Flying);
-		BlackboardComponent->SetValueAsVector("PatrolDestination", ControlledCharacter->GetActorLocation());
+		ControlledCharacter->bIsFlying = false;
+		ControlledCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 	}
 	GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AEnemyAIController::OnTargetPerceptionUpdated);
 	BlackboardComponent->SetValueAsBool("Attack", false);
