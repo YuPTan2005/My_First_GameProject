@@ -70,7 +70,14 @@ void UInventoryWidget::RefreshInventory(TArray<AFood*> Items)
 		{
 			return;
 		}
-		ButtonList[i]->UpdateItemIcon(*ImageMap.Find(Items[i]->GetName()));
+		if (UTexture2D* Image = *ImageMap.Find(Items[i]->GetName()))
+		{
+			ButtonList[i]->UpdateItemIcon(Image);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Item %s does not have image mapping for its name in inventory"), *Items[i]->GetName());
+		}
 	}
 }
 
