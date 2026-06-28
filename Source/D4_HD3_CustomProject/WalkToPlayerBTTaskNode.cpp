@@ -41,7 +41,7 @@ void UWalkToPlayerBTTaskNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8*
 			FRotator TargetRotation(0.0f, Direction.Rotation().Yaw, 0.0f);
 			ControlledPawn->SetActorRotation(TargetRotation);
 			
-			if (FVector::Dist(TargetLocation, CurrentLocation) < 150.0f)
+			if (FVector::Dist(TargetLocation, CurrentLocation) <= 250.0f)
 			{
 				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			}
