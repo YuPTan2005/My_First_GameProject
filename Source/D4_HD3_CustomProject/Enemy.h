@@ -55,8 +55,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int AttackInterval = 3;
-
 	bool bCanAttack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AttackDistance = 250.0f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UAnimMontage* WalkAttackMontage;
