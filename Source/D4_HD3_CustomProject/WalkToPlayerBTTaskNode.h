@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Enemy.h"
+#include "EnemyAIController.h"
 
 #include "BehaviorTree/BTTaskNode.h"
 #include "WalkToPlayerBTTaskNode.generated.h"
@@ -19,6 +21,12 @@ public:
 	UWalkToPlayerBTTaskNode();
 	
 protected:
+	float AcceptanceRadius;
+	
+	AEnemyAIController* AIController;
+	UBlackboardComponent* BlackboardComp;
+	AEnemy* ControlledPawn;
+	
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 	
