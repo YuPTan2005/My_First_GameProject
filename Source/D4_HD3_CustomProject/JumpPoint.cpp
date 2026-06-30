@@ -18,11 +18,11 @@ void AJumpPoint::LinkReached(AActor* Agent, const FVector& Destination)
 	{
 		FVector LaunchVelocity;
 		bool LaunchSucceed = UGameplayStatics::SuggestProjectileVelocity_CustomArc(GetWorld(), LaunchVelocity,
-		   Enemy->GetMesh()->GetComponentLocation(), Destination);
+		   Enemy->GetActorLocation(), Destination, 0.0f, 0.3f);
+		
 		if (LaunchSucceed)
 		{
 			Enemy->LaunchCharacter(LaunchVelocity, true, true);
-			ResumePathFollowing(Agent);
 		}
 	}
 }
