@@ -57,7 +57,7 @@ AD4_HD3_CustomProjectCharacter::AD4_HD3_CustomProjectCharacter()
 	GetCharacterMovement()->MaxWalkSpeed = 800;
 	
 	GetCharacterMovement()->NavAgentProps.bCanFly = true;
-	this->GetCharacterMovement()->BrakingDecelerationFlying = 2000;
+	this->GetCharacterMovement()->BrakingDecelerationFlying = OriginalFlyBrake;
 	this->GetCharacterMovement()->MaxFlySpeed = 1000;
 	
 	InventoryComponent = CreateDefaultSubobject<UInventoryActorComponent>(TEXT("Inventory Component"));
@@ -85,6 +85,8 @@ void AD4_HD3_CustomProjectCharacter::SetupPlayerInputComponent(UInputComponent* 
 		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::ToggleInventory);
 		
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Attack);
+		
+		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Dash);
 	}
 	else
 	{
@@ -242,6 +244,39 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 	}
 }
 
+void AD4_HD3_CustomProjectCharacter::Dash()
+{
+	if (bCanDash && DashTimer >= DashCoolDown)
+	{
+		UCharacterMovementComponent* MoveComponent = GetCharacterMovement();
+		FVector DashDirection = GetActorForwardVector();
+		DashTimer = 0.0f;
+		
+		if (GetCharacterMovement()->MovementMode == MOVE_Walking)
+		{
+			LaunchCharacter(DashDirection * DashSpeed, true, true);
+		}
+		else if (GetCharacterMovement()->MovementMode == MOVE_Flying)
+		{
+			MoveComponent->Velocity = DashDirection * DashSpeed;
+			GetCharacterMovement()->BrakingDecelerationFlying = DashFlyBrake;
+			
+			GetWorldTimerManager().ClearTimer(FlyDashTimerHandle);
+			GetWorldTimerManager().SetTimer(
+				FlyDashTimerHandle, 
+				this, 
+				&AD4_HD3_CustomProjectCharacter::RestoreFlyBrake, 
+				0.5f, 
+				false);
+		}
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::RestoreFlyBrake()
+{
+	GetCharacterMovement()->BrakingDecelerationFlying = OriginalFlyBrake;
+}
+
 void AD4_HD3_CustomProjectCharacter::NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other,
                                                class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal,
                                                FVector NormalImpulse, const FHitResult& Hit)
@@ -329,6 +364,11 @@ void AD4_HD3_CustomProjectCharacter::Tick(float DeltaSeconds)
 	if (AttackTimer < AttackCoolDown)
 	{
 		AttackTimer += DeltaSeconds;
+	}
+	
+	if (bCanDash)
+	{
+		DashTimer += DeltaSeconds;
 	}
 }
 
@@ -476,6 +516,36 @@ bool AD4_HD3_CustomProjectCharacter::GetCanDash()
 void AD4_HD3_CustomProjectCharacter::SetCanDash(bool NewValue)
 {
 	bCanDash = NewValue;
+}
+
+float AD4_HD3_CustomProjectCharacter::GetDashSpeed()
+{
+	return DashSpeed;
+}
+
+void AD4_HD3_CustomProjectCharacter::SetDashSpeed(float NewValue)
+{
+	DashSpeed = NewValue;
+}
+
+float AD4_HD3_CustomProjectCharacter::GetDashTimer()
+{
+	return DashTimer;
+}
+
+void AD4_HD3_CustomProjectCharacter::SetDashTimer(float NewValue)
+{
+	DashTimer = NewValue;
+}
+
+float AD4_HD3_CustomProjectCharacter::GetDashCoolDown()
+{
+	return DashCoolDown;
+}
+
+void AD4_HD3_CustomProjectCharacter::SetDashCoolDown(float NewValue)
+{
+	DashCoolDown = NewValue;
 }
 
 void AD4_HD3_CustomProjectCharacter::DealDamage(float DamageTook)

@@ -63,6 +63,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* InventoryAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* DashAction;
 
 public:
 
@@ -101,6 +104,13 @@ protected:
 
 	bool bIsStarvationDecrement = true;
 	bool bCanDash = false;
+	float DashSpeed = 0.0f;
+	
+	float DashCoolDown = 1.0f;
+	float DashTimer = DashCoolDown;
+	
+	float OriginalFlyBrake = 1500.0f;
+	float DashFlyBrake = 3500.0f;
 
 protected:
 
@@ -109,6 +119,11 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+	
+	virtual void NotifyHit(class UPrimitiveComponent* MyComp, 
+		AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, 
+		FVector HitLocation, FVector HitNormal, FVector NormalImpulse, 
+		const FHitResult& Hit) override;
 
 public:
 
@@ -131,10 +146,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void Collect();
 	
-	virtual void NotifyHit(class UPrimitiveComponent* MyComp, 
-		AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, 
-		FVector HitLocation, FVector HitNormal, FVector NormalImpulse, 
-		const FHitResult& Hit) override;
+	UFUNCTION(BlueprintCallable, Category="Input")
+	virtual void Dash();
+	
+	FTimerHandle FlyDashTimerHandle;
+	void RestoreFlyBrake();
 	
 	int StateNumber = 1;
 	const int8 MaxStateNumber = 3;
@@ -181,14 +197,20 @@ public:
 	bool GetIsDead();
 	void SetIsDead(bool NewValue);
 	
-	bool GetCanAttack();
-	void SetCanAttack(bool NewValue);
-	
 	bool GetIsStarvationDecrement();
 	void SetIsStarvationDecrement(bool NewValue);
 	
 	bool GetCanDash();
 	void SetCanDash(bool NewValue);
+	
+	float GetDashSpeed();
+	void SetDashSpeed(float NewValue);
+	
+	float GetDashTimer();
+	void SetDashTimer(float NewValue);
+	
+	float GetDashCoolDown();
+	void SetDashCoolDown(float NewValue);
 	
 	UPROPERTY(EditAnywhere)
 	float AttackCoolDown = 1.0f;
