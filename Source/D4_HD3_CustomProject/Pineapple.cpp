@@ -19,7 +19,7 @@ void APineapple::EatenBy_Implementation(ACharacter* Character)
 	if (Player)
 	{
 		Player->StarvationValue = Player->MaxStarvationValue;
-		Player->bIsStarvationDecrement = false;
+		Player->SetIsStarvationDecrement(false);
 		GetWorld()->GetTimerManager().SetTimer(
 			StarvationTimer,
 			this,

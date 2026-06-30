@@ -89,6 +89,8 @@ protected:
 	
 	virtual void Tick(float DeltaSeconds) override;
 	
+	bool bIsDead = false;
+	
 	FTimerHandle DeathTimerHandle;
 	int CountDownTime = 10;
 	bool bIsCountDownCalled = false;
@@ -96,6 +98,9 @@ protected:
 	void Dead();
 	void ShowDeathUI();
 	FTimerHandle ShowDeathUITimer;
+
+	bool bIsStarvationDecrement = true;
+	bool bCanDash = false;
 
 protected:
 
@@ -139,7 +144,9 @@ public:
 	void GainExperience(float ExperienceAmount);
 	void GainStarvation(float StarvationAmount);
 	
+	UPROPERTY()
 	UInventoryActorComponent* InventoryComponent;
+	UPROPERTY()
 	UInventoryWidget* InventoryWidget;
 	
 	void ToggleInventory();
@@ -158,19 +165,30 @@ public:
 	float MaxExperienceLevel = 100;
 	float Level = 0;
 	
-	float MaxStarvationValue = 30;
-	float StarvationValue = 30;
-	float StarvationDecrement = -1;
-	
-	bool bIsDead = false;
+	float MaxStarvationValue = 40;
+	float StarvationValue = 40;
+	float StarvationDecrementValue = -1;
 
+	UPROPERTY()
 	UPlayerUI* PlayerUI;
+	UPROPERTY()
 	UStarvationUI* StarvationUI;
+	UPROPERTY()
 	UDeathUI* DeathUI;
 	
 	void DealDamage(float DamageTook);
 	
-	bool bCanAttack;
+	bool GetIsDead();
+	void SetIsDead(bool NewValue);
+	
+	bool GetCanAttack();
+	void SetCanAttack(bool NewValue);
+	
+	bool GetIsStarvationDecrement();
+	void SetIsStarvationDecrement(bool NewValue);
+	
+	bool GetCanDash();
+	void SetCanDash(bool NewValue);
 	
 	UPROPERTY(EditAnywhere)
 	float AttackCoolDown = 1.0f;

@@ -16,8 +16,6 @@
 #include "Edible.h"
 #include "Enemy.h"
 #include "Food.h"
-#include "RespawnPosition.h"
-#include "Kismet/GameplayStatics.h"
 
 AD4_HD3_CustomProjectCharacter::AD4_HD3_CustomProjectCharacter()
 {
@@ -116,7 +114,7 @@ void AD4_HD3_CustomProjectCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	
-	PlayerController = Cast<AD4_HD3_CustomProjectPlayerController>(GetController());
+	PlayerController = Cast<AD4_HD3_CustomProjectPlayerController>(NewController);
 	if (PlayerController)
 	{
 		PlayerController->AttachUIWidget(this);
@@ -317,9 +315,9 @@ void AD4_HD3_CustomProjectCharacter::Tick(float DeltaSeconds)
 		bIsCountDownCalled = true;
 		DeathCountDown();
 	}
-	else if (StarvationValue >= 0)
+	else if (bIsStarvationDecrement && StarvationValue >= 0)
 	{
-		StarvationValue += StarvationDecrement * DeltaSeconds;
+		StarvationValue += StarvationDecrementValue * DeltaSeconds;
 		if (bIsCountDownCalled)
 		{
 			GetWorldTimerManager().ClearTimer(DeathTimerHandle);
@@ -448,6 +446,36 @@ void AD4_HD3_CustomProjectCharacter::AddCollectibleFood(APickupFood* Food)
 void AD4_HD3_CustomProjectCharacter::RemoveCollectibleFood(APickupFood* Food)
 {
 	CollectibleFood.RemoveSingle(Food);
+}
+
+bool AD4_HD3_CustomProjectCharacter::GetIsDead()
+{
+	return bIsDead;
+}
+
+void AD4_HD3_CustomProjectCharacter::SetIsDead(bool NewValue)
+{
+	bIsDead = NewValue;
+}
+
+bool AD4_HD3_CustomProjectCharacter::GetIsStarvationDecrement()
+{
+	return bIsStarvationDecrement;
+}
+
+void AD4_HD3_CustomProjectCharacter::SetIsStarvationDecrement(bool NewValue)
+{
+	bIsStarvationDecrement = NewValue;
+}
+
+bool AD4_HD3_CustomProjectCharacter::GetCanDash()
+{
+	return bCanDash;
+}
+
+void AD4_HD3_CustomProjectCharacter::SetCanDash(bool NewValue)
+{
+	bCanDash = NewValue;
 }
 
 void AD4_HD3_CustomProjectCharacter::DealDamage(float DamageTook)
