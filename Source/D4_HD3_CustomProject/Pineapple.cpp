@@ -32,7 +32,7 @@ void APineapple::EatenBy_Implementation(ACharacter* Character)
 
 void APineapple::ContinueStarvationDecrement()
 {
-	Player->bIsStarvationDecrement = true;
+	Player->SetIsStarvationDecrement(true);
 }
 
 
