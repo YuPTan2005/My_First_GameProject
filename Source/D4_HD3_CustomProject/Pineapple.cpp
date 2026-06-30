@@ -6,8 +6,7 @@
 APineapple::APineapple()
 {
 	FoodName = "Pineapple";
-	FoodDescription = TEXT("Increase your experience amount by 20 and starvation value to max. ")
-					  TEXT("Starvation value will stop to drop for 20 seconds.");
+	FoodDescription = TEXT("Experience amount: 20. Starvation value will stop to drop for 20 seconds.");
 	ExperienceAmount = 20;
 	StarvationAmount = 0; // Will directly set the value to max
 }

@@ -6,7 +6,7 @@
 ACorn::ACorn()
 {
 	FoodName = "Corn";
-	FoodDescription = "Increase your experience amount by 20 and starvation amount by 8.";
+	FoodDescription = "Experience amount: 20. Starvation amount: 8.";
 	ExperienceAmount = 20;
 	StarvationAmount = 8;
 }

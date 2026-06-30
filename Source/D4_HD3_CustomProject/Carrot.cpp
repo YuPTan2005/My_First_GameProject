@@ -7,7 +7,7 @@
 ACarrot::ACarrot()
 {
 	FoodName = "Carrot";
-	FoodDescription = "Increase your experience amount by 50 and starvation amount by 25.";
+	FoodDescription = "Experience amount: 50. Starvation amount: 25.";
 	ExperienceAmount = 50;
 	StarvationAmount = 25;
 }
