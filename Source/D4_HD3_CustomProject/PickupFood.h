@@ -47,7 +47,6 @@ protected:
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
 	void AddPickupUI(AActor* Actor);
-	void NotifyCollectible(AActor* Actor);
 
 public:	
 	// Called every frame
