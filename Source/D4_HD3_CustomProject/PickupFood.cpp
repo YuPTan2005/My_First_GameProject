@@ -46,13 +46,11 @@ void APickupFood::Collected()
 void APickupFood::OnOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                             int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && Cast<AD4_HD3_CustomProjectCharacter>(OtherActor))
+	AD4_HD3_CustomProjectCharacter* OtherCharacter = Cast<AD4_HD3_CustomProjectCharacter>(OtherActor);
+	if (OtherCharacter && OtherActor != this && !SpawnedUI)
 	{
-		if (OtherActor != this && !SpawnedUI)
-		{
-			AddPickupUI(OtherActor);
-			NotifyCollectible(OtherActor);
-		}
+		AddPickupUI(OtherCharacter);
+		OtherCharacter->AddCollectibleFood(this);
 	}
 }
 
@@ -89,13 +87,3 @@ void APickupFood::AddPickupUI(AActor* Actor)
 		}
 	}
 }
-
-void APickupFood::NotifyCollectible(AActor* Actor)
-{
-	if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(Actor))
-	{
-		Player->AddCollectibleFood(this);
-	}
-}
-
-
