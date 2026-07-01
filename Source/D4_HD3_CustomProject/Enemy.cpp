@@ -7,7 +7,6 @@
 #include "D4_HD3_CustomProjectCharacter.h"
 #include "EnemyAIController.h"
 #include "EnemyStatus.h"
-#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -16,9 +15,6 @@ AEnemy::AEnemy()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	bCanAttack = false;
-	bIsFlying = false;
-	bIsDead = false;
 	
 	GetCharacterMovement()->MaxWalkSpeed = 300;
 	
@@ -37,6 +33,10 @@ AEnemy::AEnemy()
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	bCanAttack = false;
+	bIsFlying = false;
+	bIsDead = false;
 	
 	StatusWidget = CreateWidget<UEnemyStatus>(GetWorld(), EnemyStatusClass);
 	if (StatusWidget)
@@ -89,15 +89,6 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-void AEnemy::Ragdoll()
-{
-	GetMesh()->SetCollisionProfileName("Ragdoll");
-	GetMesh()->SetSimulatePhysics(true);
-	GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
-	
-	Cast<AEnemyAIController>(GetController())->BrainComponent->PauseLogic("Ragdolling!");
-}
-
 void AEnemy::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
 {
 	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
@@ -120,8 +111,6 @@ void AEnemy::DealDamage(float Damage)
 	if (CurrentHealth <= 0 && !bIsDead)
 	{
 		bIsDead = true;
-		
-		SetActorRotation(FRotator(0.0f, GetActorRotation().Yaw, 0.0f));
 		
 		if (AAIController* AIController = Cast<AAIController>(GetController()))
 		{
@@ -209,7 +198,6 @@ void AEnemy::Attack(AActor* Target)
 
 void AEnemy::Dead()
 {
-	Ragdoll();
 	Destroy();
 }
 
