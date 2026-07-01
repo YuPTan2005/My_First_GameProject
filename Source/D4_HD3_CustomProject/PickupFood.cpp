@@ -4,7 +4,6 @@
 #include "PickupFood.h"
 
 #include "D4_HD3_CustomProjectCharacter.h"
-#include "Food.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -46,25 +45,23 @@ void APickupFood::Collected()
 void APickupFood::OnOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                             int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	AD4_HD3_CustomProjectCharacter* OtherCharacter = Cast<AD4_HD3_CustomProjectCharacter>(OtherActor);
-	if (OtherCharacter && OtherActor != this && !SpawnedUI)
+	IFoodCollector* Collector = Cast<IFoodCollector>(OtherActor);
+	if (Collector && OtherActor != this && !SpawnedUI)
 	{
-		AddPickupUI(OtherCharacter);
-		OtherCharacter->AddCollectibleFood(this);
+		AddPickupUI(OtherActor);
+		Collector->AddCollectibleFood(this);
 	}
 }
 
 void APickupFood::OnEndOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 							   int32 OtherBodyIndex)
 {
-	if (OtherActor && OtherActor != this && SpawnedUI)
+	IFoodCollector* Collector = Cast<IFoodCollector>(OtherActor);
+	if (Collector && OtherActor != this && SpawnedUI)
 	{
 		SpawnedUI->RemoveFromParent();
 		SpawnedUI = nullptr;
-		if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(OtherActor))
-		{
-			Player->RemoveCollectibleFood(this);
-		}
+		Collector->RemoveCollectibleFood(this);
 	}
 }
 
