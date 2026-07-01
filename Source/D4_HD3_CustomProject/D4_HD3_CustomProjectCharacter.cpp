@@ -97,6 +97,11 @@ void AD4_HD3_CustomProjectCharacter::SetupPlayerInputComponent(UInputComponent* 
 void AD4_HD3_CustomProjectCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	if (Companion)
+	{
+		Companion->SetCompanionOwner(this);
+	}
 }
 
 void AD4_HD3_CustomProjectCharacter::Destroyed()
@@ -234,11 +239,13 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 		}
 		else
 		{
-			FoodToAdd = CollectibleFood[0]->Food;
+			FoodToAdd = PickupFood->Food;
 		}
+		
 		if (AddItem(FoodToAdd))
 		{
-			CollectibleFood.RemoveAt(0);
+			CollectibleFood.RemoveSingle(PickupFood);
+			Companion->RemoveCollectibleFood_Implementation(PickupFood);
 			PickupFood->Collected();
 		}
 	}

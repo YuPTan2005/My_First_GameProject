@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Companion.h"
 #include "D4_HD3_CustomProjectPlayerController.h"
 #include "DeathUI.h"
 #include "FoodCollector.h"
@@ -74,6 +75,9 @@ public:
 	AD4_HD3_CustomProjectCharacter();
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ACompanion* Companion;
+	
 	int UpgradeFactor = 3;
 	bool bIsInventoryOpen;
 	
