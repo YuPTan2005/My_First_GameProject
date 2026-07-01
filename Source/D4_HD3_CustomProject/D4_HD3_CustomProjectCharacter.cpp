@@ -454,6 +454,16 @@ void AD4_HD3_CustomProjectCharacter::UseItem(int32 Index)
 	PlayerUI->UpdateValues();
 }
 
+void AD4_HD3_CustomProjectCharacter::AddCollectibleFood_Implementation(APickupFood* Food)
+{
+	CollectibleFood.Add(Food);
+}
+
+void AD4_HD3_CustomProjectCharacter::RemoveCollectibleFood_Implementation(APickupFood* Food)
+{
+	CollectibleFood.RemoveSingle(Food);
+}
+
 void AD4_HD3_CustomProjectCharacter::ToggleInventory()
 {
 	if (PlayerController)
@@ -476,16 +486,6 @@ void AD4_HD3_CustomProjectCharacter::ToggleInventory()
 		
 		bIsInventoryOpen = !bIsInventoryOpen;
 	}
-}
-
-void AD4_HD3_CustomProjectCharacter::AddCollectibleFood(APickupFood* Food)
-{
-	CollectibleFood.Add(Food);
-}
-
-void AD4_HD3_CustomProjectCharacter::RemoveCollectibleFood(APickupFood* Food)
-{
-	CollectibleFood.RemoveSingle(Food);
 }
 
 bool AD4_HD3_CustomProjectCharacter::GetIsDead()

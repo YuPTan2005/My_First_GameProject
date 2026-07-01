@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "D4_HD3_CustomProjectPlayerController.h"
 #include "DeathUI.h"
+#include "FoodCollector.h"
 #include "InventoryActorComponent.h"
 #include "InventoryWidget.h"
 #include "PickupFood.h"
@@ -28,7 +29,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
  *  Implements a controllable orbiting camera
  */
 UCLASS(abstract)
-class AD4_HD3_CustomProjectCharacter : public ACharacter
+class AD4_HD3_CustomProjectCharacter : public ACharacter, public IFoodCollector
 {
 	GENERATED_BODY()
 
@@ -75,9 +76,13 @@ public:
 protected:
 	int UpgradeFactor = 3;
 	bool bIsInventoryOpen;
+	
+	UPROPERTY()
 	TArray<APickupFood*> CollectibleFood;
 	
+	UPROPERTY()
 	AD4_HD3_CustomProjectPlayerController* PlayerController;
+	
 	/** Initialize input action bindings */
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
@@ -172,8 +177,8 @@ public:
 	bool AddItem(AFood* NewItem);
 	void UseItem(int32 Index);
 	
-	void AddCollectibleFood(APickupFood* Food);
-	void RemoveCollectibleFood(APickupFood* Food);
+	virtual void AddCollectibleFood_Implementation(APickupFood* Food) override;
+	virtual void RemoveCollectibleFood_Implementation(APickupFood* Food) override;
 	
 	float Health = 100;
 	float MaxHealth = 100;
@@ -181,8 +186,8 @@ public:
 	float MaxExperienceLevel = 100;
 	float Level = 0;
 	
-	float MaxStarvationValue = 40;
-	float StarvationValue = 40;
+	float MaxStarvationValue = 50;
+	float StarvationValue = 50;
 	float StarvationDecrementValue = -1;
 
 	UPROPERTY()
