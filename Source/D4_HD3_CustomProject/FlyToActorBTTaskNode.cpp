@@ -1,18 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "FlyToPlayerBTTaskNode.h"
+#include "FlyToActorBTTaskNode.h"
 
 #include "EnemyAIController.h"
 #include "Kismet/KismetMathLibrary.h"
 
-UFlyToPlayerBTTaskNode::UFlyToPlayerBTTaskNode()
+UFlyToActorBTTaskNode::UFlyToActorBTTaskNode()
 {
 	bNotifyTick = true;
 	bCreateNodeInstance = true;
 }
 
-void UFlyToPlayerBTTaskNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+void UFlyToActorBTTaskNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
 	AAIController* AIController = OwnerComp.GetAIOwner();
@@ -69,7 +69,7 @@ void UFlyToPlayerBTTaskNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 	}
 }
 
-EBTNodeResult::Type UFlyToPlayerBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UFlyToActorBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	return EBTNodeResult::InProgress;
 }

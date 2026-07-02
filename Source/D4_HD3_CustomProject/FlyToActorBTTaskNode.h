@@ -5,18 +5,18 @@
 #include "CoreMinimal.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "FlyToPlayerBTTaskNode.generated.h"
+#include "FlyToActorBTTaskNode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class D4_HD3_CUSTOMPROJECT_API UFlyToPlayerBTTaskNode : public UBTTaskNode
+class D4_HD3_CUSTOMPROJECT_API UFlyToActorBTTaskNode : public UBTTaskNode
 {
 	GENERATED_BODY()
 	
 public:
-	UFlyToPlayerBTTaskNode();
+	UFlyToActorBTTaskNode();
 	
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
