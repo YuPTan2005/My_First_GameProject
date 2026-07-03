@@ -103,9 +103,9 @@ void AEnemy::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 Previou
 	}
 }
 
-void AEnemy::DealDamage(float Damage)
+void AEnemy::DealDamage_Implementation(float DamageTaken, IAttackable* DamagedBy)
 {
-	CurrentHealth = FMath::Clamp(CurrentHealth - Damage, 0.0f, MaxHealth);
+	CurrentHealth = FMath::Clamp(CurrentHealth - DamageTaken, 0.0f, MaxHealth);
 	UpdateStatus();
 	
 	if (CurrentHealth <= 0 && !bIsDead)
@@ -176,23 +176,20 @@ void AEnemy::DisplayLandingMontage()
 	}
 }
 
-void AEnemy::Attack(AActor* Target)
+void AEnemy::Attack_Implementation(IDamageable* Target)
 {
-	if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(Target))
+	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
 	{
-		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+		if (GetCharacterMovement()->MovementMode == MOVE_Walking && WalkAttackMontage)
 		{
-			if (GetCharacterMovement()->MovementMode == MOVE_Walking && WalkAttackMontage)
-			{
-				AnimInstance->Montage_Play(WalkAttackMontage);
-			}
-			else if (GetCharacterMovement()->MovementMode == MOVE_Flying && FlyAttackMontage)
-			{
-				AnimInstance->Montage_Play(FlyAttackMontage);
-			}
-			Player->DealDamage(DamageValue);
-			bCanAttack = false;
+			AnimInstance->Montage_Play(WalkAttackMontage);
 		}
+		else if (GetCharacterMovement()->MovementMode == MOVE_Flying && FlyAttackMontage)
+		{
+			AnimInstance->Montage_Play(FlyAttackMontage);
+		}
+		Target->DealDamage(DamageValue, this);
+		bCanAttack = false;
 	}
 }
 

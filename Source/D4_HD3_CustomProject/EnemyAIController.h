@@ -25,6 +25,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	virtual FRotator GetControlRotation() const override;
 	
+	UPROPERTY()
 	AEnemy* ControlledCharacter;
 	
 	void OnLanding();

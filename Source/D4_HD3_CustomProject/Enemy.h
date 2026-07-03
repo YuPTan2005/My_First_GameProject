@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Attackable.h"
+#include "Damageable.h"
 #include "EnemyStatusComponent.h"
 #include "GameFramework/Character.h"
 #include "Enemy.generated.h"
@@ -11,7 +13,7 @@
 class UEnemyStatus;
 
 UCLASS(Abstract)
-class D4_HD3_CUSTOMPROJECT_API AEnemy : public ACharacter
+class D4_HD3_CUSTOMPROJECT_API AEnemy : public ACharacter, public IAttackable, public IDamageable
 {
 	GENERATED_BODY()
 
@@ -41,9 +43,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float DamageValue = 10;
 
-	void DealDamage(float Damage);
+	virtual void DealDamage_Implementation(float DamageTaken, IAttackable* DamagedBy) override;
 	
+	UPROPERTY()
 	UEnemyStatusComponent* StatusComponent;
+	UPROPERTY()
 	UEnemyStatus* StatusWidget;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -69,7 +73,7 @@ public:
 	void DisplayFlyLaunchMontage();
 	void DisplayLandingMontage();
 	
-	void Attack(AActor* Target);
+	virtual void Attack_Implementation(IDamageable* Target) override;
 	
 	bool bIsFlying;
 	

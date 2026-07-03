@@ -183,7 +183,7 @@ void AEnemyAIController::UpdateAttackCheck()
 		{
 			if (AD4_HD3_CustomProjectCharacter* TargetCharacter = Cast<AD4_HD3_CustomProjectCharacter>(TargetPlayer))
 			{
-				if (FVector::Dist(TargetPlayer->GetActorLocation(), CurrentPawn->GetActorLocation()) <= CurrentPawn->AttackDistance 
+				if (FVector::Dist(TargetCharacter->GetActorLocation(), CurrentPawn->GetActorLocation()) <= CurrentPawn->AttackDistance 
 					&& !TargetCharacter->GetIsDead())
 				{
 					BlackboardComponent->SetValueAsBool("AttackPossible", true);
@@ -196,11 +196,11 @@ void AEnemyAIController::UpdateAttackCheck()
 
 void AEnemyAIController::Attack()
 {
-	if (TargetPlayer && GetPawn())
+	if (TargetPlayer && GetPawn() && ControlledCharacter)
 	{
-		if (AEnemy* CurrentPawn = Cast<AEnemy>(GetPawn()))
+		if (IDamageable* DamageableTarget = Cast<IDamageable>(ControlledCharacter))
 		{
-			CurrentPawn->Attack(TargetPlayer);
+			ControlledCharacter->Attack(DamageableTarget);
 		}
 	}
 }
