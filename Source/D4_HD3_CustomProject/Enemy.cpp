@@ -192,7 +192,7 @@ void AEnemy::Attack(AActor* Target)
 	
 	if (Target->Implements<UDamageable>())
 	{
-		Cast<IDamageable>(Target)->DealDamage(DamageValue, this);
+		Execute_DealDamage(Target, DamageValue, this);
 		bCanAttack = false;
 	}
 }
