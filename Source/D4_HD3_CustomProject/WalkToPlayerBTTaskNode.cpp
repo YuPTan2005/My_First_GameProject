@@ -39,8 +39,6 @@ void UWalkToPlayerBTTaskNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8*
 	FVector TargetLocation = BlackboardComp->GetValueAsVector("PlayerPosition");
 	FVector CurrentLocation = ControlledPawn->GetActorLocation();
 	
-	float DistanceToPlayer = FVector::Dist(TargetLocation, CurrentLocation);
-	
 	if (FMath::Abs(TargetLocation.Z - CurrentLocation.Z) > 300.0f)
 	{
 		BlackboardComp->SetValueAsBool("FlyLaunch", true);
