@@ -80,6 +80,9 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<ACompanion> CompanionClass;
+	
+	UPROPERTY()
 	ACompanion* Companion;
 	
 	int UpgradeFactor = 3;

@@ -98,9 +98,32 @@ void AD4_HD3_CustomProjectCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (Companion)
+	if (CompanionClass)
 	{
+		float CharacterHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight() * 2.0f;
+		float CharacterRadius = GetCapsuleComponent()->GetScaledCapsuleRadius();
+		FVector CompanionSpawnLocation = GetActorLocation() + 
+				FVector(CharacterRadius + 100.0f, CharacterRadius + 100.0f, CharacterHeight - 50.0f);
+		FRotator CompanionSpawnRotation = GetActorRotation();
+		
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = GetInstigator();
+
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		
+		Companion = GetWorld()->SpawnActor<ACompanion>(
+			CompanionClass, 
+			CompanionSpawnLocation, 
+			CompanionSpawnRotation, 
+			SpawnParams
+		);
+		
 		Companion->SetCompanionOwner(this);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No Companion class attached to %s"), *GetName())
 	}
 }
 
@@ -242,7 +265,7 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 			FoodToAdd = PickupFood->Food;
 		}
 		
-		if (AddItem(FoodToAdd))
+		if (Companion && AddItem(FoodToAdd))
 		{
 			CollectibleFood.RemoveSingle(PickupFood);
 			Companion->RemoveCollectibleFood_Implementation(PickupFood);
@@ -558,9 +581,12 @@ void AD4_HD3_CustomProjectCharacter::SetDashCoolDown(float NewValue)
 void AD4_HD3_CustomProjectCharacter::DealDamage_Implementation(float DamageTook, AActor* DamagedBy)
 {
 	Health = FMath::Clamp(Health - DamageTook, 0, MaxHealth);
-	if (AEnemy* DamagedByEnemy = Cast<AEnemy>(DamagedBy))
+	if (Companion)
 	{
-		Companion->SetTargetEnemy(DamagedByEnemy);
+		if (AEnemy* DamagedByEnemy = Cast<AEnemy>(DamagedBy))
+		{
+			Companion->SetTargetEnemy(DamagedByEnemy);
+		}
 	}
 	
 	if (Health <= 0 && !bIsDead)
@@ -604,12 +630,13 @@ void AD4_HD3_CustomProjectCharacter::Attack()
 			
 		for (FHitResult HitResult : HitResults)
 		{
-			if (HitResult.GetActor() != this && !HitThisPunch.Contains(HitResult.GetActor()))
+			AActor* HitActor = HitResult.GetActor();
+			if (HitActor && HitActor != this && !HitThisPunch.Contains(HitActor))
 			{
-				HitThisPunch.Add(HitResult.GetActor());
-				if (HitResult.GetActor()->Implements<UDamageable>())
+				HitThisPunch.Add(HitActor);
+				if (HitActor->Implements<UDamageable>())
 				{
-					Cast<IDamageable>(HitResult.GetActor())->DealDamage(Damage, this);
+					Execute_DealDamage(HitActor, Damage, this);
 				}
 			}
 		}
@@ -619,7 +646,10 @@ void AD4_HD3_CustomProjectCharacter::Attack()
 			AActor* RandomActor = HitThisPunch[FMath::RandRange(0, HitThisPunch.Num()-1)];
 			if (AEnemy* RandomEnemy = Cast<AEnemy>(RandomActor))
 			{
-				Companion->SetTargetEnemy(RandomEnemy);
+				if (Companion)
+				{
+					Companion->SetTargetEnemy(RandomEnemy);
+				}
 			}
 		}
 	}
