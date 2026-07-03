@@ -196,11 +196,8 @@ void AEnemyAIController::UpdateAttackCheck()
 
 void AEnemyAIController::Attack()
 {
-	if (TargetPlayer && GetPawn() && ControlledCharacter)
+	if (TargetPlayer && ControlledCharacter)
 	{
-		if (IDamageable* DamageableTarget = Cast<IDamageable>(ControlledCharacter))
-		{
-			ControlledCharacter->Attack(DamageableTarget);
-		}
+		ControlledCharacter->Attack(TargetPlayer);
 	}
 }

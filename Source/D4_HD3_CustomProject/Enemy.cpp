@@ -103,7 +103,7 @@ void AEnemy::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 Previou
 	}
 }
 
-void AEnemy::DealDamage_Implementation(float DamageTaken, IAttackable* DamagedBy)
+void AEnemy::DealDamage_Implementation(float DamageTaken, AActor* DamagedBy)
 {
 	CurrentHealth = FMath::Clamp(CurrentHealth - DamageTaken, 0.0f, MaxHealth);
 	UpdateStatus();
@@ -176,7 +176,7 @@ void AEnemy::DisplayLandingMontage()
 	}
 }
 
-void AEnemy::Attack_Implementation(IDamageable* Target)
+void AEnemy::Attack(AActor* Target)
 {
 	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
 	{
@@ -188,7 +188,11 @@ void AEnemy::Attack_Implementation(IDamageable* Target)
 		{
 			AnimInstance->Montage_Play(FlyAttackMontage);
 		}
-		Target->DealDamage(DamageValue, this);
+	}
+	
+	if (Target->Implements<UDamageable>())
+	{
+		Cast<IDamageable>(Target)->DealDamage(DamageValue, this);
 		bCanAttack = false;
 	}
 }

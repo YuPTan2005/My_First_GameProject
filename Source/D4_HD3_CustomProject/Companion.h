@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Attackable.h"
 #include "Damageable.h"
 #include "Enemy.h"
 #include "FoodCollector.h"
@@ -15,8 +14,7 @@ class AD4_HD3_CustomProjectCharacter;
 UCLASS()
 class D4_HD3_CUSTOMPROJECT_API ACompanion : 
 	public ACharacter, 
-	public IFoodCollector, 
-	public IAttackable, 
+	public IFoodCollector,
 	public IDamageable
 {
 	GENERATED_BODY()
@@ -140,8 +138,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
-	virtual void DealDamage_Implementation(float DamageTaken, IAttackable* DamagedBy) override;
-	virtual void Attack_Implementation(IDamageable* Target) override;
+	virtual void DealDamage_Implementation(float DamageTaken, AActor* DamagedBy) override;
+	void Attack(AActor* Target);
 	
 	bool CollectFood();
 	

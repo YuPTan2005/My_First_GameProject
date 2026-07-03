@@ -70,7 +70,7 @@ void ACompanion::Dead()
 	Destroy();
 }
 
-void ACompanion::DealDamage_Implementation(float DamageTook, IAttackable* DamagedBy)
+void ACompanion::DealDamage_Implementation(float DamageTook, AActor* DamagedBy)
 {
 	CurrentHealth = FMath::Clamp(CurrentHealth - DamageTook, 0.0f, MaxHealth);
 	if (AEnemy* DamagedByEnemy = Cast<AEnemy>(DamagedBy))
@@ -100,7 +100,7 @@ void ACompanion::DealDamage_Implementation(float DamageTook, IAttackable* Damage
 	}
 }
 
-void ACompanion::Attack_Implementation(IDamageable* Target)
+void ACompanion::Attack(AActor* Target)
 {
 	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
 	{
@@ -118,8 +118,11 @@ void ACompanion::Attack_Implementation(IDamageable* Target)
 		UE_LOG(LogTemp, Warning, TEXT("%s doesn't have anim instance"), *GetName());
 	}
 	
-	Target->DealDamage(DamageValue, this);
-	AttackTimer = 0.0f;
+	if (Target->Implements<UDamageable>())
+	{
+		Cast<IDamageable>(Target)->DealDamage(DamageValue, this);
+		AttackTimer = 0.0f;
+	}
 }
 
 bool ACompanion::CollectFood()

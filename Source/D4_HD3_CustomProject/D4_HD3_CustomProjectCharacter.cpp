@@ -555,7 +555,7 @@ void AD4_HD3_CustomProjectCharacter::SetDashCoolDown(float NewValue)
 	DashCoolDown = NewValue;
 }
 
-void AD4_HD3_CustomProjectCharacter::DealDamage_Implementation(float DamageTook, IAttackable* DamagedBy)
+void AD4_HD3_CustomProjectCharacter::DealDamage_Implementation(float DamageTook, AActor* DamagedBy)
 {
 	Health = FMath::Clamp(Health - DamageTook, 0, MaxHealth);
 	if (AEnemy* DamagedByEnemy = Cast<AEnemy>(DamagedBy))
@@ -607,9 +607,9 @@ void AD4_HD3_CustomProjectCharacter::Attack()
 			if (HitResult.GetActor() != this && !HitThisPunch.Contains(HitResult.GetActor()))
 			{
 				HitThisPunch.Add(HitResult.GetActor());
-				if (IDamageable* HitEnemy = Cast<IDamageable>(HitResult.GetActor()))
+				if (HitResult.GetActor()->Implements<UDamageable>())
 				{
-					Attack_Implementation(HitEnemy);
+					Cast<IDamageable>(HitResult.GetActor())->DealDamage(Damage, this);
 				}
 			}
 		}
@@ -622,13 +622,5 @@ void AD4_HD3_CustomProjectCharacter::Attack()
 				Companion->SetTargetEnemy(RandomEnemy);
 			}
 		}
-	}
-}
-
-void AD4_HD3_CustomProjectCharacter::Attack_Implementation(IDamageable* Target)
-{
-	if (AEnemy* HitEnemy = Cast<AEnemy>(Target))
-	{
-		HitEnemy->DealDamage(Damage, this);
 	}
 }

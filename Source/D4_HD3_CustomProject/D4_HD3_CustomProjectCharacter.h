@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Attackable.h"
 #include "Companion.h"
 #include "D4_HD3_CustomProjectPlayerController.h"
 #include "Damageable.h"
@@ -34,8 +33,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 UCLASS(abstract)
 class AD4_HD3_CustomProjectCharacter : 
 	public ACharacter, 
-	public IFoodCollector, 
-	public IAttackable, 
+	public IFoodCollector,
 	public IDamageable
 {
 	GENERATED_BODY()
@@ -207,7 +205,7 @@ public:
 	UPROPERTY()
 	UDeathUI* DeathUI;
 	
-	virtual void DealDamage_Implementation(float DamageTaken, IAttackable* DamagedBy) override;
+	virtual void DealDamage_Implementation(float DamageTaken, AActor* DamagedBy) override;
 	
 	bool GetIsDead();
 	void SetIsDead(bool NewValue);
@@ -243,7 +241,6 @@ public:
 	UAnimMontage* AttackAnims;
 	
 	void Attack();
-	virtual void Attack_Implementation(IDamageable* Target) override;
 
 public:
 
