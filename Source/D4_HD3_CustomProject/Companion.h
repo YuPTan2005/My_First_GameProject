@@ -55,10 +55,10 @@ protected:
 	void OnSphereEndOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, 
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* SphereComponent;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY()
 	AD4_HD3_CustomProjectCharacter* CompanionOwner;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

@@ -34,17 +34,6 @@ void ACompanion::BeginPlay()
 	bIsDead = false;
 	bCanAttack = true;
 	bCanCollect = true;
-	
-	// Align the flying speed of companion with owner
-	if (CompanionOwner)
-	{
-		GetCharacterMovement()->MaxFlySpeed = CompanionOwner->GetCharacterMovement()->MaxFlySpeed;
-		GetCharacterMovement()->BrakingDecelerationFlying = CompanionOwner->GetCharacterMovement()->BrakingDecelerationFlying;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No owner attaching to: %s"), *GetName());
-	}
 }
 
 void ACompanion::OnSphereOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -120,7 +109,7 @@ void ACompanion::Attack(AActor* Target)
 	
 	if (Target->Implements<UDamageable>())
 	{
-		Cast<IDamageable>(Target)->DealDamage(DamageValue, this);
+		Execute_DealDamage(Target, DamageValue, this);
 		AttackTimer = 0.0f;
 	}
 }
@@ -146,7 +135,7 @@ bool ACompanion::CollectFood()
 			FoodToCollect = PickupFood->Food;
 		}
        
-		if (CompanionOwner->AddItem(FoodToCollect))
+		if (CompanionOwner && CompanionOwner->AddItem(FoodToCollect))
 		{
 			CollectibleFoodList.RemoveSingle(PickupFood);
 			PickupFoodList.RemoveSingle(PickupFood);
@@ -355,6 +344,10 @@ void ACompanion::SetCanCollect(bool NewValue)
 void ACompanion::SetCompanionOwner(AD4_HD3_CustomProjectCharacter* NewCompanionOwner)
 {
 	CompanionOwner = NewCompanionOwner;
+	
+	// Align the flying speed of companion with owner
+	GetCharacterMovement()->MaxFlySpeed = CompanionOwner->GetCharacterMovement()->MaxFlySpeed;
+	GetCharacterMovement()->BrakingDecelerationFlying = CompanionOwner->GetCharacterMovement()->BrakingDecelerationFlying;
 }
 
 // Called every frame
