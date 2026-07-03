@@ -115,6 +115,11 @@ void ACompanionAIController::CollectFood()
 	ControlledCharacter->CollectFood();
 }
 
+void ACompanionAIController::SetCompanionOwner(AD4_HD3_CustomProjectCharacter* NewCompanionOwner)
+{
+	CompanionOwner = NewCompanionOwner;
+}
+
 void ACompanionAIController::SetTargetEnemy(AEnemy* Enemy)
 {
 	TargetEnemy = Enemy;
@@ -131,25 +136,31 @@ void ACompanionAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 	
-	ControlledCharacter = Cast<ACompanion>(GetPawn());
+	ControlledCharacter = Cast<ACompanion>(InPawn);
 	
-	if (ControlledCharacter && ControlledCharacter->GetCompanionOwner())
+	if (ControlledCharacter && BehaviourTree)
 	{
-		CompanionOwner = ControlledCharacter->GetCompanionOwner();
-	}
-	
-	if (RunBehaviorTree(BehaviourTree))
-	{
-		BlackboardComponent = GetBlackboardComponent();
-		if (BlackboardComponent)
+		if (RunBehaviorTree(BehaviourTree))
 		{
-			BlackboardComponent->SetValueAsBool("CanAttack", false);
-			BlackboardComponent->SetValueAsBool("ChaseEnemy", false);
-			BlackboardComponent->SetValueAsBool("CanCollect", false);
-			BlackboardComponent->SetValueAsFloat("CollectRadius", ControlledCharacter->GetCollectRadius());
-			BlackboardComponent->SetValueAsFloat("AttackRadius", ControlledCharacter->GetAttackRadius());
-			BlackboardComponent->SetValueAsFloat("FollowRadius", ControlledCharacter->GetFollowRadius());
+			BlackboardComponent = GetBlackboardComponent();
+			if (BlackboardComponent)
+			{
+				BlackboardComponent->SetValueAsBool("CanAttack", false);
+				BlackboardComponent->SetValueAsBool("ChaseEnemy", false);
+				BlackboardComponent->SetValueAsBool("CanCollect", false);
+				BlackboardComponent->SetValueAsFloat("CollectRadius", ControlledCharacter->GetCollectRadius());
+				BlackboardComponent->SetValueAsFloat("AttackRadius", ControlledCharacter->GetAttackRadius());
+				BlackboardComponent->SetValueAsFloat("FollowRadius", ControlledCharacter->GetFollowRadius());
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Couldn't get blackboard component in %s"), *GetName())
+			}
 		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("BehaviourTree is not set in %s"), *GetName())
 	}
 }
 

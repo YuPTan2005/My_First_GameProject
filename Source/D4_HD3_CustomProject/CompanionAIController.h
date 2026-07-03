@@ -34,6 +34,7 @@ public:
 	void UpdateCollectible();
 	void CollectFood();
 	
+	void SetCompanionOwner(AD4_HD3_CustomProjectCharacter* NewCompanionOwner);
 	void SetTargetEnemy(AEnemy* Enemy);
 	void SetTargetFood(APickupFood* Food);
 	
