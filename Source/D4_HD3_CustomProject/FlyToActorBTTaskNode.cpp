@@ -10,66 +10,51 @@ UFlyToActorBTTaskNode::UFlyToActorBTTaskNode()
 {
 	bNotifyTick = true;
 	bCreateNodeInstance = true;
+	
+	TargetKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(UFlyToActorBTTaskNode, TargetKey));
+	AcceptanceRadius.AddFloatFilter(this, GET_MEMBER_NAME_CHECKED(UFlyToActorBTTaskNode, AcceptanceRadius));
 }
 
 void UFlyToActorBTTaskNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
-	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
-	AAIController* AIController = OwnerComp.GetAIOwner();
-
-	if (!BlackboardComp || !AIController || !AIController->GetPawn())
+	if (TargetKey.IsSet() && AcceptanceRadius.IsSet())
 	{
-		FinishLatentTask(OwnerComp, EBTNodeResult::Failed); 
-		return;
-	}
-	
-	if (APawn* ControlledPawn = AIController->GetPawn())
-	{
-		FVector TargetLocation = BlackboardComp->GetValueAsVector("PlayerPosition");
-		
-		FHitResult HitResult;
-		FCollisionObjectQueryParams ObjectQueryParams;
-		ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
-		FCollisionShape SphereShape = FCollisionShape::MakeSphere(100);
-		FCollisionQueryParams QueryParams;
-		QueryParams.AddIgnoredActor(ControlledPawn);
-	
-		const FRotator Rotation = ControlledPawn->GetControlRotation();
-		const FVector ForwardVector = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X) * 100.0f;
-	
-		bool bHitSuccess = GetWorld()->SweepSingleByObjectType(
-			HitResult,
-			ControlledPawn->GetActorLocation(),
-			ForwardVector + ControlledPawn->GetActorLocation(),
-			FQuat::Identity,
-			ObjectQueryParams,
-			SphereShape,
-			QueryParams
-			);
-		
-		if (bHitSuccess && HitResult.GetActor())
-		{
-			if (HitResult.GetActor()->ActorHasTag("Player"))
-			{
-				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-				return;
-			}
-		}
-
+		FVector TargetLocation = BlackboardComponent->GetValueAsVector(TargetKey.SelectedKeyName);
 		FVector CurrentLocation = ControlledPawn->GetActorLocation();
+		float Radius = BlackboardComponent->GetValueAsFloat(AcceptanceRadius.SelectedKeyName);
+	
+		if (FVector::Dist(CurrentLocation, TargetLocation) <= Radius)
+		{
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			return;
+		}
+	
 		FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(CurrentLocation, TargetLocation);
-		
+	
 		FRotator NewRotation = FMath::RInterpTo(ControlledPawn->GetActorRotation(), LookRotation, DeltaSeconds, 10.0f);
 		ControlledPawn->SetActorRotation(NewRotation);
-		
+	
 		const FRotator PitchYawRotation(LookRotation.Pitch, LookRotation.Yaw, 0);
 		const FVector NewForwardVector = FRotationMatrix(PitchYawRotation).GetUnitAxis(EAxis::X);
 
 		ControlledPawn->AddMovementInput(NewForwardVector);
 	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("TargetKey or Acceptance Radius is not set in FlyToActor Node in %s"), *OwnerComp.GetName());
+	}
 }
 
 EBTNodeResult::Type UFlyToActorBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
+	BlackboardComponent = OwnerComp.GetBlackboardComponent();
+	AIController = Cast<ACompanionAIController>(OwnerComp.GetAIOwner());
+	ControlledPawn = Cast<ACompanion>(AIController->GetPawn());
+	
+	if (!BlackboardComponent || !AIController || !ControlledPawn)
+	{
+		return EBTNodeResult::Failed;
+	}
+	
 	return EBTNodeResult::InProgress;
 }
