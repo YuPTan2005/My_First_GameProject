@@ -34,6 +34,8 @@ void ACompanion::BeginPlay()
 	bIsDead = false;
 	bCanAttack = true;
 	bCanCollect = true;
+	
+	GetCharacterMovement()->SetMovementMode(MOVE_Flying);
 }
 
 void ACompanion::OnSphereOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -348,6 +350,11 @@ void ACompanion::SetCompanionOwner(AD4_HD3_CustomProjectCharacter* NewCompanionO
 	// Align the flying speed of companion with owner
 	GetCharacterMovement()->MaxFlySpeed = CompanionOwner->GetCharacterMovement()->MaxFlySpeed;
 	GetCharacterMovement()->BrakingDecelerationFlying = CompanionOwner->GetCharacterMovement()->BrakingDecelerationFlying;
+	
+	if (ACompanionAIController* AIController = Cast<ACompanionAIController>(GetController()))
+	{
+		AIController->SetCompanionOwner(CompanionOwner);
+	}
 }
 
 // Called every frame
