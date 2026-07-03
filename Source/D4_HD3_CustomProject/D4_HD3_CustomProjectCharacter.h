@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Attackable.h"
 #include "Companion.h"
 #include "D4_HD3_CustomProjectPlayerController.h"
+#include "Damageable.h"
 #include "DeathUI.h"
 #include "FoodCollector.h"
 #include "InventoryActorComponent.h"
@@ -30,7 +32,11 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
  *  Implements a controllable orbiting camera
  */
 UCLASS(abstract)
-class AD4_HD3_CustomProjectCharacter : public ACharacter, public IFoodCollector
+class AD4_HD3_CustomProjectCharacter : 
+	public ACharacter, 
+	public IFoodCollector, 
+	public IAttackable, 
+	public IDamageable
 {
 	GENERATED_BODY()
 
@@ -201,7 +207,7 @@ public:
 	UPROPERTY()
 	UDeathUI* DeathUI;
 	
-	void DealDamage(float DamageTook);
+	virtual void DealDamage_Implementation(float DamageTaken, IAttackable* DamagedBy) override;
 	
 	bool GetIsDead();
 	void SetIsDead(bool NewValue);
@@ -237,6 +243,7 @@ public:
 	UAnimMontage* AttackAnims;
 	
 	void Attack();
+	virtual void Attack_Implementation(IDamageable* Target) override;
 
 public:
 

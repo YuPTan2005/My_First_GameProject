@@ -555,9 +555,13 @@ void AD4_HD3_CustomProjectCharacter::SetDashCoolDown(float NewValue)
 	DashCoolDown = NewValue;
 }
 
-void AD4_HD3_CustomProjectCharacter::DealDamage(float DamageTook)
+void AD4_HD3_CustomProjectCharacter::DealDamage_Implementation(float DamageTook, IAttackable* DamagedBy)
 {
 	Health = FMath::Clamp(Health - DamageTook, 0, MaxHealth);
+	if (AEnemy* DamagedByEnemy = Cast<AEnemy>(DamagedBy))
+	{
+		Companion->SetTargetEnemy(DamagedByEnemy);
+	}
 	
 	if (Health <= 0 && !bIsDead)
 	{
@@ -578,7 +582,16 @@ void AD4_HD3_CustomProjectCharacter::Attack()
 				AnimInstance->Montage_Play(AttackAnims);
 				AnimInstance->Montage_JumpToSection(AttackAnims->GetSectionName(AnimIndex), AttackAnims);
 			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("%s doesn't have attack montage"), *GetName());
+			}
 		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("%s doesn't have anim instance"), *GetName());
+		}	
+		
 		
 		TArray<FHitResult> HitResults;
 		const FVector Start = GetActorLocation();
@@ -594,12 +607,28 @@ void AD4_HD3_CustomProjectCharacter::Attack()
 			if (HitResult.GetActor() != this && !HitThisPunch.Contains(HitResult.GetActor()))
 			{
 				HitThisPunch.Add(HitResult.GetActor());
-				AEnemy* HitEnemy = Cast<AEnemy>(HitResult.GetActor());
-				if (HitEnemy)
+				if (IDamageable* HitEnemy = Cast<IDamageable>(HitResult.GetActor()))
 				{
-					HitEnemy->DealDamage(Damage);
+					Attack_Implementation(HitEnemy);
 				}
 			}
 		}
+		
+		if (!HitThisPunch.IsEmpty())
+		{
+			AActor* RandomActor = HitThisPunch[FMath::RandRange(0, HitThisPunch.Num()-1)];
+			if (AEnemy* RandomEnemy = Cast<AEnemy>(RandomActor))
+			{
+				Companion->SetTargetEnemy(RandomEnemy);
+			}
+		}
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::Attack_Implementation(IDamageable* Target)
+{
+	if (AEnemy* HitEnemy = Cast<AEnemy>(Target))
+	{
+		HitEnemy->DealDamage(Damage, this);
 	}
 }
