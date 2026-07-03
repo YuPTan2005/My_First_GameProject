@@ -20,9 +20,7 @@ class D4_HD3_CUSTOMPROJECT_API ACompanionAIController : public AAIController
 public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
-	
-	UPROPERTY(EditAnywhere)
-	UBlackboardData* AIBlackboard;
+
 	UPROPERTY(EditAnywhere)
 	UBehaviorTree* BehaviourTree;
 	UPROPERTY()
@@ -40,7 +38,6 @@ public:
 	void SetTargetFood(APickupFood* Food);
 	
 protected:
-	
 	UPROPERTY()
 	ACompanion* ControlledCharacter;
 	UPROPERTY()
@@ -49,6 +46,8 @@ protected:
 	AEnemy* TargetEnemy;
 	UPROPERTY()
 	APickupFood* TargetFood;
+	
+	virtual void OnPossess(APawn* InPawn) override;
 	
 	virtual FRotator GetControlRotation() const override;
 	

@@ -9,20 +9,6 @@ void ACompanionAIController::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	ControlledCharacter = Cast<ACompanion>(GetPawn());
-	
-	if (ControlledCharacter && ControlledCharacter->GetCompanionOwner())
-	{
-		CompanionOwner = ControlledCharacter->GetCompanionOwner();
-	}
-	UseBlackboard(AIBlackboard, BlackboardComponent);
-	RunBehaviorTree(BehaviourTree);
-	BlackboardComponent->SetValueAsBool("CanAttack", false);
-	BlackboardComponent->SetValueAsBool("ChaseEnemy", false);
-	BlackboardComponent->SetValueAsBool("CanCollect", false);
-	BlackboardComponent->SetValueAsFloat("CollectRadius", ControlledCharacter->GetCollectRadius());
-	BlackboardComponent->SetValueAsFloat("AttackRadius", ControlledCharacter->GetAttackRadius());
-	BlackboardComponent->SetValueAsFloat("FollowRadius", ControlledCharacter->GetFollowRadius());
 }
 
 void ACompanionAIController::Tick(float DeltaSeconds)
@@ -139,6 +125,32 @@ void ACompanionAIController::SetTargetFood(APickupFood* Food)
 {
 	TargetFood = Food;
 	BlackboardComponent->SetValueAsBool("GoToFoodLocation", true);
+}
+
+void ACompanionAIController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+	
+	ControlledCharacter = Cast<ACompanion>(GetPawn());
+	
+	if (ControlledCharacter && ControlledCharacter->GetCompanionOwner())
+	{
+		CompanionOwner = ControlledCharacter->GetCompanionOwner();
+	}
+	
+	if (RunBehaviorTree(BehaviourTree))
+	{
+		BlackboardComponent = GetBlackboardComponent();
+		if (BlackboardComponent)
+		{
+			BlackboardComponent->SetValueAsBool("CanAttack", false);
+			BlackboardComponent->SetValueAsBool("ChaseEnemy", false);
+			BlackboardComponent->SetValueAsBool("CanCollect", false);
+			BlackboardComponent->SetValueAsFloat("CollectRadius", ControlledCharacter->GetCollectRadius());
+			BlackboardComponent->SetValueAsFloat("AttackRadius", ControlledCharacter->GetAttackRadius());
+			BlackboardComponent->SetValueAsFloat("FollowRadius", ControlledCharacter->GetFollowRadius());
+		}
+	}
 }
 
 FRotator ACompanionAIController::GetControlRotation() const
