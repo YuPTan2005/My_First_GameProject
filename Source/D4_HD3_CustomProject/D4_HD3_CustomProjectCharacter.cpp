@@ -103,7 +103,7 @@ void AD4_HD3_CustomProjectCharacter::BeginPlay()
 		float CharacterHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight() * 2.0f;
 		float CharacterRadius = GetCapsuleComponent()->GetScaledCapsuleRadius();
 		FVector CompanionSpawnLocation = GetActorLocation() + 
-				FVector(CharacterRadius + 100.0f, CharacterRadius + 100.0f, CharacterHeight - 50.0f);
+				FVector(CharacterRadius + 100.0f, CharacterRadius + 100.0f, CharacterHeight - 150.0f);
 		FRotator CompanionSpawnRotation = GetActorRotation();
 		
 		FActorSpawnParameters SpawnParams;
@@ -623,19 +623,22 @@ void AD4_HD3_CustomProjectCharacter::Attack()
 		const FVector Start = GetActorLocation();
 		const FVector End = Start + GetActorForwardVector() * AttackDistance;
 		const FCollisionShape CubeShape = FCollisionShape::MakeBox(FVector(AttackDistance));
+		FCollisionQueryParams TraceParams;
+		TraceParams.AddIgnoredActor(this);
+		TraceParams.AddIgnoredActor(Companion);
 		const bool bSweep = GetWorld()->SweepMultiByChannel(HitResults, End, End, GetActorQuat(), 
-			ECC_WorldDynamic, CubeShape);
+			ECC_WorldDynamic, CubeShape, TraceParams);
 
 		TArray<AActor*> HitThisPunch;
 			
 		for (FHitResult HitResult : HitResults)
 		{
 			AActor* HitActor = HitResult.GetActor();
-			if (HitActor && HitActor != this && !HitThisPunch.Contains(HitActor))
+			if (HitActor && !HitThisPunch.Contains(HitActor))
 			{
-				HitThisPunch.Add(HitActor);
 				if (HitActor->Implements<UDamageable>())
 				{
+					HitThisPunch.Add(HitActor);
 					Execute_DealDamage(HitActor, Damage, this);
 				}
 			}
