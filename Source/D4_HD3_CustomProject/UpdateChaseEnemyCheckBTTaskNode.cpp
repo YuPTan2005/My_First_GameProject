@@ -5,15 +5,13 @@
 
 #include "CompanionAIController.h"
 
-EBTNodeResult::Type UUpdateChaseEnemyCheckBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+void UUpdateChaseEnemyCheckBTTaskNode::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory,
+	float DeltaSeconds)
 {
-	UBehaviorTreeComponent* TreeComponent = &OwnerComp;
-	ACompanionAIController* AIController = Cast<ACompanionAIController>(TreeComponent->GetOwner());
-	if (AIController)
+	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
+	
+	if (ACompanionAIController* AIController = Cast<ACompanionAIController>(OwnerComp.GetAIOwner()))
 	{
 		AIController->UpdateChaseEnemyCheck();
-		return EBTNodeResult::Succeeded;
 	}
-	
-	return EBTNodeResult::Failed;
 }
