@@ -11,17 +11,17 @@ UFlyToActorBTTaskNode::UFlyToActorBTTaskNode()
 	bNotifyTick = true;
 	bCreateNodeInstance = true;
 	
-	TargetKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(UFlyToActorBTTaskNode, TargetKey));
+	TargetKey.AddObjectFilter(this, GET_MEMBER_NAME_CHECKED(UFlyToActorBTTaskNode, TargetKey), AActor::StaticClass());
 	AcceptanceRadius.AddFloatFilter(this, GET_MEMBER_NAME_CHECKED(UFlyToActorBTTaskNode, AcceptanceRadius));
 }
 
 void UFlyToActorBTTaskNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
-	FVector TargetLocation = BlackboardComponent->GetValueAsVector(TargetKey.SelectedKeyName);
+	FVector TargetLocation = TargetPawn->GetActorLocation();
 	FVector CurrentLocation = ControlledPawn->GetActorLocation();
 	float Radius = BlackboardComponent->GetValueAsFloat(AcceptanceRadius.SelectedKeyName);
 
-	if (FVector::Dist(TargetLocation, CurrentLocation) <= Radius)
+	if (FVector::Dist(TargetLocation + TargetPawnRadius, CurrentLocation + ControlledPawnRadius) <= Radius)
 	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		return;
@@ -44,17 +44,22 @@ EBTNodeResult::Type UFlyToActorBTTaskNode::ExecuteTask(UBehaviorTreeComponent& O
 		return EBTNodeResult::Failed;
 	}
 	
-	ControlledPawn = Cast<ACompanion>(AIController->GetPawn());
-	if (!ControlledPawn)
-	{
-		return EBTNodeResult::Failed;
-	}
-	
 	if (TargetKey.SelectedKeyName.IsNone() || AcceptanceRadius.SelectedKeyName.IsNone())
 	{
 		UE_LOG(LogTemp, Error, TEXT("TargetKey or Acceptance Radius is not set in FlyToActor Node in %s"), *OwnerComp.GetName());
 		return EBTNodeResult::Failed;
 	}
+	
+	ControlledPawn = AIController->GetPawn();
+	UObject* TargetObject = BlackboardComponent->GetValueAsObject(TargetKey.SelectedKeyName);
+	TargetPawn = Cast<APawn>(TargetObject);
+	if (!ControlledPawn || !TargetPawn)
+	{
+		return EBTNodeResult::Failed;
+	}
+	
+	TargetPawnRadius = TargetPawn->GetRootComponent()->Bounds.SphereRadius;
+	ControlledPawnRadius = ControlledPawn->GetRootComponent()->Bounds.SphereRadius;
 	
 	return EBTNodeResult::InProgress;
 }

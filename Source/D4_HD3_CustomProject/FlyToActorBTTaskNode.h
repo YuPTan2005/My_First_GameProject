@@ -26,12 +26,14 @@ protected:
 	FBlackboardKeySelector AcceptanceRadius;
 	
 	UPROPERTY()
-	AActor* TargetActor;
+	APawn* TargetPawn;
+	float TargetPawnRadius;
 	
 	UPROPERTY()
 	UBlackboardComponent* BlackboardComponent;
 	UPROPERTY()
-	ACompanion* ControlledPawn;
+	APawn* ControlledPawn;
+	float ControlledPawnRadius;
 	
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
