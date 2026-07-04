@@ -19,7 +19,6 @@ ACompanion::ACompanion()
 	GetCharacterMovement()->NavAgentProps.bCanFly = true;
 	
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Food detect area"));
-	SphereComponent->SetSphereRadius(CollectRadius);
 	SphereComponent->SetupAttachment(RootComponent);
 	
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ACompanion::OnSphereOverlap);
@@ -36,6 +35,10 @@ void ACompanion::BeginPlay()
 	bCanCollect = true;
 	
 	GetCharacterMovement()->SetMovementMode(MOVE_Flying);
+	if (SphereComponent)
+	{
+		SphereComponent->SetSphereRadius(CollectRadius);
+	}
 }
 
 void ACompanion::OnSphereOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -388,7 +391,7 @@ void ACompanion::Tick(float DeltaTime)
 	else
 	{
 		AttackTimer += DeltaTime;
-		bCanCollect = false;
+		bCanAttack = false;
 	}
 }
 
