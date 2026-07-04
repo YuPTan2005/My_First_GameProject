@@ -15,15 +15,6 @@ void ACompanionAIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	
-	if (CompanionOwner && BlackboardComponent)
-	{
-		BlackboardComponent->SetValueAsVector("OwnerLocation", CompanionOwner->GetActorLocation());
-	}
-	
-	if (TargetEnemy && BlackboardComponent && BlackboardComponent->GetValueAsBool("ChaseEnemy"))
-	{
-		BlackboardComponent->SetValueAsVector("EnemyLocation", TargetEnemy->GetActorLocation());
-	}
 }
 
 void ACompanionAIController::UpdateChaseEnemyCheck()
@@ -39,6 +30,7 @@ void ACompanionAIController::UpdateChaseEnemyCheck()
 		{
 			TargetEnemy = nullptr;
 			BlackboardComponent->SetValueAsBool("ChaseEnemy", false);
+			BlackboardComponent->SetValueAsObject("Enemy", nullptr);
 		}
 	}
 	else
@@ -51,7 +43,7 @@ void ACompanionAIController::UpdateAttackCheck_Implementation()
 {
 	if (TargetEnemy)
 	{
-		if (FVector::Dist(ControlledCharacter->GetActorLocation(), CompanionOwner->GetActorLocation()) 
+		if (FVector::Dist(TargetEnemy->GetActorLocation(), ControlledCharacter->GetActorLocation()) 
 				<= ControlledCharacter->GetAttackDistance() && ControlledCharacter->CanAttack())
 		{
 			BlackboardComponent->SetValueAsBool("CanAttack", true);
@@ -82,19 +74,18 @@ void ACompanionAIController::UpdateMoveToTargetFoodCheck()
 		if (BlackboardComponent && FVector::Dist(ControlledCharacter->GetActorLocation(), 
 				TargetFood->GetActorLocation()) <= ControlledCharacter->GetCollectDistance())
 		{
-			BlackboardComponent->SetValueAsVector("FoodLocation", 
-				ControlledCharacter->GetTargetPickupFood()->GetActorLocation());
-			BlackboardComponent->SetValueAsBool("GoToFoodLocation", true);
+			BlackboardComponent->SetValueAsBool("GoToFood", true);
 		}
 		else
 		{
 			TargetFood = nullptr;
-			BlackboardComponent->SetValueAsBool("GoToFoodLocation", false);
+			BlackboardComponent->SetValueAsBool("GoToFood", false);
+			BlackboardComponent->SetValueAsObject("Food", nullptr);
 		}
 	}
 	else
 	{
-		BlackboardComponent->SetValueAsBool("GoToFoodLocation", false);
+		BlackboardComponent->SetValueAsBool("GoToFood", false);
 	}
 }
 
@@ -118,18 +109,21 @@ void ACompanionAIController::CollectFood()
 void ACompanionAIController::SetCompanionOwner(AD4_HD3_CustomProjectCharacter* NewCompanionOwner)
 {
 	CompanionOwner = NewCompanionOwner;
+	BlackboardComponent->SetValueAsObject("Owner", CompanionOwner);
 }
 
 void ACompanionAIController::SetTargetEnemy(AEnemy* Enemy)
 {
 	TargetEnemy = Enemy;
 	BlackboardComponent->SetValueAsBool("ChaseEnemy", true);
+	BlackboardComponent->SetValueAsObject("Enemy", Enemy);
 }
 
 void ACompanionAIController::SetTargetFood(APickupFood* Food)
 {
 	TargetFood = Food;
-	BlackboardComponent->SetValueAsBool("GoToFoodLocation", true);
+	BlackboardComponent->SetValueAsBool("GoToFood", true);
+	BlackboardComponent->SetValueAsObject("Food", TargetFood);
 }
 
 void ACompanionAIController::OnPossess(APawn* InPawn)
@@ -148,9 +142,9 @@ void ACompanionAIController::OnPossess(APawn* InPawn)
 				BlackboardComponent->SetValueAsBool("CanAttack", false);
 				BlackboardComponent->SetValueAsBool("ChaseEnemy", false);
 				BlackboardComponent->SetValueAsBool("CanCollect", false);
-				BlackboardComponent->SetValueAsFloat("CollectRadius", ControlledCharacter->GetCollectRadius());
-				BlackboardComponent->SetValueAsFloat("AttackRadius", ControlledCharacter->GetAttackRadius());
-				BlackboardComponent->SetValueAsFloat("FollowRadius", ControlledCharacter->GetFollowRadius());
+				BlackboardComponent->SetValueAsFloat("CollectDistance", ControlledCharacter->GetCollectDistance());
+				BlackboardComponent->SetValueAsFloat("AttackDistance", ControlledCharacter->GetAttackDistance());
+				BlackboardComponent->SetValueAsFloat("FollowDistance", ControlledCharacter->GetFollowRadius());
 			}
 			else
 			{
