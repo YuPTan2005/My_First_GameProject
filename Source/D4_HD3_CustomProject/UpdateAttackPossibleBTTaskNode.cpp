@@ -8,11 +8,10 @@
 
 EBTNodeResult::Type UUpdateAttackPossibleBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	UBehaviorTreeComponent* TreeComponent = &OwnerComp;
-	AEnemyAIController* Controller = Cast<AEnemyAIController>(TreeComponent->GetOwner());
-	if (Controller)
+	AAIController* AIController = OwnerComp.GetAIOwner();
+	if (AIController && AIController->Implements<UAttackBTInterface>())
 	{
-		Controller->UpdateAttackCheck();
+		IAttackBTInterface::Execute_UpdateAttackCheck(AIController);
 		return EBTNodeResult::Succeeded;
 	}
 	

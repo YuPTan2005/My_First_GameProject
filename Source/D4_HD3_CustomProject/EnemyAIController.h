@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "AttackBTInterface.h"
 #include "Enemy.h"
 #include "NavigationSystem.h"
 #include "Perception/AISenseConfig_Sight.h"
@@ -15,7 +16,7 @@
  * 
  */
 UCLASS()
-class D4_HD3_CUSTOMPROJECT_API AEnemyAIController : public AAIController
+class D4_HD3_CUSTOMPROJECT_API AEnemyAIController : public AAIController, public IAttackBTInterface
 {
 	GENERATED_BODY()
 	
@@ -68,7 +69,7 @@ public:
 	float EnemyIncreasedWalkSpeed = 500;
 	float EnemyIncreasedFlySpeed = 600;
 	
-	void UpdateAttackCheck();
-	void Attack();
+	virtual void UpdateAttackCheck_Implementation() override;
+	virtual void Attack_Implementation() override;
 	
 };

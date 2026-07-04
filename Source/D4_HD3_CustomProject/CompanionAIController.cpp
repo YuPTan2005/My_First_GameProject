@@ -47,7 +47,7 @@ void ACompanionAIController::UpdateChaseEnemyCheck()
 	}
 }
 
-void ACompanionAIController::UpdateAttackCheck()
+void ACompanionAIController::UpdateAttackCheck_Implementation()
 {
 	if (TargetEnemy)
 	{
@@ -67,7 +67,7 @@ void ACompanionAIController::UpdateAttackCheck()
 	}
 }
 
-void ACompanionAIController::Attack()
+void ACompanionAIController::Attack_Implementation()
 {
 	if (TargetEnemy && ControlledCharacter)
 	{

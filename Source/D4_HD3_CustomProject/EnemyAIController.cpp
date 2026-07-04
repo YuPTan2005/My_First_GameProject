@@ -174,7 +174,7 @@ void AEnemyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus St
 	}
 }
 
-void AEnemyAIController::UpdateAttackCheck()
+void AEnemyAIController::UpdateAttackCheck_Implementation()
 {
 	BlackboardComponent->SetValueAsBool("AttackPossible", false);
 	if (TargetPlayer && GetPawn())
@@ -194,7 +194,7 @@ void AEnemyAIController::UpdateAttackCheck()
 	}
 }
 
-void AEnemyAIController::Attack()
+void AEnemyAIController::Attack_Implementation()
 {
 	if (TargetPlayer && ControlledCharacter)
 	{

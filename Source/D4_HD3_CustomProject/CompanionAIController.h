@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "AttackBTInterface.h"
 #include "Companion.h"
 #include "D4_HD3_CustomProjectCharacter.h"
 #include "Enemy.h"
@@ -13,7 +14,7 @@
  * 
  */
 UCLASS()
-class D4_HD3_CUSTOMPROJECT_API ACompanionAIController : public AAIController
+class D4_HD3_CUSTOMPROJECT_API ACompanionAIController : public AAIController, public IAttackBTInterface
 {
 	GENERATED_BODY()
 	
@@ -27,8 +28,8 @@ public:
 	UBlackboardComponent* BlackboardComponent;
 	
 	void UpdateChaseEnemyCheck();
-	void UpdateAttackCheck();
-	void Attack();
+	virtual void UpdateAttackCheck_Implementation() override;
+	virtual void Attack_Implementation() override;
 	
 	void UpdateMoveToTargetFoodCheck();
 	void UpdateCollectible();
