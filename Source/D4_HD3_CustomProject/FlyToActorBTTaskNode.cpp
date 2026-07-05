@@ -20,16 +20,15 @@ void UFlyToActorBTTaskNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
 	FVector TargetLocation = TargetActor->GetActorLocation();
 	FVector CurrentLocation = ControlledPawn->GetActorLocation();
 	float Radius = BlackboardComponent->GetValueAsFloat(AcceptanceRadius.SelectedKeyName);
+	
+	FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(CurrentLocation, TargetLocation);
+	ControlledPawn->SetActorRotation(LookRotation);
 
 	if (FVector::Dist(TargetLocation, CurrentLocation) - TargetPawnRadius - ControlledPawnRadius <= Radius)
 	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		return;
 	}
-
-	FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(CurrentLocation, TargetLocation);
-	FRotator NewRotation = FMath::RInterpTo(ControlledPawn->GetActorRotation(), LookRotation, DeltaSeconds, 10.0f);
-	ControlledPawn->SetActorRotation(NewRotation);
 
 	FVector MoveDirection = ControlledPawn->GetActorForwardVector();
 	ControlledPawn->AddMovementInput(MoveDirection, 1.0f);
