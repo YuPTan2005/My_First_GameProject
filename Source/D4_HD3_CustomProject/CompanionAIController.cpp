@@ -4,6 +4,7 @@
 #include "CompanionAIController.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/CapsuleComponent.h"
 
 void ACompanionAIController::BeginPlay()
 {
@@ -43,8 +44,12 @@ void ACompanionAIController::UpdateAttackCheck_Implementation()
 {
 	if (TargetEnemy)
 	{
-		if (FVector::Dist(TargetEnemy->GetActorLocation(), ControlledCharacter->GetActorLocation()) 
-				<= ControlledCharacter->GetAttackDistance() && ControlledCharacter->CanAttack())
+		float TargetEnemyRadius = TargetEnemy->GetCapsuleComponent()->GetScaledCapsuleRadius();
+		float ControlledCharacterRadius = ControlledCharacter->GetCapsuleComponent()->GetScaledCapsuleRadius();
+		
+		if (FVector::Dist(TargetEnemy->GetActorLocation(), ControlledCharacter->GetActorLocation()) - 
+				TargetEnemyRadius - ControlledCharacterRadius <= ControlledCharacter->GetAttackDistance() 
+			&& ControlledCharacter->CanAttack())
 		{
 			BlackboardComponent->SetValueAsBool("CanAttack", true);
 		}
