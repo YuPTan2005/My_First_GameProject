@@ -14,6 +14,14 @@ class UDamageable : public UInterface
 	GENERATED_BODY()
 };
 
+UENUM(BlueprintType)
+enum class EGameTeam : uint8
+{
+	Players,
+	Enemies,
+	Neutrals
+};
+
 /**
  * 
  */
@@ -25,5 +33,11 @@ class D4_HD3_CUSTOMPROJECT_API IDamageable
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void DealDamage(float DamageTaken, AActor* DamagedBy);
+	
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	bool IsDead();
+	
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	EGameTeam GetTeam();
 	
 };
