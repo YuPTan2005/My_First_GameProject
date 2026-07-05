@@ -28,15 +28,15 @@ protected:
 	virtual void BeginPlay() override;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Companion")
-	float FollowRadius = 500.0f;
+	float FollowRadius = 400.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Companion")
-	float AttackRadius = 1250.0f;
+	float AttackRadius = 1500.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Companion")
 	float AttackDistance = 200.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Companion")
-	float CollectRadius = 1250.0f;
+	float CollectRadius = 1500.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Companion")
-	float CollectDistance = 150.0f;
+	float CollectDistance = 200.0f;
 	
 	UPROPERTY()
 	TArray<APickupFood*> PickupFoodList;

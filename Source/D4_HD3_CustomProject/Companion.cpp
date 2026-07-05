@@ -155,6 +155,9 @@ bool ACompanion::CollectFood()
 			TargetPickupFood = nullptr; 
           
 			PickupFood->Collected();
+			
+			CollectTimer = 0.0f;
+			
 			return true;
 		}
 	}
