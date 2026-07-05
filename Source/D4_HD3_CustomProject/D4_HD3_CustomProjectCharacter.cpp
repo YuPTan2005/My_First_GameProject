@@ -518,7 +518,7 @@ void AD4_HD3_CustomProjectCharacter::ToggleInventory()
 	}
 }
 
-bool AD4_HD3_CustomProjectCharacter::GetIsDead()
+bool AD4_HD3_CustomProjectCharacter::IsDead_Implementation()
 {
 	return bIsDead;
 }
@@ -593,6 +593,11 @@ void AD4_HD3_CustomProjectCharacter::DealDamage_Implementation(float DamageTook,
 	{
 		Dead();
 	}
+}
+
+EGameTeam AD4_HD3_CustomProjectCharacter::GetTeam_Implementation()
+{
+	return EGameTeam::Players;
 }
 
 void AD4_HD3_CustomProjectCharacter::Attack()

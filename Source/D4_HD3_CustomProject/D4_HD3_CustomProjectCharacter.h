@@ -209,8 +209,9 @@ public:
 	UDeathUI* DeathUI;
 	
 	virtual void DealDamage_Implementation(float DamageTaken, AActor* DamagedBy) override;
+	virtual EGameTeam GetTeam_Implementation() override;
 	
-	bool GetIsDead();
+	virtual bool IsDead_Implementation() override;
 	void SetIsDead(bool NewValue);
 	
 	bool GetIsStarvationDecrement();
