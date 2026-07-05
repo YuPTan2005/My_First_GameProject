@@ -21,7 +21,7 @@ void UFlyToActorBTTaskNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
 	FVector CurrentLocation = ControlledPawn->GetActorLocation();
 	float Radius = BlackboardComponent->GetValueAsFloat(AcceptanceRadius.SelectedKeyName);
 
-	if (FVector::Dist(TargetLocation + TargetPawnRadius, CurrentLocation + ControlledPawnRadius) <= Radius)
+	if (FVector::Dist(TargetLocation, CurrentLocation) - TargetPawnRadius - ControlledPawnRadius <= Radius)
 	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		return;
