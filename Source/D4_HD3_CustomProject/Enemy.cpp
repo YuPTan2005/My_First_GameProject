@@ -130,6 +130,16 @@ void AEnemy::DealDamage_Implementation(float DamageTaken, AActor* DamagedBy)
 	}
 }
 
+bool AEnemy::IsDead_Implementation()
+{
+	return bIsDead;
+}
+
+EGameTeam AEnemy::GetTeam_Implementation()
+{
+	return EGameTeam::Enemies;
+}
+
 void AEnemy::UpdateStatus()
 {
 	if (StatusWidget)

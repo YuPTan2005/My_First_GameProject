@@ -43,6 +43,8 @@ public:
 	float DamageValue = 10;
 
 	virtual void DealDamage_Implementation(float DamageTaken, AActor* DamagedBy) override;
+	virtual bool IsDead_Implementation() override;
+	virtual EGameTeam GetTeam_Implementation() override;
 	
 	UPROPERTY()
 	UEnemyStatusComponent* StatusComponent;
