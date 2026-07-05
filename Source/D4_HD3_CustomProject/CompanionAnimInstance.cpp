@@ -18,6 +18,6 @@ void UCompanionAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		Speed = Companion->GetVelocity().Length();
 		bCanAttack = Companion->CanAttack();
-		bIsDead = Companion->IsDead();
+		bIsDead = IDamageable::Execute_IsDead(Companion);
 	}
 }
