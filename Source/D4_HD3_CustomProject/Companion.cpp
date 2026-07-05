@@ -46,7 +46,8 @@ void ACompanion::OnSphereOverlap(UPrimitiveComponent* OverlapComp, AActor* Other
 {
 	if (APickupFood* PickupFood = Cast<APickupFood>(OtherActor))
 	{
-		PickupFoodList.Add(PickupFood);
+		PickupFoodList.AddUnique(PickupFood);
+		SelectNextFoodTarget();
 	}
 }
 
@@ -55,7 +56,13 @@ void ACompanion::OnSphereEndOverlap(UPrimitiveComponent* OverlapComp, AActor* Ot
 {
 	if (APickupFood* PickupFood = Cast<APickupFood>(OtherActor))
 	{
-		PickupFoodList.RemoveSingle(PickupFood);
+		if (TargetPickupFood == PickupFood)
+		{
+			TargetPickupFood = nullptr;
+			Cast<ACompanionAIController>(GetController())->ClearFoodTarget();
+			SelectNextFoodTarget();
+		}
+		PickupFoodList.Remove(PickupFood);
 	}
 }
 
@@ -151,12 +158,12 @@ bool ACompanion::CollectFood()
 			PickupFoodList.RemoveSingle(PickupFood);
 			
 			CompanionOwner->RemoveCollectibleFood_Implementation(PickupFood);
-
-			TargetPickupFood = nullptr; 
-          
-			PickupFood->Collected();
 			
 			CollectTimer = 0.0f;
+			TargetPickupFood = nullptr; 
+			
+			PickupFood->Collected();
+			SelectNextFoodTarget();
 			
 			return true;
 		}
@@ -178,6 +185,18 @@ void ACompanion::RemoveCollectibleFood_Implementation(APickupFood* Food)
 bool ACompanion::IsCollectibleFoodListEmpty()
 {
 	return CollectibleFoodList.IsEmpty();
+}
+
+void ACompanion::SelectNextFoodTarget()
+{
+	if (!TargetPickupFood && !PickupFoodList.IsEmpty())
+	{
+		TargetPickupFood = PickupFoodList[0];
+		if (ACompanionAIController* AIController = Cast<ACompanionAIController>(GetController()))
+		{
+			AIController->SetTargetFood(TargetPickupFood);
+		}
+	}
 }
 
 float ACompanion::GetCurrentHealth() const
@@ -381,15 +400,6 @@ void ACompanion::Tick(float DeltaTime)
 	{
 		CollectTimer += DeltaTime;
 		bCanCollect = false;
-	}
-	
-	if (!TargetPickupFood && !PickupFoodList.IsEmpty())
-	{
-		TargetPickupFood = PickupFoodList[0];
-		if (ACompanionAIController* AIController = Cast<ACompanionAIController>(GetController()))
-		{
-			AIController->SetTargetFood(TargetPickupFood);
-		}
 	}
 	
 	if (AttackTimer >= AttackInterval)

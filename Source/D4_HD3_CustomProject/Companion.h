@@ -30,11 +30,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Companion")
 	float FollowRadius = 400.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Companion")
-	float AttackRadius = 1500.0f;
+	float AttackRadius = 1200.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Companion")
 	float AttackDistance = 200.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Companion")
-	float CollectRadius = 1500.0f;
+	float CollectRadius = 1200.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Companion")
 	float CollectDistance = 200.0f;
 	
@@ -149,5 +149,7 @@ public:
 	virtual void RemoveCollectibleFood_Implementation(APickupFood* Food) override;
 	
 	bool IsCollectibleFoodListEmpty();
+	
+	void SelectNextFoodTarget();
 	
 };
