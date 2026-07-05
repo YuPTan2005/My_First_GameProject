@@ -94,6 +94,11 @@ void ACompanion::DealDamage_Implementation(float DamageTook, AActor* DamagedBy)
 	}
 }
 
+EGameTeam ACompanion::GetTeam_Implementation()
+{
+	return EGameTeam::Players;
+}
+
 void ACompanion::Attack(AActor* Target)
 {
 	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
@@ -202,7 +207,7 @@ float ACompanion::GetStarvationDecrementValue() const
 	return StarvationDecrementValue;
 }
 
-bool ACompanion::IsDead() const
+bool ACompanion::IsDead_Implementation()
 {
 	return bIsDead;
 }

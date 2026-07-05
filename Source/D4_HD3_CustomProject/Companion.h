@@ -101,7 +101,7 @@ public:
 	float GetStarvationValue() const;
 	float GetMaxStarvationValue() const;
 	float GetStarvationDecrementValue() const;
-	bool IsDead() const;
+	virtual bool IsDead_Implementation() override;
 	bool CanAttack() const;
 	bool CanCollect() const;
 	AD4_HD3_CustomProjectCharacter* GetCompanionOwner();
@@ -139,6 +139,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	virtual void DealDamage_Implementation(float DamageTaken, AActor* DamagedBy) override;
+	virtual EGameTeam GetTeam_Implementation() override;
+	
 	void Attack(AActor* Target);
 	
 	bool CollectFood();
