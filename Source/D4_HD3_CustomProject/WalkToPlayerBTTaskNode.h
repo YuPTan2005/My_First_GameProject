@@ -21,11 +21,22 @@ public:
 	UWalkToPlayerBTTaskNode();
 	
 protected:
-	float AcceptanceRadius;
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector TargetKey;
+	UPROPERTY(EditAnywhere, Category = "Flight Settings")
+	FBlackboardKeySelector AcceptanceRadius;
 	
-	AEnemyAIController* AIController;
-	UBlackboardComponent* BlackboardComp;
-	AEnemy* ControlledPawn;
+	float RetrievedAcceptanceRadius;
+	
+	UPROPERTY()
+	APawn* TargetPawn;
+	
+	UPROPERTY()
+	AAIController* AIController;
+	UPROPERTY()
+	UBlackboardComponent* BlackboardComponent;
+	UPROPERTY()
+	APawn* ControlledPawn;
 	
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;

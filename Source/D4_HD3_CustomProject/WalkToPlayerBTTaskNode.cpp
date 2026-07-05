@@ -4,58 +4,87 @@
 #include "WalkToPlayerBTTaskNode.h"
 
 #include "EnemyAIController.h"
-#include "Components/CapsuleComponent.h"
 #include "Navigation/PathFollowingComponent.h"
 
 UWalkToPlayerBTTaskNode::UWalkToPlayerBTTaskNode()
 {
 	bNotifyTick = true;
 	bCreateNodeInstance = true;
+	
+	TargetKey.AddObjectFilter(this, GET_MEMBER_NAME_CHECKED(UWalkToPlayerBTTaskNode, TargetKey), AActor::StaticClass());
+	AcceptanceRadius.AddFloatFilter(this, GET_MEMBER_NAME_CHECKED(UWalkToPlayerBTTaskNode, AcceptanceRadius));
 }
 
 EBTNodeResult::Type UWalkToPlayerBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	BlackboardComp = OwnerComp.GetBlackboardComponent();
-	AIController = Cast<AEnemyAIController>(OwnerComp.GetAIOwner());
-	ControlledPawn = Cast<AEnemy>(AIController->GetPawn());
-	
-	if (!BlackboardComp || !AIController || !ControlledPawn)
+	BlackboardComponent = OwnerComp.GetBlackboardComponent();
+	AIController = Cast<AAIController>(OwnerComp.GetAIOwner());
+	if (!BlackboardComponent || !AIController)
 	{
 		return EBTNodeResult::Failed;
 	}
 	
-	if (ACharacter* Target = Cast<ACharacter>(AIController->TargetPlayer))
+	if (TargetKey.SelectedKeyName.IsNone() || AcceptanceRadius.SelectedKeyName.IsNone())
 	{
-		float TargetRadius = Target->GetCapsuleComponent()->GetScaledCapsuleRadius();
-		float PawnRadius = ControlledPawn->GetCapsuleComponent()->GetScaledCapsuleRadius();
-		AcceptanceRadius = ControlledPawn->AttackDistance - TargetRadius - PawnRadius;
+		UE_LOG(LogTemp, Error, TEXT("TargetKey or Acceptance Radius is not set in WalkToPlayer Node in %s"), *OwnerComp.GetName());
+		return EBTNodeResult::Failed;
 	}
 	
+	RetrievedAcceptanceRadius = BlackboardComponent->GetValueAsFloat(AcceptanceRadius.SelectedKeyName);
+	ControlledPawn = AIController->GetPawn();
+	UObject* TargetObject = BlackboardComponent->GetValueAsObject(TargetKey.SelectedKeyName);
+	TargetPawn = Cast<APawn>(TargetObject);
+	if (!ControlledPawn || !TargetPawn)
+	{
+		return EBTNodeResult::Failed;
+	}
+	
+	FVector CurrentLocation = ControlledPawn->GetActorLocation();
+	FVector TargetLocation = TargetPawn->GetActorLocation();
+	if (FMath::Abs(TargetLocation.Z - CurrentLocation.Z) > 500.0f)
+	{
+		BlackboardComponent->SetValueAsBool("FlyLaunch", true);
+		return EBTNodeResult::Failed; 
+	}
+	
+	EPathFollowingRequestResult::Type MoveResult = AIController->MoveToActor(
+		TargetPawn, 
+		RetrievedAcceptanceRadius, 
+		true,
+		true,
+		true,
+		nullptr, 
+		false
+	);
+
+	if (MoveResult == EPathFollowingRequestResult::AlreadyAtGoal)
+	{
+		return EBTNodeResult::Succeeded;
+	}
+	if (MoveResult == EPathFollowingRequestResult::Failed)
+	{
+		return EBTNodeResult::Failed;
+	}
+    
 	return EBTNodeResult::InProgress;
 }
 
 void UWalkToPlayerBTTaskNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
-	FVector TargetLocation = BlackboardComp->GetValueAsVector("PlayerPosition");
 	FVector CurrentLocation = ControlledPawn->GetActorLocation();
+	FVector TargetLocation = TargetPawn->GetActorLocation();
 	
-	if (FMath::Abs(TargetLocation.Z - CurrentLocation.Z) > 300.0f)
+	if (FMath::Abs(TargetLocation.Z - CurrentLocation.Z) > 350.0f)
 	{
-		BlackboardComp->SetValueAsBool("FlyLaunch", true);
+		BlackboardComponent->SetValueAsBool("FlyLaunch", true);
 		AIController->StopMovement();
 		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 		return;
 	}
 	
-	EPathFollowingRequestResult::Type MoveResult = AIController->MoveToLocation(TargetLocation, AcceptanceRadius, true, true, true, false);
-
-	if (MoveResult == EPathFollowingRequestResult::Type::AlreadyAtGoal)
+	UPathFollowingComponent* PathFollowComp = AIController->GetPathFollowingComponent();
+	if (PathFollowComp && PathFollowComp->DidMoveReachGoal())
 	{
-		AIController->StopMovement();
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	}
-	else if (MoveResult == EPathFollowingRequestResult::Type::Failed)
-	{
-		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 	}
 }
