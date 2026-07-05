@@ -7,7 +7,6 @@
 
 UFlyLaunchBTTaskNode::UFlyLaunchBTTaskNode()
 {
-	bNotifyTick = true;
 	bCreateNodeInstance = true;
 }
 
