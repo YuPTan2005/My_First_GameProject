@@ -17,7 +17,7 @@ UFlyToActorBTTaskNode::UFlyToActorBTTaskNode()
 
 void UFlyToActorBTTaskNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
-	FVector TargetLocation = TargetPawn->GetActorLocation();
+	FVector TargetLocation = TargetActor->GetActorLocation();
 	FVector CurrentLocation = ControlledPawn->GetActorLocation();
 	float Radius = BlackboardComponent->GetValueAsFloat(AcceptanceRadius.SelectedKeyName);
 
@@ -46,19 +46,20 @@ EBTNodeResult::Type UFlyToActorBTTaskNode::ExecuteTask(UBehaviorTreeComponent& O
 	
 	if (TargetKey.SelectedKeyName.IsNone() || AcceptanceRadius.SelectedKeyName.IsNone())
 	{
-		UE_LOG(LogTemp, Error, TEXT("TargetKey or Acceptance Radius is not set in FlyToActor Node in %s"), *OwnerComp.GetName());
+		UE_LOG(LogTemp, Error, TEXT("TargetKey or Acceptance Radius is not set in %s"), *OwnerComp.GetName());
 		return EBTNodeResult::Failed;
 	}
 	
 	ControlledPawn = AIController->GetPawn();
 	UObject* TargetObject = BlackboardComponent->GetValueAsObject(TargetKey.SelectedKeyName);
-	TargetPawn = Cast<APawn>(TargetObject);
-	if (!ControlledPawn || !TargetPawn)
+	TargetActor = Cast<AActor>(TargetObject);
+	if (!ControlledPawn || !TargetActor)
 	{
+		UE_LOG(LogTemp, Error, TEXT("ControlledPawn or TargetPawn is not set in %s"), *OwnerComp.GetName());
 		return EBTNodeResult::Failed;
 	}
 	
-	TargetPawnRadius = TargetPawn->GetRootComponent()->Bounds.SphereRadius;
+	TargetPawnRadius = TargetActor->GetRootComponent()->Bounds.SphereRadius;
 	ControlledPawnRadius = ControlledPawn->GetRootComponent()->Bounds.SphereRadius;
 	
 	return EBTNodeResult::InProgress;

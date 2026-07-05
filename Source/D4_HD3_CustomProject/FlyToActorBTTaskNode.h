@@ -26,7 +26,7 @@ protected:
 	FBlackboardKeySelector AcceptanceRadius;
 	
 	UPROPERTY()
-	APawn* TargetPawn;
+	AActor* TargetActor;
 	float TargetPawnRadius;
 	
 	UPROPERTY()
