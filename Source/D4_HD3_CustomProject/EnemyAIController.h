@@ -62,7 +62,7 @@ public:
 	UPROPERTY()
 	UNavigationSystemV1* NavigationSystem;
 	UPROPERTY()
-	APawn* TargetPlayer;
+	AActor* TargetPlayer;
 	
 	float EnemyOriginalWalkSpeed = 300;
 	float EnemyOriginalFlySpeed = 450;

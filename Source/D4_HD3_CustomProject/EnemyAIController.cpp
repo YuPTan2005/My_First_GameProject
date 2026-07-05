@@ -39,17 +39,14 @@ void AEnemyAIController::BeginPlay()
 	GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AEnemyAIController::OnTargetPerceptionUpdated);
 	BlackboardComponent->SetValueAsBool("Attack", false);
 	BlackboardComponent->SetValueAsBool("Landing", false);
+	BlackboardComponent->SetValueAsBool("FlyLaunch", false);
+	BlackboardComponent->SetValueAsFloat("AttackDistance", ControlledCharacter->AttackDistance);
 }
 
 void AEnemyAIController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	
-	if(TargetPlayer)
-	{
-		BlackboardComponent->SetValueAsVector("PlayerPosition",
-		  TargetPlayer->GetActorLocation());
-	}
 }
 
 FRotator AEnemyAIController::GetControlRotation() const
@@ -148,28 +145,28 @@ void AEnemyAIController::GenerateNewRandomLocationMidAir()
 	}
 }
 
+// Check if the actor implements the new interface and damageable
 void AEnemyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
 	TargetPlayer = nullptr;
 	BlackboardComponent->SetValueAsBool("ChasePlayer", false);
-	if(APawn* SensedPawn = Cast<APawn>(Actor)) {
-		if(SensedPawn->IsPlayerControlled()) {
-			if (ControlledCharacter && Stimulus.WasSuccessfullySensed())
-			{
-				ControlledCharacter->GetCharacterMovement()->MaxWalkSpeed = EnemyIncreasedWalkSpeed;
-				ControlledCharacter->GetCharacterMovement()->MaxFlySpeed = EnemyIncreasedFlySpeed;
-				TargetPlayer = SensedPawn;
-				BlackboardComponent->SetValueAsBool("ChasePlayer", true);
-				BlackboardComponent->SetValueAsVector("PlayerPosition",
-				   TargetPlayer->GetActorLocation());
-			}
-			else
-			{
-				ControlledCharacter->GetCharacterMovement()->MaxWalkSpeed = EnemyOriginalWalkSpeed;
-				ControlledCharacter->GetCharacterMovement()->MaxFlySpeed = EnemyOriginalFlySpeed;
-				TargetPlayer = nullptr;
-				BlackboardComponent->SetValueAsBool("ChasePlayer", false);
-			}
+	if(Actor->Implements<UDamageable>() && IDamageable::Execute_GetTeam(Actor) != EGameTeam::Enemies) 
+	{
+		if (ControlledCharacter && Stimulus.WasSuccessfullySensed())
+		{
+			ControlledCharacter->GetCharacterMovement()->MaxWalkSpeed = EnemyIncreasedWalkSpeed;
+			ControlledCharacter->GetCharacterMovement()->MaxFlySpeed = EnemyIncreasedFlySpeed;
+			TargetPlayer = Actor;
+			BlackboardComponent->SetValueAsBool("ChasePlayer", true);
+			BlackboardComponent->SetValueAsObject("Target", TargetPlayer);
+		}
+		else
+		{
+			ControlledCharacter->GetCharacterMovement()->MaxWalkSpeed = EnemyOriginalWalkSpeed;
+			ControlledCharacter->GetCharacterMovement()->MaxFlySpeed = EnemyOriginalFlySpeed;
+			TargetPlayer = nullptr;
+			BlackboardComponent->SetValueAsBool("ChasePlayer", false);
+			BlackboardComponent->SetValueAsObject("Target", nullptr);
 		}
 	}
 }
@@ -177,19 +174,20 @@ void AEnemyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus St
 void AEnemyAIController::UpdateAttackCheck_Implementation()
 {
 	BlackboardComponent->SetValueAsBool("AttackPossible", false);
-	if (TargetPlayer && GetPawn())
+	if (TargetPlayer && TargetPlayer->Implements<UDamageable>() && ControlledCharacter)
 	{
-		if (AEnemy* CurrentPawn = Cast<AEnemy>(GetPawn()))
+		FVector TargetLocation = TargetPlayer->GetActorLocation();
+		float TargetCharacterRadius = TargetPlayer->GetRootComponent()->Bounds.SphereRadius;
+		
+		FVector CurrentLocation = ControlledCharacter->GetActorLocation();
+		float ControlledCharacterRadius = ControlledCharacter->GetRootComponent()->Bounds.SphereRadius;
+		
+		if (FVector::Dist(TargetLocation, CurrentLocation) - TargetCharacterRadius - ControlledCharacterRadius
+				<= ControlledCharacter->AttackDistance 
+			&& !IDamageable::Execute_IsDead(TargetPlayer))
 		{
-			if (AD4_HD3_CustomProjectCharacter* TargetCharacter = Cast<AD4_HD3_CustomProjectCharacter>(TargetPlayer))
-			{
-				if (FVector::Dist(TargetCharacter->GetActorLocation(), CurrentPawn->GetActorLocation()) <= CurrentPawn->AttackDistance 
-					&& !TargetCharacter->GetIsDead())
-				{
-					BlackboardComponent->SetValueAsBool("AttackPossible", true);
-					CurrentPawn->bCanAttack = true;
-				}
-			}
+			BlackboardComponent->SetValueAsBool("AttackPossible", true);
+			ControlledCharacter->bCanAttack = true;
 		}
 	}
 }
