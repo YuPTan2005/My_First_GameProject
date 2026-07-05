@@ -42,9 +42,9 @@ void ACompanionAIController::UpdateChaseEnemyCheck()
 
 void ACompanionAIController::UpdateAttackCheck_Implementation()
 {
-	if (TargetEnemy)
+	if (TargetEnemy && BlackboardComponent)
 	{
-		float TargetEnemyRadius = TargetEnemy->GetCapsuleComponent()->GetScaledCapsuleRadius();
+		float TargetEnemyRadius = TargetEnemy->GetRootComponent()->Bounds.SphereRadius;
 		float ControlledCharacterRadius = ControlledCharacter->GetCapsuleComponent()->GetScaledCapsuleRadius();
 		
 		if (FVector::Dist(TargetEnemy->GetActorLocation(), ControlledCharacter->GetActorLocation()) - 
@@ -74,35 +74,52 @@ void ACompanionAIController::Attack_Implementation()
 
 void ACompanionAIController::UpdateMoveToTargetFoodCheck()
 {
+	if (!BlackboardComponent || !CompanionOwner || !ControlledCharacter) return;
+
+	FVector CompanionLocation = ControlledCharacter->GetActorLocation();
+	FVector OwnerLocation = CompanionOwner->GetActorLocation();
+    
+	float DistanceToOwner = FVector::Dist(CompanionLocation, OwnerLocation);
+	float CollectRadius = ControlledCharacter->GetCollectRadius();
+
+	if (DistanceToOwner > CollectRadius)
+	{
+		ClearFoodTarget();
+		return; 
+	}
+
+	if (!TargetFood)
+	{
+		ControlledCharacter->SelectNextFoodTarget();
+	}
+
 	if (TargetFood)
 	{
-		if (BlackboardComponent && FVector::Dist(ControlledCharacter->GetActorLocation(), 
-				TargetFood->GetActorLocation()) <= ControlledCharacter->GetCollectDistance())
-		{
-			BlackboardComponent->SetValueAsBool("GoToFood", true);
-		}
-		else
-		{
-			TargetFood = nullptr;
-			BlackboardComponent->SetValueAsBool("GoToFood", false);
-			BlackboardComponent->SetValueAsObject("Food", nullptr);
-		}
-	}
-	else
-	{
-		BlackboardComponent->SetValueAsBool("GoToFood", false);
+		BlackboardComponent->SetValueAsBool("GoToFood", true);
 	}
 }
 
 void ACompanionAIController::UpdateCollectible()
 {
-	if (BlackboardComponent && ControlledCharacter->CanCollect() && !ControlledCharacter->IsCollectibleFoodListEmpty())
+	if (TargetFood && BlackboardComponent)
 	{
-		BlackboardComponent->SetValueAsBool("CanCollect", true);
+		float TargetFoodRadius = TargetFood->GetRootComponent()->Bounds.SphereRadius;
+		float ControlledCharacterRadius = ControlledCharacter->GetRootComponent()->Bounds.SphereRadius;
+		
+		if (!ControlledCharacter->IsCollectibleFoodListEmpty() && ControlledCharacter->CanCollect()
+			&& FVector::Dist(TargetFood->GetActorLocation(), ControlledCharacter->GetActorLocation()) -
+				TargetFoodRadius - ControlledCharacterRadius <= ControlledCharacter->GetCollectDistance())
+		{
+			BlackboardComponent->SetValueAsBool("CanCollect", true);
+		}
+		else
+		{
+			BlackboardComponent->SetValueAsBool("CanCollect", false);
+		}
 	}
 	else
 	{
-		BlackboardComponent->SetValueAsBool("CanCollect", false);
+		ClearFoodTarget();
 	}
 }
 
@@ -129,6 +146,17 @@ void ACompanionAIController::SetTargetFood(APickupFood* Food)
 	TargetFood = Food;
 	BlackboardComponent->SetValueAsBool("GoToFood", true);
 	BlackboardComponent->SetValueAsObject("Food", TargetFood);
+}
+
+void ACompanionAIController::ClearFoodTarget()
+{
+	if (BlackboardComponent)
+	{
+		BlackboardComponent->SetValueAsBool("GoToFood", false);
+		BlackboardComponent->SetValueAsBool("CanCollect", false);
+		BlackboardComponent->SetValueAsObject("Food", nullptr);
+		ControlledCharacter->SetTargetPickupFood(nullptr);
+	}
 }
 
 void ACompanionAIController::OnPossess(APawn* InPawn)

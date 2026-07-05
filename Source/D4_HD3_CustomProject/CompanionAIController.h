@@ -39,13 +39,15 @@ public:
 	void SetTargetEnemy(AEnemy* Enemy);
 	void SetTargetFood(APickupFood* Food);
 	
+	void ClearFoodTarget();
+	
 protected:
 	UPROPERTY()
 	ACompanion* ControlledCharacter;
 	UPROPERTY()
-	AD4_HD3_CustomProjectCharacter* CompanionOwner;
+	AActor* CompanionOwner;
 	UPROPERTY()
-	AEnemy* TargetEnemy;
+	AActor* TargetEnemy;
 	UPROPERTY()
 	APickupFood* TargetFood;
 	
