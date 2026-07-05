@@ -145,7 +145,6 @@ void AEnemyAIController::GenerateNewRandomLocationMidAir()
 	}
 }
 
-// Check if the actor implements the new interface and damageable
 void AEnemyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
 	TargetPlayer = nullptr;
