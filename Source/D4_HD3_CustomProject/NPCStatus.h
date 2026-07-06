@@ -7,13 +7,13 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
-#include "EnemyStatus.generated.h"
+#include "NPCStatus.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class D4_HD3_CUSTOMPROJECT_API UEnemyStatus : public UUserWidget
+class D4_HD3_CUSTOMPROJECT_API UNPCStatus : public UUserWidget
 {
 	GENERATED_BODY()
 	

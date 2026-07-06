@@ -6,7 +6,7 @@
 #include "BrainComponent.h"
 #include "D4_HD3_CustomProjectCharacter.h"
 #include "EnemyAIController.h"
-#include "EnemyStatus.h"
+#include "NPCStatus.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -38,7 +38,7 @@ void AEnemy::BeginPlay()
 	bIsFlying = false;
 	bIsDead = false;
 	
-	StatusWidget = CreateWidget<UEnemyStatus>(GetWorld(), EnemyStatusClass);
+	StatusWidget = CreateWidget<UNPCStatus>(GetWorld(), EnemyStatusClass);
 	if (StatusWidget)
 	{
 		StatusWidget->Player = this;

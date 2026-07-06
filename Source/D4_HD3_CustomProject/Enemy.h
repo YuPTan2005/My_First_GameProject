@@ -9,7 +9,7 @@
 #include "Enemy.generated.h"
 
 
-class UEnemyStatus;
+class UNPCStatus;
 
 UCLASS(Abstract)
 class D4_HD3_CUSTOMPROJECT_API AEnemy : public ACharacter, public IDamageable
@@ -49,7 +49,7 @@ public:
 	UPROPERTY()
 	UEnemyStatusComponent* StatusComponent;
 	UPROPERTY()
-	UEnemyStatus* StatusWidget;
+	UNPCStatus* StatusWidget;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UUserWidget> EnemyStatusClass;

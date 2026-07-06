@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "EnemyStatus.h"
+#include "NPCStatus.h"
 
-void UEnemyStatus::UpdateValues()
+void UNPCStatus::UpdateValues()
 {
 	if (Player)
 	{
