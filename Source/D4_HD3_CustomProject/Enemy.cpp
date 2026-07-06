@@ -51,18 +51,18 @@ void AEnemy::BeginPlay()
 			}
 			else
 			{
-				UE_LOG(LogTemp, Error, TEXT("StatusComponent is null"));
+				UE_LOG(LogTemp, Error, TEXT("StatusComponent is null in %s"), *GetName());
 			}
 			UpdateStatus();
 		}
 		else
 		{
-			UE_LOG(LogTemp, Error, TEXT("StatusWidget is null"));
+			UE_LOG(LogTemp, Error, TEXT("StatusWidget is null in %s"), *GetName());
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("EnemyStatusClass is null"));
+		UE_LOG(LogTemp, Error, TEXT("EnemyStatusClass is null in %s"), *GetName());
 	}
 }
 
