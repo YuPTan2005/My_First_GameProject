@@ -19,7 +19,7 @@ AEnemy::AEnemy()
 	GetCharacterMovement()->MaxWalkSpeed = 300;
 	
 	StatusComponent = CreateDefaultSubobject<UNPCStatusComponent>(TEXT("Health Bar Component"));
-	StatusComponent->SetupAttachment(GetMesh(), FName("head"));
+	StatusComponent->SetupAttachment(RootComponent);
 	
 	StatusComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	StatusComponent->SetDrawSize(FVector2D(200.0f, 20.0f));
@@ -48,6 +48,7 @@ void AEnemy::BeginPlay()
 			if (StatusComponent)
 			{
 				StatusComponent->SetWidget(StatusWidget);
+				StatusComponent->SetRelativeLocation(StatusComponentOffset);
 			}
 			else
 			{

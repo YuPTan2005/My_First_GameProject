@@ -14,4 +14,7 @@ class D4_HD3_CUSTOMPROJECT_API ACrow : public AEnemy
 {
 	GENERATED_BODY()
 	
+public:
+	ACrow();
+	
 };

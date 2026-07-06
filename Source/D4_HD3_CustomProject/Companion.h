@@ -79,6 +79,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UUserWidget> CompanionStatusClass;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	FVector StatusComponentOffset = FVector(10.0f, -10.0f, 30.0f);
+	
 	float StarvationValue = 30.0f;
 	float MaxStarvationValue = 30.0f;
 	float StarvationDecrementValue = -1;

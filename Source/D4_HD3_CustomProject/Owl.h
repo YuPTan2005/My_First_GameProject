@@ -10,5 +10,8 @@ UCLASS()
 class D4_HD3_CUSTOMPROJECT_API AOwl : public AEnemy
 {
 	GENERATED_BODY()
+	
+public:
+	AOwl();
 
 };
