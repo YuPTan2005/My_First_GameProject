@@ -47,6 +47,10 @@ EBTNodeResult::Type UWalkToPlayerBTTaskNode::ExecuteTask(UBehaviorTreeComponent&
 		return EBTNodeResult::Failed; 
 	}
 	
+	FRotator ControlledPawnRotation = ControlledPawn->GetActorRotation();
+	FRotator NewRotation(0, ControlledPawnRotation.Yaw, 0);
+	ControlledPawn->SetActorRotation(NewRotation);
+	
 	EPathFollowingRequestResult::Type MoveResult = AIController->MoveToActor(
 		TargetPawn, 
 		RetrievedAcceptanceRadius, 
