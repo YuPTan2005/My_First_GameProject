@@ -38,24 +38,31 @@ void AEnemy::BeginPlay()
 	bIsFlying = false;
 	bIsDead = false;
 	
-	StatusWidget = CreateWidget<UNPCStatus>(GetWorld(), EnemyStatusClass);
-	if (StatusWidget)
+	if (EnemyStatusClass)
 	{
-		StatusWidget->BindingActor = this;
-		
-		if (StatusComponent)
+		StatusWidget = CreateWidget<UNPCStatus>(GetWorld(), EnemyStatusClass);
+		if (StatusWidget)
 		{
-			StatusComponent->SetWidget(StatusWidget);
+			StatusWidget->BindingActor = this;
+		
+			if (StatusComponent)
+			{
+				StatusComponent->SetWidget(StatusWidget);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("StatusComponent is null"));
+			}
+			UpdateStatus();
 		}
 		else
 		{
-			UE_LOG(LogTemp, Error, TEXT("StatusComponent is null"));
+			UE_LOG(LogTemp, Error, TEXT("StatusWidget is null"));
 		}
-		UpdateStatus();
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("StatusWidget is null"));
+		UE_LOG(LogTemp, Error, TEXT("EnemyStatusClass is null"));
 	}
 }
 
