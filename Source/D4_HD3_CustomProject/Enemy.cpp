@@ -18,7 +18,7 @@ AEnemy::AEnemy()
 	
 	GetCharacterMovement()->MaxWalkSpeed = 300;
 	
-	StatusComponent = CreateDefaultSubobject<UEnemyStatusComponent>(TEXT("Health Bar Component"));
+	StatusComponent = CreateDefaultSubobject<UNPCStatusComponent>(TEXT("Health Bar Component"));
 	StatusComponent->SetupAttachment(GetMesh(), FName("head"));
 	
 	StatusComponent->SetWidgetSpace(EWidgetSpace::Screen);

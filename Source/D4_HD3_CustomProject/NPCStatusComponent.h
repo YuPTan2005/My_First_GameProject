@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Components/WidgetComponent.h"
-#include "EnemyStatusComponent.generated.h"
+#include "NPCStatusComponent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class D4_HD3_CUSTOMPROJECT_API UEnemyStatusComponent : public UWidgetComponent
+class D4_HD3_CUSTOMPROJECT_API UNPCStatusComponent : public UWidgetComponent
 {
 	GENERATED_BODY()
 	

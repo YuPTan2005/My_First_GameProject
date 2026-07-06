@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Damageable.h"
-#include "EnemyStatusComponent.h"
 #include "NPCInterface.h"
+#include "NPCStatusComponent.h"
 #include "GameFramework/Character.h"
 #include "Enemy.generated.h"
 
@@ -49,7 +49,7 @@ public:
 	virtual EGameTeam GetTeam_Implementation() override;
 	
 	UPROPERTY()
-	UEnemyStatusComponent* StatusComponent;
+	UNPCStatusComponent* StatusComponent;
 	UPROPERTY()
 	UNPCStatus* StatusWidget;
 	
