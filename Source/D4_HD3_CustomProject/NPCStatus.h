@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "NPCInterface.h"
 #include "NPCStatus.generated.h"
 
 /**
@@ -28,7 +29,7 @@ public:
 	UTextBlock* CurrentHealthText;
 	
 	UPROPERTY()
-	AEnemy* Player;
+	AActor* BindingActor;
 	
 	void UpdateValues();
 	

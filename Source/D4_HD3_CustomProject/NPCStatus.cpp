@@ -5,13 +5,13 @@
 
 void UNPCStatus::UpdateValues()
 {
-	if (Player)
+	if (BindingActor && BindingActor->Implements<UNPCInterface>())
 	{
-		HealthBar->SetPercent(Player->CurrentHealth /
-			Player->MaxHealth);
+		HealthBar->SetPercent(INPCInterface::Execute_GetCurrentHealth(BindingActor) /
+			INPCInterface::Execute_GetMaxHealth(BindingActor));
 		CurrentHealthText->SetText(FText::FromString(FString::FromInt
-			(Player->CurrentHealth)));
+			(INPCInterface::Execute_GetCurrentHealth(BindingActor))));
 		MaxHealthText->SetText(FText::FromString(FString::FromInt
-			(Player->MaxHealth)));
+			(INPCInterface::Execute_GetMaxHealth(BindingActor))));
 	}
 }
