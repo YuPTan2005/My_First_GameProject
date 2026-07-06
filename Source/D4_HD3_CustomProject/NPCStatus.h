@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "Components/SizeBox.h"
 #include "NPCInterface.h"
 #include "NPCStatus.generated.h"
 
@@ -18,7 +19,7 @@ class D4_HD3_CUSTOMPROJECT_API UNPCStatus : public UUserWidget
 {
 	GENERATED_BODY()
 	
-public:
+protected:
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* HealthBar;
 	
@@ -28,9 +29,18 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* CurrentHealthText;
 	
+	UPROPERTY(meta = (BindWidget))
+	USizeBox* HealthBarSizeBox;
+	
+public:
 	UPROPERTY()
 	AActor* BindingActor;
 	
 	void UpdateValues();
+	
+	void SetHealthBarSize(FVector2D NewSize);
+	
+	void SetMaxHealthTextSize(float NewSize);
+	void SetCurrentHealthTextSize(float NewSize);
 	
 };

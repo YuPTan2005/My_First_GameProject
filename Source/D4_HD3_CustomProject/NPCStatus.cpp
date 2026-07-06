@@ -15,3 +15,28 @@ void UNPCStatus::UpdateValues()
 			(INPCInterface::Execute_GetMaxHealth(BindingActor))));
 	}
 }
+
+void UNPCStatus::SetHealthBarSize(FVector2D NewSize)
+{
+	if (HealthBarSizeBox)
+	{
+		HealthBarSizeBox->SetWidthOverride(NewSize.X);
+		HealthBarSizeBox->SetHeightOverride(NewSize.Y);
+	}
+}
+
+void UNPCStatus::SetMaxHealthTextSize(float NewSize)
+{
+	FSlateFontInfo FontInfo = MaxHealthText->GetFont();
+	FontInfo.Size = NewSize;
+	
+	MaxHealthText->SetFont(FontInfo);
+}
+
+void UNPCStatus::SetCurrentHealthTextSize(float NewSize)
+{
+	FSlateFontInfo FontInfo = CurrentHealthText->GetFont();
+	FontInfo.Size = NewSize;
+	
+	CurrentHealthText->SetFont(FontInfo);
+}
