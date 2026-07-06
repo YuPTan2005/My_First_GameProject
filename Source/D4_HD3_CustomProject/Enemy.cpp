@@ -22,7 +22,7 @@ AEnemy::AEnemy()
 	StatusComponent->SetupAttachment(RootComponent);
 	
 	StatusComponent->SetWidgetSpace(EWidgetSpace::Screen);
-	StatusComponent->SetDrawSize(FVector2D(200.0f, 20.0f));
+	StatusComponent->SetDrawAtDesiredSize(true);
 	
 	GetCharacterMovement()->NavAgentProps.bCanFly = true;
 	this->GetCharacterMovement()->BrakingDecelerationFlying = 2000;

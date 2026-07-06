@@ -10,6 +10,7 @@
 #include "Food.h"
 #include "NPCStatus.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ACompanion::ACompanion()
@@ -29,7 +30,7 @@ ACompanion::ACompanion()
 	StatusComponent->SetupAttachment(RootComponent);
 	
 	StatusComponent->SetWidgetSpace(EWidgetSpace::Screen);
-	StatusComponent->SetDrawSize(FVector2D(70.0f, 20.0f));
+	StatusComponent->SetDrawAtDesiredSize(true);
 }
 
 // Called when the game starts or when spawned
@@ -53,6 +54,9 @@ void ACompanion::BeginPlay()
 		if (StatusWidget)
 		{
 			StatusWidget->BindingActor = this;
+			StatusWidget->SetHealthBarSize(FVector2D(200.0f, 10.0f));
+			StatusWidget->SetMaxHealthTextSize(18.0f);
+			StatusWidget->SetCurrentHealthTextSize(18.0f);
 		
 			if (StatusComponent)
 			{
@@ -455,6 +459,22 @@ void ACompanion::Tick(float DeltaTime)
 	{
 		AttackTimer += DeltaTime;
 		bCanAttack = false;
+	}
+	
+	if (StatusWidget)
+	{
+		if (APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0))
+		{
+			float Distance = FVector::Dist(CameraManager->GetCameraLocation(), GetActorLocation());
+			
+			float ReferenceDistance = 1200.0f;
+			float MinimumSafeDistance = 0.0f;
+			float SafeDistance = FMath::Max(Distance, MinimumSafeDistance);
+			
+			float TargetScale = ReferenceDistance / SafeDistance;
+			
+			StatusWidget->SetRenderScale(FVector2D(TargetScale, TargetScale));
+		}
 	}
 }
 
