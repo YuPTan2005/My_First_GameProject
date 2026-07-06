@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Damageable.h"
 #include "EnemyStatusComponent.h"
+#include "NPCInterface.h"
 #include "GameFramework/Character.h"
 #include "Enemy.generated.h"
 
@@ -12,7 +13,7 @@
 class UNPCStatus;
 
 UCLASS(Abstract)
-class D4_HD3_CUSTOMPROJECT_API AEnemy : public ACharacter, public IDamageable
+class D4_HD3_CUSTOMPROJECT_API AEnemy : public ACharacter, public IDamageable, public INPCInterface
 {
 	GENERATED_BODY()
 
@@ -35,12 +36,13 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CurrentHealth = 100;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxHealth = 100;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float DamageValue = 10;
+	
+	virtual float GetCurrentHealth_Implementation() override;
+	virtual float GetMaxHealth_Implementation() override;
 
 	virtual void DealDamage_Implementation(float DamageTaken, AActor* DamagedBy) override;
 	virtual bool IsDead_Implementation() override;

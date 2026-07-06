@@ -41,7 +41,7 @@ void AEnemy::BeginPlay()
 	StatusWidget = CreateWidget<UNPCStatus>(GetWorld(), EnemyStatusClass);
 	if (StatusWidget)
 	{
-		StatusWidget->Player = this;
+		StatusWidget->BindingActor = this;
 		
 		if (StatusComponent)
 		{
@@ -101,6 +101,16 @@ void AEnemy::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 Previou
 
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 	}
+}
+
+float AEnemy::GetCurrentHealth_Implementation()
+{
+	return CurrentHealth;
+}
+
+float AEnemy::GetMaxHealth_Implementation()
+{
+	return MaxHealth;
 }
 
 void AEnemy::DealDamage_Implementation(float DamageTaken, AActor* DamagedBy)
