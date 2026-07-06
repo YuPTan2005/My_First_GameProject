@@ -5,6 +5,7 @@
 
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void ACompanionAIController::BeginPlay()
 {
@@ -68,6 +69,12 @@ void ACompanionAIController::Attack_Implementation()
 {
 	if (TargetEnemy && ControlledCharacter)
 	{
+		FVector TargetLocation = TargetEnemy->GetActorLocation();
+		FVector CurrentLocation = ControlledCharacter->GetActorLocation();
+	
+		FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(CurrentLocation, TargetLocation);
+		ControlledCharacter->SetActorRotation(LookRotation);
+		
 		ControlledCharacter->Attack(TargetEnemy);
 	}
 }

@@ -6,6 +6,7 @@
 #include "D4_HD3_CustomProjectCharacter.h"
 #include "Enemy.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 AEnemyAIController::AEnemyAIController()
 {
@@ -195,6 +196,12 @@ void AEnemyAIController::Attack_Implementation()
 {
 	if (TargetPlayer && ControlledCharacter)
 	{
+		FVector TargetLocation = TargetPlayer->GetActorLocation();
+		FVector CurrentLocation = ControlledCharacter->GetActorLocation();
+	
+		FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(CurrentLocation, TargetLocation);
+		ControlledCharacter->SetActorRotation(LookRotation);
+		
 		ControlledCharacter->Attack(TargetPlayer);
 	}
 }
