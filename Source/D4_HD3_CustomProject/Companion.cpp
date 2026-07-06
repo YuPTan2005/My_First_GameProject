@@ -24,6 +24,12 @@ ACompanion::ACompanion()
 	
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &ACompanion::OnSphereOverlap);
 	SphereComponent->OnComponentEndOverlap.AddDynamic(this, &ACompanion::OnSphereEndOverlap);
+	
+	StatusComponent = CreateDefaultSubobject<UNPCStatusComponent>(TEXT("Health Bar Component"));
+	StatusComponent->SetupAttachment(GetMesh(), FName("head"));
+	
+	StatusComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	StatusComponent->SetDrawSize(FVector2D(200.0f, 20.0f));
 }
 
 // Called when the game starts or when spawned

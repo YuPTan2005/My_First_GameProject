@@ -7,6 +7,7 @@
 #include "Enemy.h"
 #include "FoodCollector.h"
 #include "NPCInterface.h"
+#include "NPCStatusComponent.h"
 #include "GameFramework/Character.h"
 #include "Companion.generated.h"
 
@@ -72,7 +73,7 @@ protected:
 	float DamageValue = 5;
 	
 	UPROPERTY()
-	UEnemyStatusComponent* StatusComponent;
+	UNPCStatusComponent* StatusComponent;
 	UPROPERTY()
 	UNPCStatus* StatusWidget;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
