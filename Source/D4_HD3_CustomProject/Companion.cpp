@@ -8,6 +8,7 @@
 #include "D4_HD3_CustomProjectCharacter.h"
 #include "Enemy.h"
 #include "Food.h"
+#include "NPCStatus.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -38,6 +39,26 @@ void ACompanion::BeginPlay()
 	if (SphereComponent)
 	{
 		SphereComponent->SetSphereRadius(CollectRadius);
+	}
+	
+	StatusWidget = CreateWidget<UNPCStatus>(GetWorld(), CompanionStatusClass);
+	if (StatusWidget)
+	{
+		StatusWidget->BindingActor = this;
+		
+		if (StatusComponent)
+		{
+			StatusComponent->SetWidget(StatusWidget);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("StatusComponent is null"));
+		}
+		UpdateStatus();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("StatusWidget is null"));
 	}
 }
 
@@ -74,6 +95,8 @@ void ACompanion::Dead()
 void ACompanion::DealDamage_Implementation(float DamageTook, AActor* DamagedBy)
 {
 	CurrentHealth = FMath::Clamp(CurrentHealth - DamageTook, 0.0f, MaxHealth);
+	UpdateStatus();
+	
 	if (AEnemy* DamagedByEnemy = Cast<AEnemy>(DamagedBy))
 	{
 		SetTargetEnemy(DamagedByEnemy);
@@ -199,12 +222,20 @@ void ACompanion::SelectNextFoodTarget()
 	}
 }
 
-float ACompanion::GetCurrentHealth() const
+void ACompanion::UpdateStatus()
+{
+	if (StatusWidget)
+	{
+		StatusWidget->UpdateValues();
+	}
+}
+
+float ACompanion::GetCurrentHealth_Implementation()
 {
 	return CurrentHealth;
 }
 
-float ACompanion::GetMaxHealth() const
+float ACompanion::GetMaxHealth_Implementation()
 {
 	return MaxHealth;
 }

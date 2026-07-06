@@ -6,16 +6,19 @@
 #include "Damageable.h"
 #include "Enemy.h"
 #include "FoodCollector.h"
+#include "NPCInterface.h"
 #include "GameFramework/Character.h"
 #include "Companion.generated.h"
 
 class AD4_HD3_CustomProjectCharacter;
+class UNPCStatus;
 
 UCLASS()
 class D4_HD3_CUSTOMPROJECT_API ACompanion : 
 	public ACharacter, 
 	public IFoodCollector,
-	public IDamageable
+	public IDamageable,
+	public INPCInterface
 {
 	GENERATED_BODY()
 
@@ -63,12 +66,17 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CurrentHealth = 50;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxHealth = 50;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float DamageValue = 5;
+	
+	UPROPERTY()
+	UEnemyStatusComponent* StatusComponent;
+	UPROPERTY()
+	UNPCStatus* StatusWidget;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UUserWidget> CompanionStatusClass;
 	
 	float StarvationValue = 30.0f;
 	float MaxStarvationValue = 30.0f;
@@ -91,12 +99,14 @@ protected:
 	float CollectTimer = CollectInterval;
 	bool bCanCollect;
 	
+	void UpdateStatus();
+	
 	UPROPERTY()
 	TArray<APickupFood*> CollectibleFoodList;
 
 public:
-	float GetCurrentHealth() const;
-	float GetMaxHealth() const;
+	virtual float GetCurrentHealth_Implementation() override;
+	virtual float GetMaxHealth_Implementation() override;
 	float GetDamageValue() const;
 	float GetStarvationValue() const;
 	float GetMaxStarvationValue() const;
