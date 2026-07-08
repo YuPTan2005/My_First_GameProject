@@ -49,6 +49,7 @@ void AEQSSpawningObject::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	TriggerSpawnLocationQuery();
 }
 
 bool AEQSSpawningObject::SpawnFood(FVector SpawnLocation)
