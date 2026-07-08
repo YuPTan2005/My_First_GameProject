@@ -49,7 +49,7 @@ protected:
 	UCurveFloat* FogDensity;
 	
 	float Time = 0.0f;
-	float TimeDilation = 5.0f; // 120 seconds for one cycle
+	float TimeDilation = 15.0f; // 360 seconds for one cycle
 	float HoursPerDay = 24.0f;
 	
 	virtual void BeginPlay() override;
