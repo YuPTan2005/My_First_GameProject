@@ -13,6 +13,7 @@
 #include "PickupFood.h"
 #include "PlayerUI.h"
 #include "StarvationUI.h"
+#include "ViewportInfoUI.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "D4_HD3_CustomProjectCharacter.generated.h"
@@ -98,9 +99,7 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	virtual void BeginPlay() override;
-	
 	virtual void Destroyed() override;
-	
 	virtual void PossessedBy(AController* NewController) override;
 	
 	void Upgrade();
@@ -162,6 +161,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void Collect();
 	
+	FString FoodSuccessCollectedText = "Food added to inventory!";
+	FString FoodFailCollectedText = "Inventory is full!";
+	
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void Dash();
 	
@@ -200,13 +202,15 @@ public:
 	float MaxStarvationValue = 50;
 	float StarvationValue = 50;
 	float StarvationDecrementValue = -1;
-
+	
 	UPROPERTY()
 	UPlayerUI* PlayerUI;
 	UPROPERTY()
 	UStarvationUI* StarvationUI;
 	UPROPERTY()
 	UDeathUI* DeathUI;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UViewportInfoUI> ViewportInfoUIClass;
 	
 	virtual void DealDamage_Implementation(float DamageTaken, AActor* DamagedBy) override;
 	virtual EGameTeam GetTeam_Implementation() override;

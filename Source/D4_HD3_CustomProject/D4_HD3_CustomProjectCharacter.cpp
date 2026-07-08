@@ -16,6 +16,7 @@
 #include "Edible.h"
 #include "Enemy.h"
 #include "Food.h"
+#include "Kismet/GameplayStatics.h"
 
 AD4_HD3_CustomProjectCharacter::AD4_HD3_CustomProjectCharacter()
 {
@@ -269,11 +270,38 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 			FoodToAdd = PickupFood->Food;
 		}
 		
-		if (Companion && AddItem(FoodToAdd))
+		bool AddFoodSuccess = true;
+		if (AddItem(FoodToAdd))
 		{
 			CollectibleFood.RemoveSingle(PickupFood);
-			Companion->RemoveCollectibleFood_Implementation(PickupFood);
+			if (Companion)
+			{
+				Companion->RemoveCollectibleFood_Implementation(PickupFood);
+			}
 			PickupFood->Collected();
+		}
+		else
+		{
+			AddFoodSuccess = false;
+		}
+		
+		if (ViewportInfoUIClass)
+		{
+			UViewportInfoUI* ViewportInfoUI = CreateWidget<UViewportInfoUI>(GetGameInstance(), ViewportInfoUIClass);
+			
+			FVector2D ViewportInfoUILocation;
+			UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
+				PickupFood->GetActorLocation(), ViewportInfoUILocation);
+			ViewportInfoUI->SetCurrentLocation(ViewportInfoUILocation);
+			
+			FString ViewportInfoUIText = AddFoodSuccess ? FoodSuccessCollectedText : FoodFailCollectedText;
+			ViewportInfoUI->SetDisplayText(ViewportInfoUIText);
+			
+			ViewportInfoUI->AddToViewport();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No value assigned to ViewportInfoUIClass in %s"), *GetName());
 		}
 	}
 }
