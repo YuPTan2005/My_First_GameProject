@@ -257,7 +257,7 @@ void AD4_HD3_CustomProjectCharacter::DoJumpEnd()
 
 void AD4_HD3_CustomProjectCharacter::Collect()
 {
-	if (CollectibleFood.Num() > 0 && !InventoryComponent->IsFull())
+	if (CollectibleFood.Num() > 0)
 	{
 		APickupFood* PickupFood = CollectibleFood[0];
 		AFood* FoodToAdd;
@@ -292,7 +292,7 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 			FVector2D ViewportInfoUILocation;
 			UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
 				PickupFood->GetActorLocation(), ViewportInfoUILocation);
-			ViewportInfoUI->SetCurrentLocation(ViewportInfoUILocation);
+			ViewportInfoUI->SetStartLocation(ViewportInfoUILocation);
 			
 			FString ViewportInfoUIText = AddFoodSuccess ? FoodSuccessCollectedText : FoodFailCollectedText;
 			ViewportInfoUI->SetDisplayText(ViewportInfoUIText);
