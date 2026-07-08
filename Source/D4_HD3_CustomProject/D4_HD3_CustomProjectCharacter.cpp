@@ -294,8 +294,16 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 				PickupFood->GetActorLocation(), ViewportInfoUILocation);
 			ViewportInfoUI->SetStartLocation(ViewportInfoUILocation);
 			
-			FString ViewportInfoUIText = AddFoodSuccess ? FoodSuccessCollectedText : FoodFailCollectedText;
-			ViewportInfoUI->SetDisplayText(ViewportInfoUIText);
+			if (AddFoodSuccess)
+			{
+				ViewportInfoUI->SetDisplayText(FoodSuccessCollectedText);
+				ViewportInfoUI->SetColorAndOpacity(FLinearColor(0.04f, 0.8f, 0.48f));
+			}
+			else
+			{
+				ViewportInfoUI->SetDisplayText(FoodFailCollectedText);
+				ViewportInfoUI->SetColorAndOpacity(FLinearColor(1.0f, 0.25f, 0.38f));
+			}
 			
 			ViewportInfoUI->AddToViewport();
 		}
