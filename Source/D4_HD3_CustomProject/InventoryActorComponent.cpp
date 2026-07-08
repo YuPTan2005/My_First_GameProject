@@ -48,16 +48,13 @@ bool UInventoryActorComponent::DeleteItemAtIndex(int32 Index)
 		return false;
 	}
 	InventoryItems.RemoveAt(Index);
-	InventorySize--;
 	return true;
 }
 
 bool UInventoryActorComponent::AddItem(AFood* NewItem)
 {
-	if(InventoryItems.Num() >= InventorySize)
-		return false;
+	if(IsFull()) return false;
 	InventoryItems.Add(NewItem);
-	InventorySize++;
 	return true;
 }
 
