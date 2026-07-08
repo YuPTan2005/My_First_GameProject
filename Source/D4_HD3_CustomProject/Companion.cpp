@@ -98,7 +98,10 @@ void ACompanion::OnSphereEndOverlap(UPrimitiveComponent* OverlapComp, AActor* Ot
 		if (TargetPickupFood == PickupFood)
 		{
 			TargetPickupFood = nullptr;
-			Cast<ACompanionAIController>(GetController())->ClearFoodTarget();
+			if (ACompanionAIController* AIController = Cast<ACompanionAIController>(GetController()))
+			{
+				AIController->ClearFoodTarget();
+			}
 			SelectNextFoodTarget();
 		}
 		PickupFoodList.Remove(PickupFood);

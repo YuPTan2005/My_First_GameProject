@@ -157,7 +157,7 @@ void ACompanionAIController::SetTargetFood(APickupFood* Food)
 
 void ACompanionAIController::ClearFoodTarget()
 {
-	if (BlackboardComponent)
+	if (BlackboardComponent && ControlledCharacter)
 	{
 		BlackboardComponent->SetValueAsBool("GoToFood", false);
 		BlackboardComponent->SetValueAsBool("CanCollect", false);
