@@ -3,34 +3,52 @@
 
 #include "DayNightCycle.h"
 
-#include "Kismet/GameplayStatics.h"
+#include "Components/ExponentialHeightFogComponent.h"
 
 
 ADayNightCycle::ADayNightCycle()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
 void ADayNightCycle::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	SetActorTickEnabled(true);
-	
-	if (AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(), ADirectionalLight::StaticClass()))
+	if (ExponentialHeightFog)
 	{
-		SunLight = Cast<ADirectionalLight>(FoundActor);
+		FogComponent = ExponentialHeightFog->GetComponent();
 	}
 }
 
 void ADayNightCycle::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	if (SunLight)
+	
+	if (SunDirectionalLight && MoonDirectionalLight && FogComponent)
 	{
-		FRotator Rotation(DeltaSeconds * DaySpeed, 0.0f, 0.0f);
-		SunLight->AddActorWorldRotation(Rotation);
+		if (Time >= HoursPerDay)
+		{
+			Time = 0.0f;
+		}
+		float LightRotation = Time / HoursPerDay * 360.0f;
+		
+		SunDirectionalLight->SetActorRelativeRotation(FRotator(LightRotation + 180.0f, 0, 0));
+		MoonDirectionalLight->SetActorRelativeRotation(FRotator(LightRotation, 0, 0));
+		
+		if (FogDensity)
+		{
+			FogComponent->SetFogDensity(FogDensity->GetFloatValue(Time));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("FogDensity curve is not assigned in %s"), *GetName());
+		}
+		
+		Time += DeltaSeconds / TimeDilation;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("ExponentialHeightFog or Sun or Moon directional light is not assigned in %s"), *GetName());
 	}
 }
