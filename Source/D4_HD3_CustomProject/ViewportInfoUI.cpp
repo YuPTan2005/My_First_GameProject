@@ -7,35 +7,46 @@ void UViewportInfoUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	TargetLocation = CurrentLocation + FVector2D(0, FloatDisplacement);
+	TargetLocation = StartLocation + FVector2D(0, FloatDisplacement);
 }
 
 void UViewportInfoUI::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
-	DisplacementTravelled += InDeltaTime * FloatVelocity;
-	const float DisplacementTravelledPercentage = DisplacementTravelled / FloatDisplacement;
+	ElapsedTime += InDeltaTime;
+	const float LerpAlpha = FMath::Clamp(ElapsedTime / TotalDuration, 0.0f, 1.0f);
 	
-	CurrentLocation = FMath::Lerp(
-		CurrentLocation, 
+	FVector2D CurrentLocation = FMath::Lerp(
+		StartLocation, 
 		TargetLocation, 
-		DisplacementTravelledPercentage);
+		LerpAlpha);
 	
-	CurrentOpacity = FMath::Lerp(
-		CurrentOpacity, 
-		0, 
-		DisplacementTravelledPercentage);
+	float CurrentOpacity = FMath::Lerp(
+		1.0f, 
+		0.0f, 
+		LerpAlpha);
 	
 	DisplayText->SetOpacity(CurrentOpacity);
 	SetPositionInViewport(CurrentLocation);
+	
 	if (FVector2D::Distance(CurrentLocation, TargetLocation) <= AcceptanceDistance)
 	{
 		RemoveFromParent();
 	}
 }
 
-float UViewportInfoUI::GetFloatDistance() const
+float UViewportInfoUI::GetTotalDuration() const
+{
+	return TotalDuration;
+}
+
+void UViewportInfoUI::SetTotalDuration(const float NewValue)
+{
+	TotalDuration = NewValue;
+}
+
+float UViewportInfoUI::GetFloatDisplacement() const
 {
 	return FloatDisplacement;
 }
@@ -45,7 +56,7 @@ float UViewportInfoUI::GetAcceptanceDistance() const
 	return AcceptanceDistance;
 }
 
-void UViewportInfoUI::SetFloatDistance(const float NewValue)
+void UViewportInfoUI::SetFloatDisplacement(const float NewValue)
 {
 	FloatDisplacement = NewValue;
 }
@@ -60,7 +71,7 @@ void UViewportInfoUI::SetDisplayText(const FString& NewText) const
 	DisplayText->SetText(FText::FromString(NewText));
 }
 
-void UViewportInfoUI::SetCurrentLocation(const FVector2D NewLocation)
+void UViewportInfoUI::SetStartLocation(const FVector2D NewLocation)
 {
-	CurrentLocation = NewLocation;
+	StartLocation = NewLocation;
 }
