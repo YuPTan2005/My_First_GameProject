@@ -10,7 +10,7 @@
 class AD4_HD3_CustomProjectCharacter;
 class AFood;
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable)
 class D4_HD3_CUSTOMPROJECT_API UInventoryActorComponent : public UActorComponent
 {
 	GENERATED_BODY()
