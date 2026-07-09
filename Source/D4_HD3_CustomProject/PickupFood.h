@@ -35,6 +35,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
+	UPROPERTY()
 	UFoodPickupUI* SpawnedUI;
 	
 	UFUNCTION()
@@ -52,6 +53,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
+	bool bIsNotPickedUp = true;
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void Collected();
+	virtual void Collected_Implementation();
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void UnCollected();
+	virtual void UnCollected_Implementation();
 
 };

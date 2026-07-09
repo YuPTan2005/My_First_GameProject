@@ -38,9 +38,13 @@ void APickupFood::Tick(float DeltaTime)
 
 }
 
-void APickupFood::Collected()
+void APickupFood::Collected_Implementation()
 {
 	Destroy();
+}
+
+void APickupFood::UnCollected_Implementation()
+{
 }
 
 void APickupFood::OnOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
