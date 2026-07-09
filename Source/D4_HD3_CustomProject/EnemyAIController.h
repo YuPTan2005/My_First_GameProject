@@ -38,7 +38,7 @@ public:
 	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
 	
 	UPROPERTY(EditAnywhere)
-	float SightRadius = 1500;
+	float SightRadius = 2000;
 	UPROPERTY(EditAnywhere)
 	float SightAge = 3.5;
 	UPROPERTY(EditAnywhere)

@@ -20,28 +20,44 @@ AEnemyAIController::AEnemyAIController()
 	SightConfiguration->DetectionByAffiliation.bDetectEnemies = true;
 	SightConfiguration->DetectionByAffiliation.bDetectFriendlies = true;
 	SightConfiguration->DetectionByAffiliation.bDetectNeutrals = true;
-	GetPerceptionComponent()->SetDominantSense(*SightConfiguration->GetSenseImplementation());
-	GetPerceptionComponent()->ConfigureSense(*SightConfiguration);
 }
 
 void AEnemyAIController::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (UAIPerceptionComponent* PerceptionComp = GetPerceptionComponent())
+	{
+		if (SightConfiguration)
+		{
+			PerceptionComp->ConfigureSense(*SightConfiguration);
+			PerceptionComp->SetDominantSense(*SightConfiguration->GetSenseImplementation());
+		}
+		PerceptionComp->OnTargetPerceptionUpdated.AddDynamic(this, &AEnemyAIController::OnTargetPerceptionUpdated);
+	}
+	
 	ControlledCharacter = Cast<AEnemy>(GetPawn());
 	NavigationSystem = Cast<UNavigationSystemV1>(GetWorld()->GetNavigationSystem());
 	UseBlackboard(AIBlackboard, BlackboardComponent);
 	RunBehaviorTree(WalkBehaviourTree);
+	
 	if (ControlledCharacter)
 	{
 		ControlledCharacter->bIsFlying = false;
 		ControlledCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 	}
-	GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AEnemyAIController::OnTargetPerceptionUpdated);
-	BlackboardComponent->SetValueAsBool("Attack", false);
-	BlackboardComponent->SetValueAsBool("Landing", false);
-	BlackboardComponent->SetValueAsBool("FlyLaunch", false);
-	BlackboardComponent->SetValueAsFloat("AttackDistance", ControlledCharacter->AttackDistance);
+	
+	if (BlackboardComponent)
+	{
+		BlackboardComponent->SetValueAsBool("Attack", false);
+		BlackboardComponent->SetValueAsBool("Landing", false);
+		BlackboardComponent->SetValueAsBool("FlyLaunch", false);
+		BlackboardComponent->SetValueAsFloat("AttackDistance", ControlledCharacter->AttackDistance);
+		BlackboardComponent->SetValueAsBool("ChasePlayer", false);
+		BlackboardComponent->SetValueAsObject("Target", nullptr);
+	}
+	
+	TargetPlayer = nullptr;
 }
 
 void AEnemyAIController::Tick(float DeltaSeconds)
@@ -148,17 +164,21 @@ void AEnemyAIController::GenerateNewRandomLocationMidAir()
 
 void AEnemyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
-	TargetPlayer = nullptr;
-	BlackboardComponent->SetValueAsBool("ChasePlayer", false);
+	if (!BlackboardComponent || !ControlledCharacter) return;
+	
 	if(Actor->Implements<UDamageable>() && IDamageable::Execute_GetTeam(Actor) != EGameTeam::Enemies) 
 	{
-		if (ControlledCharacter && Stimulus.WasSuccessfullySensed())
+		// New alive actor coming into perception and currently doesn't have target player or has dead
+		if (Stimulus.WasSuccessfullySensed() && !IDamageable::Execute_IsDead(Actor))
 		{
-			ControlledCharacter->GetCharacterMovement()->MaxWalkSpeed = EnemyIncreasedWalkSpeed;
-			ControlledCharacter->GetCharacterMovement()->MaxFlySpeed = EnemyIncreasedFlySpeed;
-			TargetPlayer = Actor;
-			BlackboardComponent->SetValueAsBool("ChasePlayer", true);
-			BlackboardComponent->SetValueAsObject("Target", TargetPlayer);
+			if (!IsValid(TargetPlayer))
+			{
+				ControlledCharacter->GetCharacterMovement()->MaxWalkSpeed = EnemyIncreasedWalkSpeed;
+				ControlledCharacter->GetCharacterMovement()->MaxFlySpeed = EnemyIncreasedFlySpeed;
+				TargetPlayer = Actor;
+				BlackboardComponent->SetValueAsBool("ChasePlayer", true);
+				BlackboardComponent->SetValueAsObject("Target", TargetPlayer);
+			}
 		}
 		else
 		{
@@ -173,21 +193,33 @@ void AEnemyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus St
 
 void AEnemyAIController::UpdateAttackCheck_Implementation()
 {
-	BlackboardComponent->SetValueAsBool("AttackPossible", false);
-	if (TargetPlayer && TargetPlayer->Implements<UDamageable>() && ControlledCharacter)
+	if (BlackboardComponent && ControlledCharacter)
 	{
-		FVector TargetLocation = TargetPlayer->GetActorLocation();
-		float TargetCharacterRadius = TargetPlayer->GetRootComponent()->Bounds.SphereRadius;
+		BlackboardComponent->SetValueAsBool("AttackPossible", false);
+		ControlledCharacter->bCanAttack = false;
 		
-		FVector CurrentLocation = ControlledCharacter->GetActorLocation();
-		float ControlledCharacterRadius = ControlledCharacter->GetRootComponent()->Bounds.SphereRadius;
-		
-		if (FVector::Dist(TargetLocation, CurrentLocation) - TargetCharacterRadius - ControlledCharacterRadius
-				<= ControlledCharacter->AttackDistance 
-			&& !IDamageable::Execute_IsDead(TargetPlayer))
+		if (IsValid(TargetPlayer) && TargetPlayer->Implements<UDamageable>())
 		{
-			BlackboardComponent->SetValueAsBool("AttackPossible", true);
-			ControlledCharacter->bCanAttack = true;
+			FVector TargetLocation = TargetPlayer->GetActorLocation();
+			float TargetCharacterRadius = TargetPlayer->GetRootComponent()->Bounds.SphereRadius;
+		
+			FVector CurrentLocation = ControlledCharacter->GetActorLocation();
+			float ControlledCharacterRadius = ControlledCharacter->GetRootComponent()->Bounds.SphereRadius;
+		
+			if (FVector::Dist(TargetLocation, CurrentLocation) - TargetCharacterRadius - ControlledCharacterRadius
+					<= ControlledCharacter->AttackDistance 
+				&& !IDamageable::Execute_IsDead(TargetPlayer))
+			{
+				BlackboardComponent->SetValueAsBool("AttackPossible", true);
+				ControlledCharacter->bCanAttack = true;
+			}
+		}
+		// Target Player has dead or lost track of
+		else
+		{
+			TargetPlayer = nullptr;
+			BlackboardComponent->SetValueAsBool("ChasePlayer", false);
+			BlackboardComponent->SetValueAsObject("Target", nullptr);
 		}
 	}
 }
