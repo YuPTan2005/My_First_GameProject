@@ -61,7 +61,6 @@ AD4_HD3_CustomProjectCharacter::AD4_HD3_CustomProjectCharacter()
 	this->GetCharacterMovement()->BrakingDecelerationFlying = OriginalFlyBrake;
 	this->GetCharacterMovement()->MaxFlySpeed = 1000;
 	
-	InventoryComponent = CreateDefaultSubobject<UInventoryActorComponent>(TEXT("Inventory Component"));
 	bIsInventoryOpen = false;
 }
 
@@ -98,6 +97,20 @@ void AD4_HD3_CustomProjectCharacter::SetupPlayerInputComponent(UInputComponent* 
 void AD4_HD3_CustomProjectCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	if (InventoryComponentClass)
+	{
+		InventoryComponent = NewObject<UInventoryActorComponent>(this, InventoryComponentClass);
+        
+		if (InventoryComponent)
+		{
+			InventoryComponent->RegisterComponent();
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No value assigned to inventory component class in %s"), *GetName());
+	}
 	
 	if (CompanionClass)
 	{

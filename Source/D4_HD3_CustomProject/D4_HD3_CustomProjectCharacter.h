@@ -178,6 +178,9 @@ public:
 	void GainExperience(float ExperienceAmount);
 	void GainStarvation(float StarvationAmount);
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actor Component Class")
+	TSubclassOf<UInventoryActorComponent> InventoryComponentClass;
+	
 	UPROPERTY()
 	UInventoryActorComponent* InventoryComponent;
 	UPROPERTY()
