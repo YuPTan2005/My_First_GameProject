@@ -19,7 +19,7 @@ APickupFood::APickupFood()
 	MeshComponent->SetupAttachment(RootComponent);
 	
 	PickupCollider = CreateDefaultSubobject<USphereComponent>(TEXT("Pickup Collider"));
-	PickupCollider->SetupAttachment(MeshComponent);
+	PickupCollider->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -38,13 +38,24 @@ void APickupFood::Tick(float DeltaTime)
 
 }
 
-void APickupFood::Collected_Implementation()
+void APickupFood::Collected_Implementation(AActor* OtherActor)
 {
+	SetPickerActor(OtherActor);
 	Destroy();
 }
 
 void APickupFood::UnCollected_Implementation()
 {
+}
+
+AActor* APickupFood::GetPickerActor() const
+{
+	return PickerActor;
+}
+
+void APickupFood::SetPickerActor(AActor* NewActor)
+{
+	PickerActor = NewActor;
 }
 
 void APickupFood::OnOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,

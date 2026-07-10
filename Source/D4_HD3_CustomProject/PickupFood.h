@@ -19,7 +19,7 @@ public:
 	// Sets default values for this actor's properties
 	APickupFood();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Details")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* MeshComponent;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -48,6 +48,9 @@ protected:
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
 	void AddPickupUI(AActor* Actor);
+	
+	UPROPERTY()
+	AActor* PickerActor;
 
 public:	
 	// Called every frame
@@ -56,11 +59,16 @@ public:
 	bool bIsNotPickedUp = true;
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void Collected();
-	virtual void Collected_Implementation();
+	void Collected(AActor* OtherActor);
+	virtual void Collected_Implementation(AActor* OtherActor);
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void UnCollected();
 	virtual void UnCollected_Implementation();
+	
+	UFUNCTION(BlueprintPure)
+	AActor* GetPickerActor() const;
+	UFUNCTION(BlueprintCallable)
+	void SetPickerActor(AActor* NewActor);
 
 };
