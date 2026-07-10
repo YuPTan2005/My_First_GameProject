@@ -236,6 +236,9 @@ public:
 	float GetDashCoolDown();
 	void SetDashCoolDown(float NewValue);
 	
+	bool GetHasBackpack() const;
+	void SetHasBackpack(const bool NewValue) const;
+	
 	UPROPERTY(EditAnywhere)
 	float AttackCoolDown = 1.0f;
 	UPROPERTY(EditAnywhere)

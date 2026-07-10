@@ -649,6 +649,16 @@ void AD4_HD3_CustomProjectCharacter::SetDashCoolDown(float NewValue)
 	DashCoolDown = NewValue;
 }
 
+bool AD4_HD3_CustomProjectCharacter::GetHasBackpack() const
+{
+	return InventoryComponent->GetHasBackpack();
+}
+
+void AD4_HD3_CustomProjectCharacter::SetHasBackpack(const bool NewValue) const
+{
+	InventoryComponent->SetHasBackpack(NewValue);
+}
+
 void AD4_HD3_CustomProjectCharacter::DealDamage_Implementation(float DamageTook, AActor* DamagedBy)
 {
 	Health = FMath::Clamp(Health - DamageTook, 0, MaxHealth);
