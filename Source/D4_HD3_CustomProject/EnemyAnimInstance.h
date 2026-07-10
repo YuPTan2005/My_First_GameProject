@@ -16,6 +16,7 @@ class D4_HD3_CUSTOMPROJECT_API UEnemyAnimInstance : public UAnimInstance
 	GENERATED_BODY()
 	
 public:
+	UPROPERTY()
 	AEnemy* Character;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
