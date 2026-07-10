@@ -270,7 +270,7 @@ void AD4_HD3_CustomProjectCharacter::DoJumpEnd()
 
 void AD4_HD3_CustomProjectCharacter::Collect()
 {
-	if (CollectibleFood.Num() > 0)
+	if (InventoryComponent->GetHasBackpack() && CollectibleFood.Num() > 0)
 	{
 		APickupFood* PickupFood = CollectibleFood[0];
 		AFood* FoodToAdd;
@@ -291,11 +291,12 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 			{
 				Companion->RemoveCollectibleFood_Implementation(PickupFood);
 			}
-			PickupFood->Collected();
+			PickupFood->Collected(this);
 		}
 		else
 		{
 			AddFoodSuccess = false;
+			PickupFood->UnCollected();
 		}
 		
 		if (ViewportInfoUIClass)
@@ -511,18 +512,26 @@ void AD4_HD3_CustomProjectCharacter::ShowDeathUI()
 
 AFood* AD4_HD3_CustomProjectCharacter::GetItemAtIndex(int32 Index)
 {
-	return InventoryComponent->GetItemAtIndex(Index);
+	if (InventoryComponent->GetHasBackpack())
+	{
+		return InventoryComponent->GetItemAtIndex(Index);
+	}
+	
+	return nullptr;
 }
 
 void AD4_HD3_CustomProjectCharacter::DeleteItemAtIndex(int32 Index)
 {
-	InventoryComponent->DeleteItemAtIndex(Index);
-	InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
+	if (InventoryComponent->GetHasBackpack())
+	{
+		InventoryComponent->DeleteItemAtIndex(Index);
+		InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
+	}
 }
 
 bool AD4_HD3_CustomProjectCharacter::AddItem(AFood* NewItem)
 {
-	if (InventoryComponent->AddItem(NewItem))
+	if (InventoryComponent->GetHasBackpack() && InventoryComponent->AddItem(NewItem))
 	{
 		InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
 		return true;
@@ -532,24 +541,33 @@ bool AD4_HD3_CustomProjectCharacter::AddItem(AFood* NewItem)
 
 void AD4_HD3_CustomProjectCharacter::UseItem(int32 Index)
 {
-	InventoryComponent->UseItemAtIndex(Index, this);
-	InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
-	PlayerUI->UpdateValues();
+	if (InventoryComponent->GetHasBackpack())
+	{
+		InventoryComponent->UseItemAtIndex(Index, this);
+		InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
+		PlayerUI->UpdateValues();
+	}
 }
 
 void AD4_HD3_CustomProjectCharacter::AddCollectibleFood_Implementation(APickupFood* Food)
 {
-	CollectibleFood.Add(Food);
+	if (InventoryComponent->GetHasBackpack())
+	{
+		CollectibleFood.Add(Food);
+	}
 }
 
 void AD4_HD3_CustomProjectCharacter::RemoveCollectibleFood_Implementation(APickupFood* Food)
 {
-	CollectibleFood.RemoveSingle(Food);
+	if (InventoryComponent->GetHasBackpack())
+	{
+		CollectibleFood.Remove(Food);
+	}
 }
 
 void AD4_HD3_CustomProjectCharacter::ToggleInventory()
 {
-	if (PlayerController)
+	if (PlayerController && InventoryComponent->GetHasBackpack())
 	{
 		if (bIsInventoryOpen) 
 		{
