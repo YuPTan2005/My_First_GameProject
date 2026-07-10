@@ -64,7 +64,7 @@ FVector ASpawningObject::GetRandomSpawnPoint()
 		
 		float RandomRadius = FMath::FRandRange(0.0f, Radius);
 		
-		return SphereCenter + (RandomDirection * (MeshRadius + RandomRadius));
+		return SphereCenter + (RandomDirection * (MeshRadius + RandomRadius)) + FVector(0, 0, 15.0f);
 	}
 	
 	UE_LOG(LogTemp, Error, TEXT("No SphereComponent created for SpawningTree"));
