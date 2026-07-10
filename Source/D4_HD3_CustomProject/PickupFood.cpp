@@ -81,20 +81,23 @@ void APickupFood::OnEndOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherAc
 
 void APickupFood::AddPickupUI(AActor* Actor)
 {
-	if (Cast<AD4_HD3_CustomProjectCharacter>(Actor))
+	if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(Actor))
 	{
-		if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
+		if (Player->GetHasBackpack())
 		{
-			SpawnedUI = Cast<UFoodPickupUI>(CreateWidget(GetGameInstance(), PickupUIClass));
+			if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
+			{
+				SpawnedUI = Cast<UFoodPickupUI>(CreateWidget(GetGameInstance(), PickupUIClass));
 		
-			FVector UITextOffset = PC->PlayerCameraManager->GetActorRightVector();
+				FVector UITextOffset = PC->PlayerCameraManager->GetActorRightVector();
 		
-			UITextOffset *= 100;
+				UITextOffset *= 100;
 	
-			UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
-			MeshComponent->GetComponentLocation() + UITextOffset, SpawnedUI->CurrentLocation);
+				UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
+				MeshComponent->GetComponentLocation() + UITextOffset, SpawnedUI->CurrentLocation);
 	
-			SpawnedUI->AddToViewport();
+				SpawnedUI->AddToViewport();
+			}
 		}
 	}
 }
