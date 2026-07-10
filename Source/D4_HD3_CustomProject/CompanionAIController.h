@@ -6,8 +6,6 @@
 #include "AIController.h"
 #include "AttackBTInterface.h"
 #include "Companion.h"
-#include "D4_HD3_CustomProjectCharacter.h"
-#include "Enemy.h"
 #include "CompanionAIController.generated.h"
 
 /**
@@ -33,21 +31,21 @@ public:
 	
 	void UpdateMoveToTargetFoodCheck();
 	void UpdateCollectible();
-	void CollectFood();
+	void CollectFood() const;
 	
-	void SetCompanionOwner(AD4_HD3_CustomProjectCharacter* NewCompanionOwner);
-	void SetTargetEnemy(AEnemy* Enemy);
+	void SetCompanionOwner(AActor* NewCompanionOwner);
+	void SetTargetEnemy(AActor* Enemy);
 	void SetTargetFood(APickupFood* Food);
 	
-	void ClearFoodTarget();
+	void ClearFoodTarget() const;
 	
 protected:
 	UPROPERTY()
 	ACompanion* ControlledCharacter;
 	UPROPERTY()
-	AD4_HD3_CustomProjectCharacter* CompanionOwner;
+	AActor* CompanionOwner;
 	UPROPERTY()
-	AEnemy* TargetEnemy;
+	AActor* TargetEnemy;
 	UPROPERTY()
 	APickupFood* TargetFood;
 	

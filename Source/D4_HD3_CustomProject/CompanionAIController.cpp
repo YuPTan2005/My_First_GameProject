@@ -108,7 +108,8 @@ void ACompanionAIController::UpdateMoveToTargetFoodCheck()
 
 void ACompanionAIController::UpdateCollectible()
 {
-	if (TargetFood && BlackboardComponent && CompanionOwner->IsDead())
+	if (TargetFood && BlackboardComponent && 
+		CompanionOwner->Implements<UDamageable>() && !IDamageable::Execute_IsDead(CompanionOwner))
 	{
 		float TargetFoodRadius = TargetFood->GetRootComponent()->Bounds.SphereRadius;
 		float ControlledCharacterRadius = ControlledCharacter->GetRootComponent()->Bounds.SphereRadius;
@@ -130,18 +131,18 @@ void ACompanionAIController::UpdateCollectible()
 	}
 }
 
-void ACompanionAIController::CollectFood()
+void ACompanionAIController::CollectFood() const
 {
 	ControlledCharacter->CollectFood();
 }
 
-void ACompanionAIController::SetCompanionOwner(AD4_HD3_CustomProjectCharacter* NewCompanionOwner)
+void ACompanionAIController::SetCompanionOwner(AActor* NewCompanionOwner)
 {
 	CompanionOwner = NewCompanionOwner;
 	BlackboardComponent->SetValueAsObject("Owner", CompanionOwner);
 }
 
-void ACompanionAIController::SetTargetEnemy(AEnemy* Enemy)
+void ACompanionAIController::SetTargetEnemy(AActor* Enemy)
 {
 	TargetEnemy = Enemy;
 	BlackboardComponent->SetValueAsBool("ChaseEnemy", true);
@@ -155,7 +156,7 @@ void ACompanionAIController::SetTargetFood(APickupFood* Food)
 	BlackboardComponent->SetValueAsObject("Food", TargetFood);
 }
 
-void ACompanionAIController::ClearFoodTarget()
+void ACompanionAIController::ClearFoodTarget() const
 {
 	if (BlackboardComponent && ControlledCharacter)
 	{
