@@ -206,7 +206,7 @@ bool ACompanion::CollectFood()
 			CollectTimer = 0.0f;
 			TargetPickupFood = nullptr; 
 			
-			PickupFood->Collected();
+			PickupFood->Collected(CompanionOwner);
 			SelectNextFoodTarget();
 			
 			return true;
