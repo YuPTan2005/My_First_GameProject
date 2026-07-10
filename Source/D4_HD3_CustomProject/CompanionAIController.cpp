@@ -108,7 +108,7 @@ void ACompanionAIController::UpdateMoveToTargetFoodCheck()
 
 void ACompanionAIController::UpdateCollectible()
 {
-	if (TargetFood && BlackboardComponent)
+	if (TargetFood && BlackboardComponent && CompanionOwner->IsDead())
 	{
 		float TargetFoodRadius = TargetFood->GetRootComponent()->Bounds.SphereRadius;
 		float ControlledCharacterRadius = ControlledCharacter->GetRootComponent()->Bounds.SphereRadius;

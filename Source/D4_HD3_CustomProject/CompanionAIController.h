@@ -45,9 +45,9 @@ protected:
 	UPROPERTY()
 	ACompanion* ControlledCharacter;
 	UPROPERTY()
-	AActor* CompanionOwner;
+	AD4_HD3_CustomProjectCharacter* CompanionOwner;
 	UPROPERTY()
-	AActor* TargetEnemy;
+	AEnemy* TargetEnemy;
 	UPROPERTY()
 	APickupFood* TargetFood;
 	
