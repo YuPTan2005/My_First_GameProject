@@ -58,9 +58,19 @@ bool UInventoryActorComponent::AddItem(AFood* NewItem)
 	return true;
 }
 
-bool UInventoryActorComponent::IsFull()
+bool UInventoryActorComponent::IsFull() const
 {
 	return InventoryItems.Num() >= InventorySize;
+}
+
+bool UInventoryActorComponent::GetHasBackpack() const
+{
+	return bHasBackpack;
+}
+
+void UInventoryActorComponent::SetHasBackpack(bool NewValue)
+{
+	bHasBackpack = NewValue;
 }
 
 // Called when the game starts

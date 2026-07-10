@@ -24,7 +24,13 @@ public:
 	bool UseItemAtIndex(int32 Index, AD4_HD3_CustomProjectCharacter* Character);
 	bool DeleteItemAtIndex(int32 Index);
 	bool AddItem(AFood* NewItem);
-	bool IsFull();
+	UFUNCTION(BlueprintPure)
+	bool IsFull() const;
+	
+	UFUNCTION(BlueprintPure)
+	bool GetHasBackpack() const;
+	UFUNCTION(BlueprintCallable)
+	void SetHasBackpack(bool NewValue);
 	
 protected:
 	// Called when the game starts
@@ -36,4 +42,6 @@ protected:
 	UPROPERTY()
 	TArray<AFood*> InventoryItems;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Getter = GetHasBackpack,Setter = SetHasBackpack)
+	bool bHasBackpack;
 };
