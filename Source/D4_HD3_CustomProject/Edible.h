@@ -22,8 +22,7 @@ class D4_HD3_CUSTOMPROJECT_API IEdible
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void EatenBy(ACharacter* Character);
+	void EatenBy(AActor* Character);
 	
 };
