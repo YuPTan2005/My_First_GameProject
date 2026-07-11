@@ -21,6 +21,7 @@ public:
 	virtual void EatenBy_Implementation(ACharacter* Character) override;
 	
 protected:
+	UPROPERTY()
 	AD4_HD3_CustomProjectCharacter* Player;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
