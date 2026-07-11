@@ -24,14 +24,18 @@ void AFood::BeginPlay()
 	
 }
 
-void AFood::EatenBy_Implementation(ACharacter* Character)
+void AFood::EatenBy_Implementation(AActor* Character)
 {
 	IEdible::EatenBy_Implementation(Character);
 	
-	if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(Character))
+	if (Character->Implements<UFoodConsumer>())
 	{
-		Player->GainExperience(ExperienceAmount);
-		Player->GainStarvation(StarvationAmount);
+		IFoodConsumer::Execute_GainStarvation(Character, StarvationAmount);
+		
+		if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(Character))
+		{
+			Player->GainExperience(ExperienceAmount);
+		}
 	}
 }
 

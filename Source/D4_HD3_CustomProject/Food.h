@@ -36,7 +36,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
-	virtual void EatenBy_Implementation(ACharacter* Character) override;
+	virtual void EatenBy_Implementation(AActor* Character) override;
 	
 	void SetName(FString Name);
 	void SetDescription(FString Description);
