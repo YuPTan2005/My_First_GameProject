@@ -73,6 +73,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* DashAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* EatAction;
 
 public:
 
@@ -91,6 +94,8 @@ protected:
 	
 	UPROPERTY()
 	TArray<APickupFood*> CollectibleFood;
+	UPROPERTY()
+	TArray<APickupFood*> EdibleFood;
 	
 	UPROPERTY()
 	AD4_HD3_CustomProjectPlayerController* PlayerController;
@@ -158,11 +163,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoJumpEnd();
 	
-	UFUNCTION(BlueprintCallable, Category="Input")
-	virtual void Collect();
+	void Collect();
+	void Eat();
 	
 	FString FoodSuccessCollectedText = "Food added to inventory!";
 	FString FoodFailCollectedText = "Inventory is full!";
+	FString FoodEatenText = "Food eaten!";
 	
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void Dash();

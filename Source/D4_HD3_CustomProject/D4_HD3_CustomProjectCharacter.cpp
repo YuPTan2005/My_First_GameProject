@@ -87,6 +87,8 @@ void AD4_HD3_CustomProjectCharacter::SetupPlayerInputComponent(UInputComponent* 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Attack);
 		
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Dash);
+		
+		EnhancedInputComponent->BindAction(EatAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Eat);
 	}
 	else
 	{
@@ -323,7 +325,44 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("No value assigned to ViewportInfoUIClass in %s"), *GetName());
+			UE_LOG(LogTemp, Warning, TEXT("No value assigned to CollectionInfoUIClass in %s"), *GetName());
+		}
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::Eat()
+{
+	if (!InventoryComponent->GetHasBackpack() && EdibleFood.Num() > 0)
+	{
+		APickupFood* PickupFood = EdibleFood[0];
+		AFood* FoodToEat;
+		if (!PickupFood->Food)
+		{
+			FoodToEat = NewObject<AFood>();
+		}
+		else
+		{
+			FoodToEat = PickupFood->Food;
+		}
+		
+		Eat(FoodToEat);
+		
+		if (ViewportInfoUIClass)
+		{
+			UViewportInfoUI* ViewportInfoUI = CreateWidget<UViewportInfoUI>(GetGameInstance(), ViewportInfoUIClass);
+			
+			FVector2D ViewportInfoUILocation;
+			UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
+				PickupFood->GetActorLocation(), ViewportInfoUILocation);
+			
+			ViewportInfoUI->SetStartLocation(ViewportInfoUILocation);
+			ViewportInfoUI->SetDisplayText(FoodSuccessCollectedText);
+			ViewportInfoUI->SetColorAndOpacity(FLinearColor(0.85f, 0.55f, 0.08f));
+			ViewportInfoUI->AddToViewport();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No value assigned to EatenInfoUIClass in %s"), *GetName());
 		}
 	}
 }
@@ -556,6 +595,10 @@ void AD4_HD3_CustomProjectCharacter::AddCollectibleFood_Implementation(APickupFo
 	{
 		CollectibleFood.Add(Food);
 	}
+	else
+	{
+		EdibleFood.Add(Food);
+	}
 }
 
 void AD4_HD3_CustomProjectCharacter::RemoveCollectibleFood_Implementation(APickupFood* Food)
@@ -563,6 +606,10 @@ void AD4_HD3_CustomProjectCharacter::RemoveCollectibleFood_Implementation(APicku
 	if (InventoryComponent->GetHasBackpack())
 	{
 		CollectibleFood.Remove(Food);
+	}
+	else
+	{
+		EdibleFood.Remove(Food);
 	}
 }
 
