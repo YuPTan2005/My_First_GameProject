@@ -30,14 +30,15 @@ AFood* UInventoryActorComponent::GetItemAtIndex(int32 Index)
 	return InventoryItems[Index];
 }
 
-bool UInventoryActorComponent::UseItemAtIndex(int32 Index, AD4_HD3_CustomProjectCharacter* Character)
+bool UInventoryActorComponent::UseItemAtIndex(int32 Index, AActor* Character)
 {
-	if(Index >= InventoryItems.Num() || Index < 0)
+	if(Index >= InventoryItems.Num() || Index < 0 || !Character->Implements<UFoodConsumer>())
 	{
 		return false;
 	}
+	
 	AFood* UsedItem = InventoryItems[Index];
-	Character->Eat(UsedItem);
+	IFoodConsumer::Execute_Eat(Character, UsedItem);
 	InventoryItems.RemoveAt(Index);
 	return true;
 }

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Companion.h"
 #include "Components/ActorComponent.h"
 #include "InventoryActorComponent.generated.h"
 
@@ -21,7 +22,7 @@ public:
 	
 	TArray<AFood*> GetAllItems();
 	AFood* GetItemAtIndex(int32 Index);
-	bool UseItemAtIndex(int32 Index, AD4_HD3_CustomProjectCharacter* Character);
+	bool UseItemAtIndex(int32 Index, AActor* Character);
 	bool DeleteItemAtIndex(int32 Index);
 	bool AddItem(AFood* NewItem);
 	UFUNCTION(BlueprintPure)
