@@ -83,21 +83,25 @@ void APickupFood::AddPickupUI(AActor* Actor)
 {
 	if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(Actor))
 	{
-		if (Player->GetHasBackpack())
+		if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
 		{
-			if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
+			if (Player->GetHasBackpack())
 			{
 				SpawnedUI = Cast<UFoodPickupUI>(CreateWidget(GetGameInstance(), PickupUIClass));
-		
-				FVector UITextOffset = PC->PlayerCameraManager->GetActorRightVector();
-		
-				UITextOffset *= 100;
-	
-				UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
-				MeshComponent->GetComponentLocation() + UITextOffset, SpawnedUI->CurrentLocation);
-	
-				SpawnedUI->AddToViewport();
 			}
+			else
+			{
+				SpawnedUI = Cast<UFoodPickupUI>(CreateWidget(GetGameInstance(), EatingUIClass));
+			}
+	
+			FVector UITextOffset = PC->PlayerCameraManager->GetActorRightVector();
+	
+			UITextOffset *= 100;
+
+			UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
+			MeshComponent->GetComponentLocation() + UITextOffset, SpawnedUI->CurrentLocation);
+
+			SpawnedUI->AddToViewport();
 		}
 	}
 }

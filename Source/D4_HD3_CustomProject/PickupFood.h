@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UFoodPickupUI> PickupUIClass;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UFoodPickupUI> EatingUIClass;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Details")
 	AFood* Food;
 
