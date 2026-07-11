@@ -18,7 +18,7 @@ class D4_HD3_CUSTOMPROJECT_API APineapple : public AFood
 public:
 	APineapple();
 	
-	virtual void EatenBy_Implementation(ACharacter* Character) override;
+	virtual void EatenBy_Implementation(AActor* Character) override;
 	
 protected:
 	UPROPERTY()
@@ -26,6 +26,6 @@ protected:
 	
 	FTimerHandle StarvationTimer;
 	float EffectDuration = 20.0f;
-	void ContinueStarvationDecrement();
+	void ContinueStarvationDecrement() const;
 	
 };

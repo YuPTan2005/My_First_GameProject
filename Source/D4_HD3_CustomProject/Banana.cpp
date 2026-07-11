@@ -11,7 +11,7 @@ ABanana::ABanana()
 	StarvationAmount = 30;
 }
 
-void ABanana::EatenBy_Implementation(ACharacter* Character)
+void ABanana::EatenBy_Implementation(AActor* Character)
 {
 	Super::EatenBy_Implementation(Character);
 	
@@ -31,7 +31,7 @@ void ABanana::EatenBy_Implementation(ACharacter* Character)
 	}
 }
 
-void ABanana::RemoveDashAbility()
+void ABanana::RemoveDashAbility() const
 {
 	Player->SetCanDash(false);
 	Player->SetDashSpeed(1.0f);

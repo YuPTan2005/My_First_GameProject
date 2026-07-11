@@ -18,7 +18,7 @@ class D4_HD3_CUSTOMPROJECT_API ABanana : public AFood
 public:
 	ABanana();
 	
-	virtual void EatenBy_Implementation(ACharacter* Character) override;
+	virtual void EatenBy_Implementation(AActor* Character) override;
 	
 protected:
 	UPROPERTY()
@@ -30,5 +30,5 @@ protected:
 	FTimerHandle DashTimer;
 	float EffectDuration = 10.0f;
 	
-	void RemoveDashAbility();
+	void RemoveDashAbility() const;
 };

@@ -6,19 +6,18 @@
 APineapple::APineapple()
 {
 	FoodName = "Pineapple";
-	FoodDescription = TEXT("Experience amount: 20. Starvation value will stop to drop for 20 seconds.");
+	FoodDescription = TEXT("Experience amount: 20. StarvationAmount: 9999. Starvation value will stop to drop for 20 seconds.");
 	ExperienceAmount = 20;
-	StarvationAmount = 0; // Will directly set the value to max
+	StarvationAmount = 9999; // Will directly set the value to max
 }
 
-void APineapple::EatenBy_Implementation(ACharacter* Character)
+void APineapple::EatenBy_Implementation(AActor* Character)
 {
 	Super::EatenBy_Implementation(Character);
 	
 	Player = Cast<AD4_HD3_CustomProjectCharacter>(Character);
 	if (Player)
 	{
-		Player->StarvationValue = Player->MaxStarvationValue;
 		Player->SetIsStarvationDecrement(false);
 		GetWorld()->GetTimerManager().SetTimer(
 			StarvationTimer,
@@ -30,7 +29,7 @@ void APineapple::EatenBy_Implementation(ACharacter* Character)
 	}
 }
 
-void APineapple::ContinueStarvationDecrement()
+void APineapple::ContinueStarvationDecrement() const
 {
 	Player->SetIsStarvationDecrement(true);
 }
