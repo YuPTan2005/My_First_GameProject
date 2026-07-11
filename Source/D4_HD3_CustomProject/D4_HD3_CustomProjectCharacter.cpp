@@ -404,6 +404,13 @@ void AD4_HD3_CustomProjectCharacter::GainStarvation(float StarvationAmount)
 	{
 		StarvationValue = MaxStarvationValue;
 	}
+	
+	if (bIsCountDownCalled)
+	{
+		GetWorldTimerManager().ClearTimer(DeathTimerHandle);
+		bIsCountDownCalled = false;
+		StarvationUI->RemoveFromParent();
+	}
 }
 
 void AD4_HD3_CustomProjectCharacter::Upgrade()
@@ -437,12 +444,6 @@ void AD4_HD3_CustomProjectCharacter::Tick(float DeltaSeconds)
 	else if (bIsStarvationDecrement && StarvationValue >= 0)
 	{
 		StarvationValue += StarvationDecrementValue * DeltaSeconds;
-		if (bIsCountDownCalled)
-		{
-			GetWorldTimerManager().ClearTimer(DeathTimerHandle);
-			bIsCountDownCalled = false;
-			StarvationUI->RemoveFromParent();
-		}
 	}
 	
 	if (AttackTimer < AttackCoolDown)
