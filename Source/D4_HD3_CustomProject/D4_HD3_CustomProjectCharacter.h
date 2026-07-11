@@ -8,6 +8,7 @@
 #include "Damageable.h"
 #include "DeathUI.h"
 #include "FoodCollector.h"
+#include "FoodConsumer.h"
 #include "InventoryActorComponent.h"
 #include "InventoryWidget.h"
 #include "PickupFood.h"
@@ -35,7 +36,8 @@ UCLASS(abstract)
 class AD4_HD3_CustomProjectCharacter : 
 	public ACharacter, 
 	public IFoodCollector,
-	public IDamageable
+	public IDamageable,
+	public IFoodConsumer
 {
 	GENERATED_BODY()
 
@@ -180,9 +182,9 @@ public:
 	const int8 MaxStateNumber = 3;
 	void ResetState();
 	
-	void Eat(IEdible* Food);
+	virtual void Eat_Implementation(AActor* Food) override;
 	void GainExperience(float ExperienceAmount);
-	void GainStarvation(float StarvationAmount);
+	virtual void GainStarvation_Implementation(float StarvationAmount) override;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actor Component Class")
 	TSubclassOf<UInventoryActorComponent> InventoryComponentClass;
@@ -198,6 +200,7 @@ public:
 	void DeleteItemAtIndex(int32 Index);
 	bool AddItem(AFood* NewItem);
 	void UseItem(int32 Index);
+	void FeedItem(int32 Index) const;
 	
 	virtual void AddCollectibleFood_Implementation(APickupFood* Food) override;
 	virtual void RemoveCollectibleFood_Implementation(APickupFood* Food) override;

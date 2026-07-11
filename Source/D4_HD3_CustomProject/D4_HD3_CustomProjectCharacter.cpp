@@ -348,8 +348,8 @@ void AD4_HD3_CustomProjectCharacter::Eat()
 		{
 			FoodToEat = PickupFood->Food;
 		}
-		
-		Eat(FoodToEat);
+
+		Execute_Eat(this, FoodToEat);
 		EdibleFood.RemoveSingle(PickupFood);
 		if (Companion)
 		{
@@ -431,9 +431,12 @@ void AD4_HD3_CustomProjectCharacter::ResetState()
 	StateNumber = 0;
 }
 
-void AD4_HD3_CustomProjectCharacter::Eat(IEdible* Food)
+void AD4_HD3_CustomProjectCharacter::Eat_Implementation(AActor* Food)
 {
-	Food->EatenBy_Implementation(this);
+	if (Food->Implements<UEdible>())
+	{
+		IEdible::Execute_EatenBy(Food, this);
+	}
 }
 
 void AD4_HD3_CustomProjectCharacter::GainExperience(float ExperienceAmount)
@@ -446,7 +449,7 @@ void AD4_HD3_CustomProjectCharacter::GainExperience(float ExperienceAmount)
 	}
 }
 
-void AD4_HD3_CustomProjectCharacter::GainStarvation(float StarvationAmount)
+void AD4_HD3_CustomProjectCharacter::GainStarvation_Implementation(float StarvationAmount)
 {
 	StarvationValue += StarvationAmount;
 	if (StarvationValue > MaxStarvationValue)
@@ -459,6 +462,16 @@ void AD4_HD3_CustomProjectCharacter::GainStarvation(float StarvationAmount)
 		GetWorldTimerManager().ClearTimer(DeathTimerHandle);
 		bIsCountDownCalled = false;
 		StarvationUI->RemoveFromParent();
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::FeedItem(int32 Index) const
+{
+	if (InventoryComponent->GetHasBackpack())
+	{
+		InventoryComponent->UseItemAtIndex(Index, Companion);
+		InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
+		Companion->UpdateStatus();
 	}
 }
 
