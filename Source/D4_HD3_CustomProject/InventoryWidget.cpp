@@ -10,9 +10,8 @@
 void UInventoryWidget::OnButtonWasClicked(UInventoryButtonWidget* Button)
 {
 	SelectedItemIndex = ButtonList.Find(Button);
-
-	AFood* SelectedItem = Owner->GetItemAtIndex(SelectedItemIndex);
-	if(SelectedItem) {
+	
+	if(AFood* SelectedItem = Owner->GetItemAtIndex(SelectedItemIndex)) {
 		ItemNameTextBlock->
 			  SetText(FText::FromString(SelectedItem->GetName()));
 		ItemDescriptionTextBlock->
@@ -20,26 +19,26 @@ void UInventoryWidget::OnButtonWasClicked(UInventoryButtonWidget* Button)
 	}
 	else
 	{
-		ItemNameTextBlock->SetText(FText::FromString("No Item Selected"));
-		ItemDescriptionTextBlock->SetText(FText::FromString("No Item Selected"));
-		SelectedItemIndex = -1;
+		ResetDisplayItem();
 	}
 }
 
 void UInventoryWidget::OnUseButtonClicked()
 {
 	Owner->UseItem(SelectedItemIndex);
-	ItemNameTextBlock->SetText(FText::FromString("No Item Selected"));
-	ItemDescriptionTextBlock->SetText(FText::FromString("No Item Selected"));
-	SelectedItemIndex = -1;
+	ResetDisplayItem();
+}
+
+void UInventoryWidget::OnFeedButtonClicked()
+{
+	Owner->FeedItem(SelectedItemIndex);
+	ResetDisplayItem();
 }
 
 void UInventoryWidget::OnDeleteButtonClicked()
 {
 	Owner->DeleteItemAtIndex(SelectedItemIndex);
-	ItemNameTextBlock->SetText(FText::FromString("No Item Selected"));
-	ItemDescriptionTextBlock->SetText(FText::FromString("No Item Selected"));
-	SelectedItemIndex = -1;
+	ResetDisplayItem();
 }
 
 FReply UInventoryWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
@@ -113,5 +112,21 @@ void UInventoryWidget::NativeConstruct()
 	ItemDescriptionTextBlock->SetText(FText::FromString("No Item Selected"));
 
 	UseItemButton->OnClicked.AddUniqueDynamic(this, &UInventoryWidget::OnUseButtonClicked);
+	FeedCompanionButton->OnClicked.AddUniqueDynamic(this, &UInventoryWidget::OnUseButtonClicked);
 	DeleteItemButton->OnClicked.AddUniqueDynamic(this, &UInventoryWidget::OnDeleteButtonClicked);
+	
+	ItemDescriptionTextBlock->SetAutoWrapText(true);
+	DescriptionContainer->AddChild(ItemDescriptionTextBlock);
+	
+	DescriptionContainer->SetOrientation(Orient_Vertical);
+	DescriptionContainer->SetScrollBarVisibility(ESlateVisibility::Visible);
+	DescriptionContainer->SetScrollbarThickness(FVector2D(12.0f, 12.0f));
+	DescriptionContainer->SetConsumeMouseWheel(EConsumeMouseWheel::WhenScrollingPossible);
+}
+
+void UInventoryWidget::ResetDisplayItem()
+{
+	ItemNameTextBlock->SetText(FText::FromString("No Item Selected"));
+	ItemDescriptionTextBlock->SetText(FText::FromString("No Item Selected"));
+	SelectedItemIndex = -1;
 }

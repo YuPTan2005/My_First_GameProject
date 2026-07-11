@@ -6,6 +6,7 @@
 #include "InventoryButtonWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/GridPanel.h"
+#include "Components/ScrollBox.h"
 #include "Components/TextBlock.h"
 #include "InventoryWidget.generated.h"
 
@@ -33,7 +34,12 @@ public:
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* ItemDescriptionTextBlock;
 	UPROPERTY(meta=(BindWidget))
+	UScrollBox* DescriptionContainer;
+	
+	UPROPERTY(meta=(BindWidget))
 	UButton* UseItemButton;
+	UPROPERTY(meta=(BindWidget))
+	UButton* FeedCompanionButton;
 	UPROPERTY(meta=(BindWidget))
 	UButton* DeleteItemButton;
 
@@ -42,18 +48,24 @@ public:
 
 	UFUNCTION()
 	void OnUseButtonClicked();
+	
+	UFUNCTION()
+	void OnFeedButtonClicked();
 
 	UFUNCTION()
 	void OnDeleteButtonClicked();
 	
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 
+	UPROPERTY()
 	AD4_HD3_CustomProjectCharacter* Owner;
 	
 	void RefreshInventory(TArray<AFood*> Items);
 
 protected:
 	virtual void NativeConstruct() override;
+	
+	void ResetDisplayItem();
 
 	UPROPERTY()
 	TArray<UInventoryButtonWidget*> ButtonList;
