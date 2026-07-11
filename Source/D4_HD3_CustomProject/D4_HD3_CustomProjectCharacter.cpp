@@ -346,6 +346,7 @@ void AD4_HD3_CustomProjectCharacter::Eat()
 		}
 		
 		Eat(FoodToEat);
+		PickupFood->Eaten();
 		
 		if (ViewportInfoUIClass)
 		{
@@ -356,13 +357,13 @@ void AD4_HD3_CustomProjectCharacter::Eat()
 				PickupFood->GetActorLocation(), ViewportInfoUILocation);
 			
 			ViewportInfoUI->SetStartLocation(ViewportInfoUILocation);
-			ViewportInfoUI->SetDisplayText(FoodSuccessCollectedText);
+			ViewportInfoUI->SetDisplayText(FoodEatenText);
 			ViewportInfoUI->SetColorAndOpacity(FLinearColor(0.85f, 0.55f, 0.08f));
 			ViewportInfoUI->AddToViewport();
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("No value assigned to EatenInfoUIClass in %s"), *GetName());
+			UE_LOG(LogTemp, Warning, TEXT("No value assigned to ViewportInfoUIClass in %s"), *GetName());
 		}
 	}
 }
