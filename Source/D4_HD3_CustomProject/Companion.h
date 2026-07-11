@@ -87,11 +87,15 @@ protected:
 	float StarvationValue = 30.0f;
 	float MaxStarvationValue = 30.0f;
 	float StarvationDecrementValue = -1;
+	void StarvationCountDown();
+	FTimerHandle StarvationTimer;
+	
+	int CountDownTime = 10;
+	bool bIsCountDownCalled = false;
+	void DeathCountDown();
 	
 	bool bIsDead;
-	
-	FTimerHandle DeadTimer;
-	void Dead();
+	FTimerHandle DeathTimer;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UAnimMontage* AttackMontage;
@@ -127,6 +131,7 @@ public:
 	float GetCollectDistance() const;
 	APickupFood* GetTargetPickupFood();
 	AEnemy* GetTargetEnemy();
+	bool GetIsCountDownCalled() const;
 	
 	void SetCurrentHealth(float CurrentHealth);
 	void SetMaxHealth(float MaxHealth);
@@ -145,6 +150,7 @@ public:
 	void SetCollectDistance(float NewCollectDistance);
 	void SetTargetPickupFood(APickupFood* NewPickupFood);
 	void SetTargetEnemy(AEnemy* Enemy);
+	void SetIsCountDownCalled(bool NewValue);
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -168,5 +174,6 @@ public:
 	virtual void GainStarvation_Implementation(float StarvationAmount) override;
 	
 	void UpdateStatus();
+	void Dead();
 	
 };

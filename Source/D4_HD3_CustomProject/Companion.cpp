@@ -108,6 +108,43 @@ void ACompanion::OnSphereEndOverlap(UPrimitiveComponent* OverlapComp, AActor* Ot
 	}
 }
 
+void ACompanion::StarvationCountDown()
+{
+	GetWorldTimerManager().SetTimer(
+		StarvationTimer,
+		this,
+		&ACompanion::DeathCountDown,
+		CountDownTime,
+		false
+		);
+	
+	if (CompanionOwner)
+	{
+		CompanionOwner->ShowCompanionStarvationUI();
+	}
+}
+
+void ACompanion::DeathCountDown()
+{
+	bIsDead = true;
+	
+	if (AAIController* AIController = Cast<AAIController>(GetController()))
+	{
+		UBrainComponent* AIBrainComponent = AIController->GetBrainComponent();
+		if (AIBrainComponent && AIBrainComponent->IsRunning())
+		{
+			AIBrainComponent->StopLogic(TEXT("Character died"));
+		}
+	}
+	GetWorld()->GetTimerManager().SetTimer(
+		DeathTimer,
+		this,
+		&ACompanion::Dead,
+		5.0f,
+		false
+		);
+}
+
 void ACompanion::Dead()
 {
 	Destroy();
@@ -125,23 +162,7 @@ void ACompanion::DealDamage_Implementation(float DamageTook, AActor* DamagedBy)
 	
 	if (CurrentHealth <= 0 && !bIsDead)
 	{
-		bIsDead = true;
-		
-		if (AAIController* AIController = Cast<AAIController>(GetController()))
-		{
-			UBrainComponent* AIBrainComponent = AIController->GetBrainComponent();
-			if (AIBrainComponent && AIBrainComponent->IsRunning())
-			{
-				AIBrainComponent->StopLogic(TEXT("Character died"));
-			}
-		}
-		GetWorld()->GetTimerManager().SetTimer(
-			DeadTimer,
-			this,
-			&ACompanion::Dead,
-			5.0f,
-			false
-			);
+		DeathCountDown();
 	}
 }
 
@@ -231,6 +252,16 @@ void ACompanion::GainStarvation_Implementation(float StarvationAmount)
 	if (StarvationValue > MaxStarvationValue)
 	{
 		StarvationValue = MaxStarvationValue;
+	}
+	
+	if (bIsCountDownCalled)
+	{
+		GetWorldTimerManager().ClearTimer(StarvationTimer);
+		bIsCountDownCalled = false;
+		if (CompanionOwner)
+		{
+			CompanionOwner->ClearCompanionStarvationUI();
+		}
 	}
 }
 
@@ -384,6 +415,16 @@ AEnemy* ACompanion::GetTargetEnemy()
 	return TargetEnemy;
 }
 
+bool ACompanion::GetIsCountDownCalled() const
+{
+	return bIsCountDownCalled;
+}
+
+void ACompanion::SetIsCountDownCalled(bool NewValue)
+{
+	bIsCountDownCalled = NewValue;
+}
+
 void ACompanion::SetTargetEnemy(AEnemy* Enemy)
 {
 	TargetEnemy = Enemy;
@@ -461,6 +502,16 @@ void ACompanion::SetCompanionOwner(AD4_HD3_CustomProjectCharacter* NewCompanionO
 void ACompanion::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	if (StarvationValue < 0 && !bIsCountDownCalled)
+	{
+		bIsCountDownCalled = true;
+		DeathCountDown();
+	}
+	else if (StarvationValue >= 0)
+	{
+		StarvationValue += StarvationDecrementValue * DeltaTime;
+	}
 	
 	if (CollectTimer >= CollectInterval)
 	{
