@@ -300,12 +300,12 @@ void ACompanion::UpdateStatus()
 	}
 }
 
-float ACompanion::GetCurrentHealth_Implementation()
+float ACompanion::GetCurrentHealth() const
 {
 	return CurrentHealth;
 }
 
-float ACompanion::GetMaxHealth_Implementation()
+float ACompanion::GetMaxHealth() const
 {
 	return MaxHealth;
 }

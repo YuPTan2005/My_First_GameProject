@@ -20,7 +20,6 @@ class D4_HD3_CUSTOMPROJECT_API ACompanion :
 	public ACharacter, 
 	public IFoodCollector,
 	public IDamageable,
-	public INPCInterface,
 	public IFoodConsumer
 {
 	GENERATED_BODY()
@@ -113,8 +112,8 @@ protected:
 	TArray<APickupFood*> CollectibleFoodList;
 
 public:
-	virtual float GetCurrentHealth_Implementation() override;
-	virtual float GetMaxHealth_Implementation() override;
+	float GetCurrentHealth() const;
+	float GetMaxHealth() const;
 	float GetDamageValue() const;
 	float GetStarvationValue() const;
 	float GetMaxStarvationValue() const;
