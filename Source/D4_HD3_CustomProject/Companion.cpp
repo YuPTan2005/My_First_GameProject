@@ -5,6 +5,7 @@
 #include "BrainComponent.h"
 #include "AIController.h"
 #include "CompanionAIController.h"
+#include "CompanionStatusUI.h"
 #include "D4_HD3_CustomProjectCharacter.h"
 #include "Enemy.h"
 #include "Food.h"
@@ -50,11 +51,10 @@ void ACompanion::BeginPlay()
 	
 	if (CompanionStatusClass)
 	{
-		StatusWidget = CreateWidget<UNPCStatus>(GetWorld(), CompanionStatusClass);
+		StatusWidget = CreateWidget<UCompanionStatusUI>(GetWorld(), CompanionStatusClass);
 		if (StatusWidget)
 		{
 			StatusWidget->BindingActor = this;
-			StatusWidget->SetHealthBarSize(FVector2D(200.0f, 10.0f));
 			StatusWidget->SetMaxHealthTextSize(18.0f);
 			StatusWidget->SetCurrentHealthTextSize(18.0f);
 		

@@ -7,11 +7,11 @@
 #include "Enemy.h"
 #include "FoodCollector.h"
 #include "FoodConsumer.h"
-#include "NPCInterface.h"
 #include "NPCStatusComponent.h"
 #include "GameFramework/Character.h"
 #include "Companion.generated.h"
 
+class UCompanionStatusUI;
 class AD4_HD3_CustomProjectCharacter;
 class UNPCStatus;
 
@@ -76,9 +76,9 @@ protected:
 	UPROPERTY()
 	UNPCStatusComponent* StatusComponent;
 	UPROPERTY()
-	UNPCStatus* StatusWidget;
+	UCompanionStatusUI* StatusWidget;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UUserWidget> CompanionStatusClass;
+	TSubclassOf<UCompanionStatusUI> CompanionStatusClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	FVector StatusComponentOffset = FVector(10.0f, -10.0f, 30.0f);
