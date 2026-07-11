@@ -216,6 +216,24 @@ bool ACompanion::CollectFood()
 	return false;
 }
 
+void ACompanion::Eat_Implementation(AActor* Food)
+{
+	if (Food->Implements<UEdible>())
+	{
+		IEdible::Execute_EatenBy(Food, this);
+	}
+}
+
+void ACompanion::GainStarvation_Implementation(float StarvationAmount)
+{
+	StarvationValue += StarvationAmount;
+	
+	if (StarvationValue > MaxStarvationValue)
+	{
+		StarvationValue = MaxStarvationValue;
+	}
+}
+
 void ACompanion::AddCollectibleFood_Implementation(APickupFood* Food)
 {
 	CollectibleFoodList.Add(Food);

@@ -6,6 +6,7 @@
 #include "Damageable.h"
 #include "Enemy.h"
 #include "FoodCollector.h"
+#include "FoodConsumer.h"
 #include "NPCInterface.h"
 #include "NPCStatusComponent.h"
 #include "GameFramework/Character.h"
@@ -19,7 +20,8 @@ class D4_HD3_CUSTOMPROJECT_API ACompanion :
 	public ACharacter, 
 	public IFoodCollector,
 	public IDamageable,
-	public INPCInterface
+	public INPCInterface,
+	public IFoodConsumer
 {
 	GENERATED_BODY()
 
@@ -103,8 +105,6 @@ protected:
 	float CollectTimer = CollectInterval;
 	bool bCanCollect;
 	
-	void UpdateStatus();
-	
 	UPROPERTY()
 	TArray<APickupFood*> CollectibleFoodList;
 
@@ -157,13 +157,16 @@ public:
 	
 	void Attack(AActor* Target);
 	
-	bool CollectFood();
-	
 	virtual void AddCollectibleFood_Implementation(APickupFood* Food) override;
 	virtual void RemoveCollectibleFood_Implementation(APickupFood* Food) override;
 	
 	bool IsCollectibleFoodListEmpty();
-	
 	void SelectNextFoodTarget();
+	bool CollectFood();
+	
+	virtual void Eat_Implementation(AActor* Food) override;
+	virtual void GainStarvation_Implementation(float StarvationAmount) override;
+	
+	void UpdateStatus();
 	
 };
