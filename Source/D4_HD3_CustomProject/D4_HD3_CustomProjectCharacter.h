@@ -19,6 +19,7 @@
 #include "Logging/LogMacros.h"
 #include "D4_HD3_CustomProjectCharacter.generated.h"
 
+class UCompanionStarvationUI;
 class AFood;
 class IEdible;
 class USpringArmComponent;
@@ -87,7 +88,6 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ACompanion> CompanionClass;
-	
 	UPROPERTY()
 	ACompanion* Companion;
 	
@@ -220,6 +220,8 @@ public:
 	UPROPERTY()
 	UStarvationUI* StarvationUI;
 	UPROPERTY()
+	UCompanionStarvationUI* CompanionStarvationUI;
+	UPROPERTY()
 	UDeathUI* DeathUI;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UViewportInfoUI> ViewportInfoUIClass;
@@ -264,6 +266,9 @@ public:
 	UAnimMontage* AttackAnims;
 	
 	void Attack();
+	
+	void ShowCompanionStarvationUI() const;
+	void ClearCompanionStarvationUI() const;
 
 public:
 

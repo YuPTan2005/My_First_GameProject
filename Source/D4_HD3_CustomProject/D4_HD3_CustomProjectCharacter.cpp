@@ -4,6 +4,7 @@
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "CompanionStarvationUI.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Controller.h"
@@ -525,7 +526,7 @@ void AD4_HD3_CustomProjectCharacter::DeathCountDown()
 		DeathTimerHandle,
 		this,
 		&AD4_HD3_CustomProjectCharacter::Dead,
-		10.0f,
+		CountDownTime,
 		false
 		);
 	
@@ -812,5 +813,22 @@ void AD4_HD3_CustomProjectCharacter::Attack()
 				}
 			}
 		}
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::ShowCompanionStarvationUI() const
+{
+	if (CompanionStarvationUI)
+	{
+		CompanionStarvationUI->AddToViewport();
+		CompanionStarvationUI->TriggerAnimation();
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::ClearCompanionStarvationUI() const
+{
+	if (CompanionStarvationUI)
+	{
+		CompanionStarvationUI->RemoveFromParent();
 	}
 }
