@@ -76,10 +76,27 @@ void AD4_HD3_CustomProjectPlayerController::AttachUIWidget(ACharacter* NewPlayer
 		{
 			StarvationUI = CreateWidget<UStarvationUI>(this, StarvationUIClass);
 		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No value assigned to StarvationUIClass in %s"), *GetName());
+		}
+		
+		if (!CompanionStarvationUI && CompanionStarvationUIClass)
+		{
+			CompanionStarvationUI = CreateWidget<UCompanionStarvationUI>(this, CompanionStarvationUIClass);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No value assigned to CompanionStarvationUIClass in %s"), *GetName());
+		}
 		
 		if (!InventoryWidget && InventoryWidgetClass)
 		{
 			InventoryWidget = CreateWidget<UInventoryWidget>(this, InventoryWidgetClass);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No value assigned to InventoryWidgetClass in %s"), *GetName());
 		}
 	
 		if (!PlayerUI && PlayerUIClass)
@@ -87,15 +104,28 @@ void AD4_HD3_CustomProjectPlayerController::AttachUIWidget(ACharacter* NewPlayer
 			PlayerUI = Cast<UPlayerUI>(CreateWidget(this, PlayerUIClass));
 			PlayerUI->AddToViewport();
 		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No value assigned to PlayerUIClass in %s"), *GetName());
+		}
 	
 		if (!DeathUI && DeathUIClass)
 		{
 			DeathUI = Cast<UDeathUI>(CreateWidget(this, DeathUIClass));
 		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No value assigned to DeathUIClass in %s"), *GetName());
+		}
 		
 		if (StarvationUI)
 		{
 			PlayerCharacter->StarvationUI = StarvationUI;
+		}
+		
+		if (CompanionStarvationUI)
+		{
+			PlayerCharacter->CompanionStarvationUI = CompanionStarvationUI;
 		}
 		
 		if (InventoryWidget)

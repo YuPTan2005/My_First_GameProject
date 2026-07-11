@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CompanionStarvationUI.h"
 #include "DeathUI.h"
 #include "InventoryWidget.h"
 #include "PlayerUI.h"
@@ -68,6 +69,11 @@ public:
 	TSubclassOf<UStarvationUI> StarvationUIClass;
 	UPROPERTY()
 	UStarvationUI* StarvationUI;
+	
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UCompanionStarvationUI> CompanionStarvationUIClass;
+	UPROPERTY()
+	UCompanionStarvationUI* CompanionStarvationUI;
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UDeathUI> DeathUIClass;
