@@ -25,4 +25,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void Eat(AActor* Food);
 	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void GainStarvation(float StarvationAmount);
+	
 };
