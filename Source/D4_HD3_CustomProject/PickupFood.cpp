@@ -58,6 +58,11 @@ void APickupFood::SetPickerActor(AActor* NewActor)
 	PickerActor = NewActor;
 }
 
+void APickupFood::Eaten()
+{
+	Destroy();
+}
+
 void APickupFood::OnOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                             int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {

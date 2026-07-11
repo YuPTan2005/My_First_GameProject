@@ -73,5 +73,7 @@ public:
 	AActor* GetPickerActor() const;
 	UFUNCTION(BlueprintCallable)
 	void SetPickerActor(AActor* NewActor);
+	
+	void Eaten();
 
 };
