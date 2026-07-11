@@ -276,6 +276,8 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 	{
 		APickupFood* PickupFood = CollectibleFood[0];
 		AFood* FoodToAdd;
+		const FVector PickupFoodLocation = PickupFood->GetActorLocation();
+		
 		if (!PickupFood->Food)
 		{
 			FoodToAdd = NewObject<AFood>();
@@ -307,7 +309,7 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 			
 			FVector2D ViewportInfoUILocation;
 			UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
-				PickupFood->GetActorLocation(), ViewportInfoUILocation);
+				PickupFoodLocation, ViewportInfoUILocation);
 			ViewportInfoUI->SetStartLocation(ViewportInfoUILocation);
 			
 			if (AddFoodSuccess)
@@ -336,6 +338,8 @@ void AD4_HD3_CustomProjectCharacter::Eat()
 	{
 		APickupFood* PickupFood = EdibleFood[0];
 		AFood* FoodToEat;
+		const FVector PickupFoodLocation = PickupFood->GetActorLocation();
+		
 		if (!PickupFood->Food)
 		{
 			FoodToEat = NewObject<AFood>();
@@ -346,6 +350,11 @@ void AD4_HD3_CustomProjectCharacter::Eat()
 		}
 		
 		Eat(FoodToEat);
+		EdibleFood.RemoveSingle(PickupFood);
+		if (Companion)
+		{
+			Companion->RemoveCollectibleFood_Implementation(PickupFood);
+		}
 		PickupFood->Eaten();
 		
 		if (ViewportInfoUIClass)
@@ -354,7 +363,7 @@ void AD4_HD3_CustomProjectCharacter::Eat()
 			
 			FVector2D ViewportInfoUILocation;
 			UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
-				PickupFood->GetActorLocation(), ViewportInfoUILocation);
+				PickupFoodLocation, ViewportInfoUILocation);
 			
 			ViewportInfoUI->SetStartLocation(ViewportInfoUILocation);
 			ViewportInfoUI->SetDisplayText(FoodEatenText);
