@@ -129,7 +129,7 @@ void ACompanion::StarvationCountDown()
 void ACompanion::DeathCountDown()
 {
 	bIsDead = true;
-	CompanionOwner->ClearCompanionStarvationUI();
+	CompanionOwner->OnCompanionDie();
 	
 	if (AAIController* AIController = Cast<AAIController>(GetController()))
 	{
@@ -272,9 +272,13 @@ void ACompanion::Upgrade()
 {
 	Level++;
 	
-	if (FMath::Modulo(Level, DamageUpgradeValue) == 0)
+	if (FMath::Modulo(Level, DamageUpgradeLevel) == 0)
 	{
 		DamageValue += DamageUpgradeValue;
+		MaxHealth += 10;
+		CurrentHealth = MaxHealth;
+		MaxStarvationValue += 10;
+		StarvationValue = MaxStarvationValue;
 	}
 }
 

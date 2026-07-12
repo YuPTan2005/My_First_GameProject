@@ -113,7 +113,7 @@ protected:
 	
 	float Level = 1;
 	float DamageUpgradeValue = 10.0f;
-	float DamageUpgradeLevel = 5.0f;
+	float DamageUpgradeLevel = 3.0f;
 
 public:
 	float GetCurrentLevel() const;
