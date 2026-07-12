@@ -110,6 +110,10 @@ protected:
 	
 	UPROPERTY()
 	TArray<APickupFood*> CollectibleFoodList;
+	
+	float Level = 1;
+	float DamageUpgradeValue = 10.0f;
+	float DamageUpgradeLevel = 5.0f;
 
 public:
 	float GetCurrentHealth() const;
@@ -171,6 +175,8 @@ public:
 	
 	virtual void Eat_Implementation(AActor* Food) override;
 	virtual void GainStarvation_Implementation(float StarvationAmount) override;
+	
+	void Upgrade();
 	
 	void UpdateStatus();
 	void Dead();

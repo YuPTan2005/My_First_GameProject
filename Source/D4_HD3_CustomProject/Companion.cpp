@@ -268,6 +268,16 @@ void ACompanion::GainStarvation_Implementation(float StarvationAmount)
 	}
 }
 
+void ACompanion::Upgrade()
+{
+	Level++;
+	
+	if (FMath::Modulo(Level, DamageUpgradeValue) == 0)
+	{
+		DamageValue += DamageUpgradeValue;
+	}
+}
+
 void ACompanion::AddCollectibleFood_Implementation(APickupFood* Food)
 {
 	CollectibleFoodList.Add(Food);
