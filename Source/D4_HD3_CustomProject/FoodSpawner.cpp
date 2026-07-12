@@ -67,7 +67,7 @@ FVector AFoodSpawner::GetRandomSpawnPoint()
 		return SphereCenter + (RandomDirection * (MeshRadius + RandomRadius)) + FVector(0, 0, 15.0f);
 	}
 	
-	UE_LOG(LogTemp, Error, TEXT("No SphereComponent created for SpawningTree"));
+	UE_LOG(LogTemp, Error, TEXT("No SphereComponent created for FoodSpawner"));
 	return FVector::ZeroVector;
 }
 
