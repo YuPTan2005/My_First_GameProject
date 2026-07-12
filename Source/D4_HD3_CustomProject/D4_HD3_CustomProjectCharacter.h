@@ -86,12 +86,24 @@ public:
 	AD4_HD3_CustomProjectCharacter();
 
 protected:
+	float Health = 100;
+	float MaxHealth = 100;
+	float Experience = 0;
+	float MaxExperience = 100;
+	float Level = 1;
+	float MaxLevel = 30;
+	
+	int UpgradeFactor = 3;
+	
+	float MaxStarvationValue = 50;
+	float StarvationValue = 50;
+	float StarvationDecrementValue = -1;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ACompanion> CompanionClass;
 	UPROPERTY()
 	ACompanion* Companion;
 	
-	int UpgradeFactor = 3;
 	bool bIsInventoryOpen;
 	
 	UPROPERTY()
@@ -110,7 +122,7 @@ protected:
 	virtual void PossessedBy(AController* NewController) override;
 	
 	void Upgrade();
-	int CalculateIncreaseAmount(float Attribute);
+	int CalculateIncreaseAmount(float Attribute) const;
 	
 	virtual void Tick(float DeltaSeconds) override;
 	
@@ -205,16 +217,6 @@ public:
 	virtual void AddCollectibleFood_Implementation(APickupFood* Food) override;
 	virtual void RemoveCollectibleFood_Implementation(APickupFood* Food) override;
 	
-	float Health = 100;
-	float MaxHealth = 100;
-	float Experience = 0;
-	float MaxExperienceLevel = 100;
-	float Level = 0;
-	
-	float MaxStarvationValue = 50;
-	float StarvationValue = 50;
-	float StarvationDecrementValue = -1;
-	
 	UPROPERTY()
 	UPlayerUI* PlayerUI;
 	UPROPERTY()
@@ -230,25 +232,49 @@ public:
 	virtual EGameTeam GetTeam_Implementation() override;
 	
 	virtual bool IsDead_Implementation() override;
-	void SetIsDead(bool NewValue);
+	void SetIsDead(const bool NewValue);
 	
-	bool GetIsStarvationDecrement();
-	void SetIsStarvationDecrement(bool NewValue);
+	float GetCurrentLevel() const;
+	void SetCurrentLevel(const float NewValue);
 	
-	bool GetCanDash();
-	void SetCanDash(bool NewValue);
+	float GetExperience() const;
+	void SetExperience(const float NewValue);
 	
-	float GetDashSpeed();
-	void SetDashSpeed(float NewValue);
+	float GetMaxExperience() const;
+	void SetMaxExperience(const float NewValue);
 	
-	float GetDashTimer();
-	void SetDashTimer(float NewValue);
+	float GetCurrentHealth() const;
+	void SetCurrentHealth(const float NewValue);
 	
-	float GetDashCoolDown();
-	void SetDashCoolDown(float NewValue);
+	float GetMaxHealth() const;
+	void SetMaxHealth(const float NewValue);
+	
+	float GetStarvationValue() const;
+	void SetStarvationValue(const float NewValue);
+	
+	float GetMaxStarvationValue() const;
+	void SetMaxStarvationValue(const float NewValue);
+	
+	bool GetIsStarvationDecrement() const;
+	void SetIsStarvationDecrement(const bool NewValue);
+	
+	bool GetCanDash() const;
+	void SetCanDash(const bool NewValue);
+	
+	float GetDashSpeed() const;
+	void SetDashSpeed(const float NewValue);
+	
+	float GetDashTimer() const;
+	void SetDashTimer(const float NewValue);
+	
+	float GetDashCoolDown() const;
+	void SetDashCoolDown(const float NewValue);
 	
 	bool GetHasBackpack() const;
 	void SetHasBackpack(const bool NewValue) const;
+	
+	ACompanion* GetCompanion() const;
+	void SetCompanion(ACompanion* NewCompanion);
 	
 	UPROPERTY(EditAnywhere)
 	float AttackCoolDown = 1.0f;

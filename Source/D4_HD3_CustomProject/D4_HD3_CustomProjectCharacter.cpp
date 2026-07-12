@@ -443,9 +443,9 @@ void AD4_HD3_CustomProjectCharacter::Eat_Implementation(AActor* Food)
 void AD4_HD3_CustomProjectCharacter::GainExperience(float ExperienceAmount)
 {
 	Experience += ExperienceAmount;
-	if (Experience >= MaxExperienceLevel)
+	if (Experience >= MaxExperience)
 	{
-		Experience -= MaxExperienceLevel;
+		Experience -= MaxExperience;
 		Upgrade();
 	}
 }
@@ -478,14 +478,22 @@ void AD4_HD3_CustomProjectCharacter::FeedItem(int32 Index) const
 
 void AD4_HD3_CustomProjectCharacter::Upgrade()
 {
-	Damage += CalculateIncreaseAmount(Damage);
-	MaxHealth += 20;
-	Health = MaxHealth;
-	Level += 1;
+	if (Level <= MaxLevel)
+	{
+		Damage += CalculateIncreaseAmount(Damage);
+		MaxHealth += 20;
+		Health = MaxHealth;
+		Level++;
+		
+		if (Companion)
+		{
+			Companion->Upgrade();
+		}
+	}
 }
 
 // Function to calculate the upgrade degree, larger level has smaller degree
-int AD4_HD3_CustomProjectCharacter::CalculateIncreaseAmount(float Attribute)
+int AD4_HD3_CustomProjectCharacter::CalculateIncreaseAmount(float Attribute) const
 {
 	return FMath::CeilToInt(Attribute * UpgradeFactor * (1.0f / FMath::Pow(2, Level)));
 }
@@ -667,57 +675,127 @@ bool AD4_HD3_CustomProjectCharacter::IsDead_Implementation()
 	return bIsDead;
 }
 
-void AD4_HD3_CustomProjectCharacter::SetIsDead(bool NewValue)
+void AD4_HD3_CustomProjectCharacter::SetIsDead(const bool NewValue)
 {
 	bIsDead = NewValue;
 }
 
-bool AD4_HD3_CustomProjectCharacter::GetIsStarvationDecrement()
+float AD4_HD3_CustomProjectCharacter::GetCurrentLevel() const
+{
+	return Level;
+}
+
+void AD4_HD3_CustomProjectCharacter::SetCurrentLevel(const float NewValue)
+{
+	Level = NewValue;
+}
+
+float AD4_HD3_CustomProjectCharacter::GetExperience() const
+{
+	return Experience;
+}
+
+void AD4_HD3_CustomProjectCharacter::SetExperience(const float NewValue)
+{
+	Experience = NewValue;
+}
+
+float AD4_HD3_CustomProjectCharacter::GetMaxExperience() const
+{
+	return MaxExperience;
+}
+
+void AD4_HD3_CustomProjectCharacter::SetMaxExperience(const float NewValue)
+{
+	MaxExperience = NewValue;
+}
+
+float AD4_HD3_CustomProjectCharacter::GetCurrentHealth() const
+{
+	return Health;
+}
+
+void AD4_HD3_CustomProjectCharacter::SetCurrentHealth(const float NewValue)
+{
+	Health = NewValue;
+}
+
+float AD4_HD3_CustomProjectCharacter::GetMaxHealth() const
+{
+	return MaxHealth;
+}
+
+void AD4_HD3_CustomProjectCharacter::SetMaxHealth(const float NewValue)
+{
+	MaxHealth = NewValue;
+}
+
+float AD4_HD3_CustomProjectCharacter::GetStarvationValue() const
+{
+	return StarvationValue;
+}
+
+void AD4_HD3_CustomProjectCharacter::SetStarvationValue(const float NewValue)
+{
+	StarvationValue = NewValue;
+}
+
+float AD4_HD3_CustomProjectCharacter::GetMaxStarvationValue() const
+{
+	return MaxStarvationValue;
+}
+
+void AD4_HD3_CustomProjectCharacter::SetMaxStarvationValue(const float NewValue)
+{
+	MaxStarvationValue = NewValue;
+}
+
+bool AD4_HD3_CustomProjectCharacter::GetIsStarvationDecrement() const
 {
 	return bIsStarvationDecrement;
 }
 
-void AD4_HD3_CustomProjectCharacter::SetIsStarvationDecrement(bool NewValue)
+void AD4_HD3_CustomProjectCharacter::SetIsStarvationDecrement(const bool NewValue)
 {
 	bIsStarvationDecrement = NewValue;
 }
 
-bool AD4_HD3_CustomProjectCharacter::GetCanDash()
+bool AD4_HD3_CustomProjectCharacter::GetCanDash() const
 {
 	return bCanDash;
 }
 
-void AD4_HD3_CustomProjectCharacter::SetCanDash(bool NewValue)
+void AD4_HD3_CustomProjectCharacter::SetCanDash(const bool NewValue)
 {
 	bCanDash = NewValue;
 }
 
-float AD4_HD3_CustomProjectCharacter::GetDashSpeed()
+float AD4_HD3_CustomProjectCharacter::GetDashSpeed() const
 {
 	return DashSpeed;
 }
 
-void AD4_HD3_CustomProjectCharacter::SetDashSpeed(float NewValue)
+void AD4_HD3_CustomProjectCharacter::SetDashSpeed(const float NewValue)
 {
 	DashSpeed = NewValue;
 }
 
-float AD4_HD3_CustomProjectCharacter::GetDashTimer()
+float AD4_HD3_CustomProjectCharacter::GetDashTimer() const
 {
 	return DashTimer;
 }
 
-void AD4_HD3_CustomProjectCharacter::SetDashTimer(float NewValue)
+void AD4_HD3_CustomProjectCharacter::SetDashTimer(const float NewValue)
 {
 	DashTimer = NewValue;
 }
 
-float AD4_HD3_CustomProjectCharacter::GetDashCoolDown()
+float AD4_HD3_CustomProjectCharacter::GetDashCoolDown() const
 {
 	return DashCoolDown;
 }
 
-void AD4_HD3_CustomProjectCharacter::SetDashCoolDown(float NewValue)
+void AD4_HD3_CustomProjectCharacter::SetDashCoolDown(const float NewValue)
 {
 	DashCoolDown = NewValue;
 }
@@ -730,6 +808,16 @@ bool AD4_HD3_CustomProjectCharacter::GetHasBackpack() const
 void AD4_HD3_CustomProjectCharacter::SetHasBackpack(const bool NewValue) const
 {
 	InventoryComponent->SetHasBackpack(NewValue);
+}
+
+ACompanion* AD4_HD3_CustomProjectCharacter::GetCompanion() const
+{
+	return Companion;
+}
+
+void AD4_HD3_CustomProjectCharacter::SetCompanion(ACompanion* NewCompanion)
+{
+	Companion = NewCompanion;
 }
 
 void AD4_HD3_CustomProjectCharacter::DealDamage_Implementation(float DamageTook, AActor* DamagedBy)
