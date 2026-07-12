@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SpawningObject.h"
+#include "FoodSpawner.h"
 
 // Sets default values
-ASpawningObject::ASpawningObject()
+AFoodSpawner::AFoodSpawner()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -19,7 +19,7 @@ ASpawningObject::ASpawningObject()
 }
 
 // Called when the game starts or when spawned
-void ASpawningObject::BeginPlay()
+void AFoodSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
@@ -30,7 +30,7 @@ void ASpawningObject::BeginPlay()
 }
 
 // Called every frame
-void ASpawningObject::Tick(float DeltaTime)
+void AFoodSpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
@@ -45,7 +45,7 @@ void ASpawningObject::Tick(float DeltaTime)
 	}
 }
 
-FVector ASpawningObject::GetRandomSpawnPoint()
+FVector AFoodSpawner::GetRandomSpawnPoint()
 {
 	if (SpawnSphereArea)
 	{
@@ -71,7 +71,7 @@ FVector ASpawningObject::GetRandomSpawnPoint()
 	return FVector::ZeroVector;
 }
 
-bool ASpawningObject::SpawnFood()
+bool AFoodSpawner::SpawnFood()
 {
 	if (PickupFoodClass && FoodToSpawn)
 	{

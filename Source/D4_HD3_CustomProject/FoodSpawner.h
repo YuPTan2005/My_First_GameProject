@@ -6,16 +6,16 @@
 #include "Food.h"
 #include "PickupFood.h"
 #include "GameFramework/Actor.h"
-#include "SpawningObject.generated.h"
+#include "FoodSpawner.generated.h"
 
 UCLASS()
-class D4_HD3_CUSTOMPROJECT_API ASpawningObject : public AActor
+class D4_HD3_CUSTOMPROJECT_API AFoodSpawner : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ASpawningObject();
+	AFoodSpawner();
 
 protected:
 	// Called when the game starts or when spawned
