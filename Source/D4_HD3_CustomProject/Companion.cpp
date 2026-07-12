@@ -110,6 +110,8 @@ void ACompanion::OnSphereEndOverlap(UPrimitiveComponent* OverlapComp, AActor* Ot
 
 void ACompanion::StarvationCountDown()
 {
+	bIsCountDownCalled = true;
+	
 	GetWorldTimerManager().SetTimer(
 		StarvationTimer,
 		this,
@@ -127,6 +129,7 @@ void ACompanion::StarvationCountDown()
 void ACompanion::DeathCountDown()
 {
 	bIsDead = true;
+	CompanionOwner->ClearCompanionStarvationUI();
 	
 	if (AAIController* AIController = Cast<AAIController>(GetController()))
 	{
@@ -505,8 +508,7 @@ void ACompanion::Tick(float DeltaTime)
 	
 	if (StarvationValue < 0 && !bIsCountDownCalled)
 	{
-		bIsCountDownCalled = true;
-		DeathCountDown();
+		StarvationCountDown();
 	}
 	else if (StarvationValue >= 0)
 	{
@@ -547,6 +549,11 @@ void ACompanion::Tick(float DeltaTime)
 			
 			StatusWidget->SetRenderScale(FVector2D(TargetScale, TargetScale));
 		}
+	}
+	
+	if (StatusWidget)
+	{
+		StatusWidget->UpdateValues();
 	}
 }
 

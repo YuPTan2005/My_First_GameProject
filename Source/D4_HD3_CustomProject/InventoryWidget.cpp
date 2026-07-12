@@ -112,7 +112,7 @@ void UInventoryWidget::NativeConstruct()
 	ItemDescriptionTextBlock->SetText(FText::FromString("No Item Selected"));
 
 	UseItemButton->OnClicked.AddUniqueDynamic(this, &UInventoryWidget::OnUseButtonClicked);
-	FeedCompanionButton->OnClicked.AddUniqueDynamic(this, &UInventoryWidget::OnUseButtonClicked);
+	FeedCompanionButton->OnClicked.AddUniqueDynamic(this, &UInventoryWidget::OnFeedButtonClicked);
 	DeleteItemButton->OnClicked.AddUniqueDynamic(this, &UInventoryWidget::OnDeleteButtonClicked);
 	
 	ItemDescriptionTextBlock->SetAutoWrapText(true);

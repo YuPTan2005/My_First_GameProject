@@ -494,14 +494,8 @@ void AD4_HD3_CustomProjectCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	
-	if (PlayerUI)
-	{
-		PlayerUI->UpdateValues();
-	}
-	
 	if (StarvationValue < 0 && !bIsCountDownCalled)
 	{
-		bIsCountDownCalled = true;
 		DeathCountDown();
 	}
 	else if (bIsStarvationDecrement && StarvationValue >= 0)
@@ -518,10 +512,17 @@ void AD4_HD3_CustomProjectCharacter::Tick(float DeltaSeconds)
 	{
 		DashTimer += DeltaSeconds;
 	}
+	
+	if (PlayerUI)
+	{
+		PlayerUI->UpdateValues();
+	}
 }
 
 void AD4_HD3_CustomProjectCharacter::DeathCountDown()
 {
+	bIsCountDownCalled = true;
+	
 	GetWorldTimerManager().SetTimer(
 		DeathTimerHandle,
 		this,
