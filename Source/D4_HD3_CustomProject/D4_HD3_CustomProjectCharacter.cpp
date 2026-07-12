@@ -137,6 +137,11 @@ void AD4_HD3_CustomProjectCharacter::BeginPlay()
 		);
 		
 		Companion->SetCompanionOwner(this);
+		if (PlayerUI)
+		{
+			PlayerUI->SetCompanion(Companion);
+			PlayerUI->UpdateCompanionValues();
+		}
 	}
 	else
 	{
@@ -169,7 +174,7 @@ void AD4_HD3_CustomProjectCharacter::PossessedBy(AController* NewController)
 	if (PlayerController)
 	{
 		PlayerController->AttachUIWidget(this);
-		PlayerUI->UpdateValues();
+		PlayerUI->UpdatePlayerValues();
 	}
 }
 
@@ -489,6 +494,8 @@ void AD4_HD3_CustomProjectCharacter::Upgrade()
 		{
 			Companion->Upgrade();
 		}
+		
+		PlayerUI->UpdateValues();
 	}
 }
 
@@ -523,7 +530,7 @@ void AD4_HD3_CustomProjectCharacter::Tick(float DeltaSeconds)
 	
 	if (PlayerUI)
 	{
-		PlayerUI->UpdateValues();
+		PlayerUI->UpdatePlayerValues();
 	}
 }
 
@@ -618,7 +625,7 @@ void AD4_HD3_CustomProjectCharacter::UseItem(int32 Index)
 	{
 		InventoryComponent->UseItemAtIndex(Index, this);
 		InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
-		PlayerUI->UpdateValues();
+		PlayerUI->UpdatePlayerValues();
 	}
 }
 
@@ -916,8 +923,15 @@ void AD4_HD3_CustomProjectCharacter::ShowCompanionStarvationUI() const
 
 void AD4_HD3_CustomProjectCharacter::ClearCompanionStarvationUI() const
 {
-	if (CompanionStarvationUI)
+	if (CompanionStarvationUI && CompanionStarvationUI->IsInViewport())
 	{
 		CompanionStarvationUI->RemoveFromParent();
 	}
+}
+
+void AD4_HD3_CustomProjectCharacter::OnCompanionDie() const
+{
+	ClearCompanionStarvationUI();
+	PlayerUI->SetCompanion(nullptr);
+	PlayerUI->UpdateCompanionValues();
 }

@@ -295,6 +295,7 @@ public:
 	
 	void ShowCompanionStarvationUI() const;
 	void ClearCompanionStarvationUI() const;
+	void OnCompanionDie() const;
 
 public:
 
