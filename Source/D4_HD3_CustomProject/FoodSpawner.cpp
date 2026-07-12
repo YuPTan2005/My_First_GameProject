@@ -50,7 +50,7 @@ FVector AFoodSpawner::GetRandomSpawnPoint()
 	if (SpawnSphereArea)
 	{
 		FVector SphereCenter = SpawnSphereArea->GetComponentLocation();
-		float Radius = SpawnSphereArea->GetUnscaledSphereRadius();
+		float Radius = SpawnSphereArea->GetScaledSphereRadius();
 		float MeshRadius = 0.0f;
 		// Avoid too near to the center of the mesh
 		if (UStaticMesh* StaticMesh = MeshComponent->GetStaticMesh())
