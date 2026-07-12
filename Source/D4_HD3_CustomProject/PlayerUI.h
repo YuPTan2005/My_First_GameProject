@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Companion.h"
 #include "Blueprint/UserWidget.h"
 #include "PlayerUI.generated.h"
 
@@ -20,6 +21,8 @@ class D4_HD3_CUSTOMPROJECT_API UPlayerUI : public UUserWidget
 public:
 	UPROPERTY()
 	AD4_HD3_CustomProjectCharacter* Player;
+	UPROPERTY()
+	ACompanion* Companion;
 	
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* ExperienceBar;
@@ -36,13 +39,21 @@ public:
 	UTextBlock* MaxHealthText;
 	
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* LevelText;
-	
+	UTextBlock* PlayerLevelText;
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* DamageText;
+	UTextBlock* PlayerDamageText;
 	
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* StarvationBar;
 	
-	void UpdateValues();
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* CompanionLevelText;
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* CompanionDamageText;
+	
+	void UpdateValues() const;
+	void UpdatePlayerValues() const;
+	void UpdateCompanionValues() const;
+	
+	void SetCompanion(ACompanion* NewCompanion);
 };
