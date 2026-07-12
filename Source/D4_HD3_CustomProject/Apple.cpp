@@ -7,7 +7,7 @@
 AApple::AApple()
 {
 	FoodName = "Apple";
-	FoodDescription = "Experience amount: 10. Starvation amount: 5.";
+	FoodDescription = "Experience amount: 10. Starvation amount: 12.";
 	ExperienceAmount = 10;
-	StarvationAmount = 5;
+	StarvationAmount = 12;
 }
