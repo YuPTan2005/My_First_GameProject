@@ -276,10 +276,11 @@ void ACompanion::Upgrade()
 	{
 		DamageValue += DamageUpgradeValue;
 		MaxHealth += 10;
-		CurrentHealth = MaxHealth;
 		MaxStarvationValue += 10;
-		StarvationValue = MaxStarvationValue;
 	}
+	
+	CurrentHealth = MaxHealth;
+	StarvationValue = MaxStarvationValue;
 }
 
 void ACompanion::AddCollectibleFood_Implementation(APickupFood* Food)
