@@ -313,6 +313,16 @@ void ACompanion::UpdateStatus()
 	}
 }
 
+float ACompanion::GetCurrentLevel() const
+{
+	return Level;
+}
+
+void ACompanion::SetCurrentLevel(const float NewValue)
+{
+	Level = NewValue;
+}
+
 float ACompanion::GetCurrentHealth() const
 {
 	return CurrentHealth;

@@ -116,6 +116,7 @@ protected:
 	float DamageUpgradeLevel = 5.0f;
 
 public:
+	float GetCurrentLevel() const;
 	float GetCurrentHealth() const;
 	float GetMaxHealth() const;
 	float GetDamageValue() const;
@@ -136,6 +137,7 @@ public:
 	AEnemy* GetTargetEnemy();
 	bool GetIsCountDownCalled() const;
 	
+	void SetCurrentLevel(const float NewValue);
 	void SetCurrentHealth(float CurrentHealth);
 	void SetMaxHealth(float MaxHealth);
 	void SetDamageValue(float DamageValue);
