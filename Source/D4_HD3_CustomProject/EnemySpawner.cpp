@@ -18,6 +18,11 @@ void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	for (int i=0; i<=BeginPlayEnemyNumber; i++)
+	{
+		SpawnEnemy();
+	}
+	
 }
 
 FVector AEnemySpawner::GetRandomSpawnPoint() const
@@ -60,6 +65,7 @@ bool AEnemySpawner::SpawnEnemy()
 		return true;
 	}
 	
+	UE_LOG(LogTemp, Error, TEXT("Enemy fails to be spawned"));
 	return false;
 }
 
@@ -72,10 +78,7 @@ void AEnemySpawner::Tick(float DeltaTime)
 	if (TimePast >= TimeToSpawn)
 	{
 		TimePast = 0.0f;
-		if (!SpawnEnemy())
-		{
-			UE_LOG(LogTemp, Error, TEXT("Enemy fails to be spawned"));
-		}
+		SpawnEnemy();
 	}
 }
 

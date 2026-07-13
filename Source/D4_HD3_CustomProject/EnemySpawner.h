@@ -20,6 +20,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
+	int BeginPlayEnemyNumber = 3;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn")
 	TArray<TSubclassOf<AEnemy>> EnemyClass;
 	
