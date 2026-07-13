@@ -35,29 +35,6 @@ void AEnemyAIController::BeginPlay()
 		}
 		PerceptionComp->OnTargetPerceptionUpdated.AddDynamic(this, &AEnemyAIController::OnTargetPerceptionUpdated);
 	}
-	
-	ControlledCharacter = Cast<AEnemy>(GetPawn());
-	NavigationSystem = Cast<UNavigationSystemV1>(GetWorld()->GetNavigationSystem());
-	UseBlackboard(AIBlackboard, BlackboardComponent);
-	RunBehaviorTree(WalkBehaviourTree);
-	
-	if (ControlledCharacter)
-	{
-		ControlledCharacter->bIsFlying = false;
-		ControlledCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
-	}
-	
-	if (BlackboardComponent)
-	{
-		BlackboardComponent->SetValueAsBool("Attack", false);
-		BlackboardComponent->SetValueAsBool("Landing", false);
-		BlackboardComponent->SetValueAsBool("FlyLaunch", false);
-		BlackboardComponent->SetValueAsFloat("AttackDistance", ControlledCharacter->AttackDistance);
-		BlackboardComponent->SetValueAsBool("ChasePlayer", false);
-		BlackboardComponent->SetValueAsObject("Target", nullptr);
-	}
-	
-	TargetPlayer = nullptr;
 }
 
 void AEnemyAIController::Tick(float DeltaSeconds)
@@ -74,6 +51,35 @@ FRotator AEnemyAIController::GetControlRotation() const
 	}
 	
 	return Super::GetControlRotation();
+}
+
+void AEnemyAIController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+	
+	ControlledCharacter = Cast<AEnemy>(GetPawn());
+	
+	NavigationSystem = Cast<UNavigationSystemV1>(GetWorld()->GetNavigationSystem());
+	UseBlackboard(AIBlackboard, BlackboardComponent);
+	RunBehaviorTree(WalkBehaviourTree);
+	
+	if (ControlledCharacter)
+	{
+		ControlledCharacter->bIsFlying = false;
+		ControlledCharacter->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+	}
+	
+	if (BlackboardComponent && ControlledCharacter)
+	{
+		BlackboardComponent->SetValueAsBool("Attack", false);
+		BlackboardComponent->SetValueAsBool("Landing", false);
+		BlackboardComponent->SetValueAsBool("FlyLaunch", false);
+		BlackboardComponent->SetValueAsFloat("AttackDistance", ControlledCharacter->AttackDistance);
+		BlackboardComponent->SetValueAsBool("ChasePlayer", false);
+		BlackboardComponent->SetValueAsObject("Target", nullptr);
+	}
+	
+	TargetPlayer = nullptr;
 }
 
 void AEnemyAIController::OnLanding()

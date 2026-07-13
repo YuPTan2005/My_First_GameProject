@@ -25,6 +25,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	virtual FRotator GetControlRotation() const override;
+	virtual void OnPossess(APawn* InPawn) override;
 	
 	UPROPERTY()
 	AEnemy* ControlledCharacter;
