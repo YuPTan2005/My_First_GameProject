@@ -198,6 +198,12 @@ void AD4_HD3_CustomProjectCharacter::Look(const FInputActionValue& Value)
 
 void AD4_HD3_CustomProjectCharacter::DoMove(float Right, float Forward)
 {
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance && AnimInstance->Montage_IsPlaying(AttackAnims))
+	{
+		return; 
+	}
+	
 	if (GetController() != nullptr)
 	{
 		// find out which way is forward
@@ -858,7 +864,22 @@ void AD4_HD3_CustomProjectCharacter::Attack()
 		{
 			if (AttackAnims)
 			{
-				int AnimIndex = FMath::RandRange(0, AttackAnims->GetNumSections() - 1);
+				int LastAnimIndex = 1;
+				if (GetCharacterMovement()->MovementMode == MOVE_Flying)
+				{
+					GetCharacterMovement()->BrakingDecelerationFlying = DashFlyBrake;
+			
+					GetWorldTimerManager().ClearTimer(FlyDashTimerHandle);
+					GetWorldTimerManager().SetTimer(
+						FlyDashTimerHandle, 
+						this, 
+						&AD4_HD3_CustomProjectCharacter::RestoreFlyBrake, 
+						0.3f, 
+						false);
+
+					LastAnimIndex = 2;
+				}
+				int AnimIndex = FMath::RandRange(0, AttackAnims->GetNumSections() - LastAnimIndex);
 				AnimInstance->Montage_Play(AttackAnims);
 				AnimInstance->Montage_JumpToSection(AttackAnims->GetSectionName(AnimIndex), AttackAnims);
 			}
