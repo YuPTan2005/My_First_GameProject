@@ -41,7 +41,7 @@ EBTNodeResult::Type UWalkToPlayerBTTaskNode::ExecuteTask(UBehaviorTreeComponent&
 	
 	FVector CurrentLocation = ControlledPawn->GetActorLocation();
 	FVector TargetLocation = TargetPawn->GetActorLocation();
-	if (FMath::Abs(TargetLocation.Z - CurrentLocation.Z) > 500.0f)
+	if (FMath::Abs(TargetLocation.Z - CurrentLocation.Z) > 200.0f)
 	{
 		BlackboardComponent->SetValueAsBool("FlyLaunch", true);
 		return EBTNodeResult::Failed; 

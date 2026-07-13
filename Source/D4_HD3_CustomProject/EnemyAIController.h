@@ -41,7 +41,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	float SightRadius = 2000;
 	UPROPERTY(EditAnywhere)
-	float SightAge = 3.5;
+	float SightAge = 7.0f;
 	UPROPERTY(EditAnywhere)
 	float LoseSightRadius = SightRadius + 100;
 	UPROPERTY(EditAnywhere)
