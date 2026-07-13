@@ -73,7 +73,7 @@ bool AEnemySpawner::SpawnEnemy()
 
 void AEnemySpawner::OnGameStarted()
 {
-	for (int i=0; i<=GameStartEnemyNumber; i++)
+	for (int i=1; i<=GameStartEnemyNumber; i++)
 	{
 		SpawnEnemy();
 	}
