@@ -25,6 +25,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
+	virtual void Reset() override;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	FVector StatusComponentOffset = FVector(0.0f, 0.0f, 0.0f);
 

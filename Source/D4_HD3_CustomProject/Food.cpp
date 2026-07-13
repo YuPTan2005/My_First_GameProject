@@ -24,6 +24,13 @@ void AFood::BeginPlay()
 	
 }
 
+void AFood::Reset()
+{
+	Super::Reset();
+	
+	Destroy();
+}
+
 void AFood::EatenBy_Implementation(AActor* Character)
 {
 	IEdible::EatenBy_Implementation(Character);

@@ -67,6 +67,13 @@ void AEnemy::BeginPlay()
 	}
 }
 
+void AEnemy::Reset()
+{
+	Super::Reset();
+	
+	Destroy();
+}
+
 // Called every frame
 void AEnemy::Tick(float DeltaTime)
 {
