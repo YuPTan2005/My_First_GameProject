@@ -52,3 +52,11 @@ void ADayNightCycle::Tick(float DeltaSeconds)
 		UE_LOG(LogTemp, Error, TEXT("ExponentialHeightFog or Sun or Moon directional light is not assigned in %s"), *GetName());
 	}
 }
+
+void ADayNightCycle::Reset()
+{
+	Super::Reset();
+	
+	SunDirectionalLight->SetActorRelativeRotation(FRotator(180.0f, 0, 0));
+	MoonDirectionalLight->SetActorRelativeRotation(FRotator(0, 0, 0));
+}
