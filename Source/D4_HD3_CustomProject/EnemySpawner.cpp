@@ -3,7 +3,9 @@
 
 #include "EnemySpawner.h"
 
+#include "D4_HD3_CustomProjectGameMode.h"
 #include "NavigationSystem.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
@@ -18,11 +20,11 @@ void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	for (int i=0; i<=BeginPlayEnemyNumber; i++)
+	OnGameStarted();
+	if (AD4_HD3_CustomProjectGameMode* Gm = Cast<AD4_HD3_CustomProjectGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
 	{
-		SpawnEnemy();
+		Gm->OnPlayerRespawned.AddDynamic(this, &AEnemySpawner::OnGameStarted);
 	}
-	
 }
 
 FVector AEnemySpawner::GetRandomSpawnPoint() const
@@ -67,6 +69,14 @@ bool AEnemySpawner::SpawnEnemy()
 	
 	UE_LOG(LogTemp, Error, TEXT("Enemy fails to be spawned"));
 	return false;
+}
+
+void AEnemySpawner::OnGameStarted()
+{
+	for (int i=0; i<=GameStartEnemyNumber; i++)
+	{
+		SpawnEnemy();
+	}
 }
 
 // Called every frame

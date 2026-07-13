@@ -20,7 +20,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
-	int BeginPlayEnemyNumber = 3;
+	int GameStartEnemyNumber = 3;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn")
 	TArray<TSubclassOf<AEnemy>> EnemyClass;
@@ -31,6 +31,9 @@ protected:
 	
 	FVector GetRandomSpawnPoint() const;
 	bool SpawnEnemy();
+	
+	UFUNCTION()
+	void OnGameStarted();
 
 public:	
 	// Called every frame

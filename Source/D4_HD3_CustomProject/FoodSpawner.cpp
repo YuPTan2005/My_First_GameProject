@@ -3,6 +3,9 @@
 
 #include "FoodSpawner.h"
 
+#include "D4_HD3_CustomProjectGameMode.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 AFoodSpawner::AFoodSpawner()
 {
@@ -23,9 +26,10 @@ void AFoodSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if (!SpawnFood())
+	OnGameStarted();
+	if (AD4_HD3_CustomProjectGameMode* Gm = Cast<AD4_HD3_CustomProjectGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
 	{
-		UE_LOG(LogTemp, Error, TEXT("Food fails to be spawned"));
+		Gm->OnPlayerRespawned.AddDynamic(this, &AFoodSpawner::OnGameStarted);
 	}
 }
 
@@ -38,14 +42,11 @@ void AFoodSpawner::Tick(float DeltaTime)
 	if (TimePast >= TimeToSpawn)
 	{
 		TimePast = 0.0f;
-		if (!SpawnFood())
-		{
-			UE_LOG(LogTemp, Error, TEXT("Food fails to be spawned"));
-		}
+		SpawnFood();
 	}
 }
 
-FVector AFoodSpawner::GetRandomSpawnPoint()
+FVector AFoodSpawner::GetRandomSpawnPoint() const
 {
 	if (SpawnSphereArea)
 	{
@@ -102,6 +103,12 @@ bool AFoodSpawner::SpawnFood()
 		return true;
 	}
 	
+	UE_LOG(LogTemp, Error, TEXT("Food fails to be spawned"));
 	return false;
+}
+
+void AFoodSpawner::OnGameStarted()
+{
+	SpawnFood();
 }
 

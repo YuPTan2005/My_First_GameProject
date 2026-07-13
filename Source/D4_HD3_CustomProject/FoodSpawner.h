@@ -50,7 +50,10 @@ protected:
 	float TimeToSpawn = 20.0f;
 	float TimePast = 0.0f;
 	
-	FVector GetRandomSpawnPoint();
+	FVector GetRandomSpawnPoint() const;
 	bool SpawnFood();
+	
+	UFUNCTION()
+	void OnGameStarted();
 	
 };
