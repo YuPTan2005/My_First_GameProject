@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Enemy.h"
-#include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
 #include "EnemySpawner.generated.h"
 

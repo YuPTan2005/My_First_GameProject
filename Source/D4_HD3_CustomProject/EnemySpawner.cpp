@@ -18,8 +18,6 @@ void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	SpawnEnemy();
-	
 }
 
 FVector AEnemySpawner::GetRandomSpawnPoint() const
