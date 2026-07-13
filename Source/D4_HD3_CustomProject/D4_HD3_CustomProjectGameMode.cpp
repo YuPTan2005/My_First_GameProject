@@ -11,12 +11,14 @@ AD4_HD3_CustomProjectGameMode::AD4_HD3_CustomProjectGameMode()
 	// stub
 }
 
-void AD4_HD3_CustomProjectGameMode::RespawnPlayer(ACharacter* Player)
+void AD4_HD3_CustomProjectGameMode::RespawnPlayer(const ACharacter* Player)
 {
 	if (!Player)
 	{
 		return;
 	}
+	
+	ResetLevel();
 	
 	if (UWorld* WorldObj = GetWorld())
 	{
@@ -44,4 +46,6 @@ void AD4_HD3_CustomProjectGameMode::RespawnPlayer(ACharacter* Player)
 			}
 		}
 	}
+	
+	OnPlayerRespawned.Broadcast();
 }

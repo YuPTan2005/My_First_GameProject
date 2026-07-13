@@ -10,6 +10,8 @@ class UDeathUI;
 /**
  *  Simple GameMode for a third person game
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerRespawned);
+
 UCLASS(abstract)
 class AD4_HD3_CustomProjectGameMode : public AGameModeBase
 {
@@ -19,9 +21,11 @@ public:
 	
 	/** Constructor */
 	AD4_HD3_CustomProjectGameMode();
+
+	UPROPERTY(BlueprintAssignable, Category = "Game Events")
+	FOnPlayerRespawned OnPlayerRespawned;
 	
-public:
-	void RespawnPlayer(ACharacter* Player);
+	void RespawnPlayer(const ACharacter* Player);
 	
 };
 
