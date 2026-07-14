@@ -57,6 +57,5 @@ void ADayNightCycle::Reset()
 {
 	Super::Reset();
 	
-	SunDirectionalLight->SetActorRelativeRotation(FRotator(180.0f, 0, 0));
-	MoonDirectionalLight->SetActorRelativeRotation(FRotator(0, 0, 0));
+	Time = 0.0f;
 }
