@@ -23,13 +23,40 @@ void ABagSpawner::BeginPlay()
 
 FVector ABagSpawner::GetSpawnPoint()
 {
-	if (UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld()))
+	UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
+	if (!NavSys)
 	{
-		FNavLocation RandomNavPoint;
-		
+		UE_LOG(LogTemp, Error, TEXT("Navigation System not found in %s!"), *GetName());
+		return FVector::ZeroVector;
+	}
+
+	FNavLocation RandomNavPoint;
+
+	constexpr int32 MaxAttempts = 15; 
+	constexpr float BackpackRadius = 50.0f; 
+	const FCollisionShape CollisionSphere = FCollisionShape::MakeSphere(BackpackRadius);
+
+	FCollisionQueryParams TraceParams;
+	TraceParams.AddIgnoredActor(this);
+
+	for (int32 Attempt = 0; Attempt < MaxAttempts; ++Attempt)
+	{
 		if (NavSys->GetRandomPoint(RandomNavPoint))
 		{
-			return RandomNavPoint.Location;
+			FVector TestLocation = RandomNavPoint.Location + FVector(0.0f, 0.0f, BackpackRadius);
+
+			bool bOverlapsStaticMesh = GetWorld()->OverlapAnyTestByChannel(
+				TestLocation,
+				FQuat::Identity,
+				ECC_WorldStatic,
+				CollisionSphere,
+				TraceParams
+			);
+
+			if (!bOverlapsStaticMesh)
+			{
+				return RandomNavPoint.Location; 
+			}
 		}
 	}
 	
