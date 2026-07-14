@@ -565,6 +565,11 @@ void AD4_HD3_CustomProjectCharacter::Dead()
 	{
 		StarvationUI->RemoveFromParent();
 	}
+	if (CompanionStarvationUI && CompanionStarvationUI->IsInViewport())
+	{
+		CompanionStarvationUI->RemoveFromParent();
+	}
+	
 	bIsDead = true;
 	GetMesh()->SetCollisionProfileName("Ragdoll");
 	GetMesh()->SetSimulatePhysics(true);
@@ -935,7 +940,7 @@ void AD4_HD3_CustomProjectCharacter::Attack()
 
 void AD4_HD3_CustomProjectCharacter::ShowCompanionStarvationUI() const
 {
-	if (CompanionStarvationUI)
+	if (CompanionStarvationUI && !bIsDead)
 	{
 		CompanionStarvationUI->AddToViewport();
 		CompanionStarvationUI->TriggerAnimation();
