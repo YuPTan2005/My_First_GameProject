@@ -5,11 +5,12 @@
 #include "CoreMinimal.h"
 #include "Food.h"
 #include "PickupFood.h"
+#include "Spawner.h"
 #include "GameFramework/Actor.h"
 #include "FoodSpawner.generated.h"
 
 UCLASS()
-class D4_HD3_CUSTOMPROJECT_API AFoodSpawner : public AActor
+class D4_HD3_CUSTOMPROJECT_API AFoodSpawner : public ASpawner
 {
 	GENERATED_BODY()
 	
@@ -50,10 +51,7 @@ protected:
 	float TimeToSpawn = 20.0f;
 	float TimePast = 0.0f;
 	
-	FVector GetRandomSpawnPoint() const;
-	bool SpawnFood();
-	
-	UFUNCTION()
-	void OnGameStarted();
+	virtual FVector GetSpawnPoint() override;
+	virtual bool SpawnObject() override;
 	
 };

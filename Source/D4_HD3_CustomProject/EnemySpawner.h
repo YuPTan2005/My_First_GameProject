@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Enemy.h"
+#include "Spawner.h"
 #include "GameFramework/Actor.h"
 #include "EnemySpawner.generated.h"
 
 UCLASS()
-class D4_HD3_CUSTOMPROJECT_API AEnemySpawner : public AActor
+class D4_HD3_CUSTOMPROJECT_API AEnemySpawner : public ASpawner
 {
 	GENERATED_BODY()
 	
@@ -20,8 +21,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
-	int GameStartEnemyNumber = 3;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn")
 	TArray<TSubclassOf<AEnemy>> EnemyClass;
 	
@@ -29,11 +28,8 @@ protected:
 	float TimeToSpawn = 60.0f;
 	float TimePast = 0.0f;
 	
-	FVector GetRandomSpawnPoint() const;
-	bool SpawnEnemy();
-	
-	UFUNCTION()
-	void OnGameStarted();
+	virtual FVector GetSpawnPoint() override;
+	virtual bool SpawnObject() override;
 
 public:	
 	// Called every frame

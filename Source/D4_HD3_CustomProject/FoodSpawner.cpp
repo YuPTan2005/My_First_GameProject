@@ -3,14 +3,12 @@
 
 #include "FoodSpawner.h"
 
-#include "D4_HD3_CustomProjectGameMode.h"
-#include "Kismet/GameplayStatics.h"
-
 // Sets default values
 AFoodSpawner::AFoodSpawner()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	GameStartEnemyNumber = 1;
 	
 	SpawnSphereArea = CreateDefaultSubobject<USphereComponent>(TEXT("Spawn Area Component"));
 	RootComponent = SpawnSphereArea;
@@ -26,11 +24,6 @@ void AFoodSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	OnGameStarted();
-	if (AD4_HD3_CustomProjectGameMode* Gm = Cast<AD4_HD3_CustomProjectGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
-	{
-		Gm->OnPlayerRespawned.AddDynamic(this, &AFoodSpawner::OnGameStarted);
-	}
 }
 
 // Called every frame
@@ -42,11 +35,11 @@ void AFoodSpawner::Tick(float DeltaTime)
 	if (TimePast >= TimeToSpawn)
 	{
 		TimePast = 0.0f;
-		SpawnFood();
+		SpawnObject();
 	}
 }
 
-FVector AFoodSpawner::GetRandomSpawnPoint() const
+FVector AFoodSpawner::GetSpawnPoint()
 {
 	if (SpawnSphereArea)
 	{
@@ -72,11 +65,11 @@ FVector AFoodSpawner::GetRandomSpawnPoint() const
 	return FVector::ZeroVector;
 }
 
-bool AFoodSpawner::SpawnFood()
+bool AFoodSpawner::SpawnObject()
 {
 	if (PickupFoodClass && FoodToSpawn)
 	{
-		FVector SpawnLocation = GetRandomSpawnPoint();
+		FVector SpawnLocation = GetSpawnPoint();
 		FRotator SpawnRotation = FRotator::ZeroRotator;
 		
 		FActorSpawnParameters SpawnParams;
@@ -105,10 +98,5 @@ bool AFoodSpawner::SpawnFood()
 	
 	UE_LOG(LogTemp, Error, TEXT("Food fails to be spawned"));
 	return false;
-}
-
-void AFoodSpawner::OnGameStarted()
-{
-	SpawnFood();
 }
 

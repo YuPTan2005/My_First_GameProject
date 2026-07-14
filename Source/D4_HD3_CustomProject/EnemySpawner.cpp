@@ -2,16 +2,14 @@
 
 
 #include "EnemySpawner.h"
-
-#include "D4_HD3_CustomProjectGameMode.h"
 #include "NavigationSystem.h"
-#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	GameStartEnemyNumber = 3;
 
 }
 
@@ -19,15 +17,10 @@ AEnemySpawner::AEnemySpawner()
 void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	OnGameStarted();
-	if (AD4_HD3_CustomProjectGameMode* Gm = Cast<AD4_HD3_CustomProjectGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
-	{
-		Gm->OnPlayerRespawned.AddDynamic(this, &AEnemySpawner::OnGameStarted);
-	}
+
 }
 
-FVector AEnemySpawner::GetRandomSpawnPoint() const
+FVector AEnemySpawner::GetSpawnPoint()
 {
 	if (UNavigationSystemV1* NavSys = UNavigationSystemV1::GetCurrent(GetWorld()))
 	{
@@ -49,11 +42,11 @@ FVector AEnemySpawner::GetRandomSpawnPoint() const
 	return FVector::ZeroVector;
 }
 
-bool AEnemySpawner::SpawnEnemy()
+bool AEnemySpawner::SpawnObject()
 {
 	if (!EnemyClass.IsEmpty())
 	{
-		FVector SpawnLocation = GetRandomSpawnPoint();
+		FVector SpawnLocation = GetSpawnPoint();
 		FRotator SpawnRotation = FRotator::ZeroRotator;
 		
 		FActorSpawnParameters SpawnParams;
@@ -71,14 +64,6 @@ bool AEnemySpawner::SpawnEnemy()
 	return false;
 }
 
-void AEnemySpawner::OnGameStarted()
-{
-	for (int i=1; i<=GameStartEnemyNumber; i++)
-	{
-		SpawnEnemy();
-	}
-}
-
 // Called every frame
 void AEnemySpawner::Tick(float DeltaTime)
 {
@@ -88,7 +73,7 @@ void AEnemySpawner::Tick(float DeltaTime)
 	if (TimePast >= TimeToSpawn)
 	{
 		TimePast = 0.0f;
-		SpawnEnemy();
+		SpawnObject();
 	}
 }
 
