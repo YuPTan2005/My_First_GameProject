@@ -72,46 +72,61 @@ void AD4_HD3_CustomProjectPlayerController::AttachUIWidget(ACharacter* NewPlayer
 {
 	if (AD4_HD3_CustomProjectCharacter* PlayerCharacter = Cast<AD4_HD3_CustomProjectCharacter>(NewPlayerCharacter))
 	{
-		if (!StarvationUI && StarvationUIClass)
+		if (StarvationUIClass)
 		{
-			StarvationUI = CreateWidget<UStarvationUI>(this, StarvationUIClass);
+			if (!StarvationUI)
+			{
+				StarvationUI = CreateWidget<UStarvationUI>(this, StarvationUIClass);
+			}
 		}
 		else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("No value assigned to StarvationUIClass in %s"), *GetName());
 		}
 		
-		if (!CompanionStarvationUI && CompanionStarvationUIClass)
+		if (CompanionStarvationUIClass)
 		{
-			CompanionStarvationUI = CreateWidget<UCompanionStarvationUI>(this, CompanionStarvationUIClass);
+			if (!CompanionStarvationUI)
+			{
+				CompanionStarvationUI = CreateWidget<UCompanionStarvationUI>(this, CompanionStarvationUIClass);
+			}
 		}
 		else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("No value assigned to CompanionStarvationUIClass in %s"), *GetName());
 		}
 		
-		if (!InventoryWidget && InventoryWidgetClass)
+		if (InventoryWidgetClass)
 		{
-			InventoryWidget = CreateWidget<UInventoryWidget>(this, InventoryWidgetClass);
+			if (!InventoryWidget)
+			{
+				InventoryWidget = CreateWidget<UInventoryWidget>(this, InventoryWidgetClass);
+			}
 		}
 		else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("No value assigned to InventoryWidgetClass in %s"), *GetName());
 		}
 	
-		if (!PlayerUI && PlayerUIClass)
+		if (PlayerUIClass)
 		{
-			PlayerUI = Cast<UPlayerUI>(CreateWidget(this, PlayerUIClass));
-			PlayerUI->AddToViewport();
+			if (!PlayerUI)
+			{
+				PlayerUI = Cast<UPlayerUI>(CreateWidget(this, PlayerUIClass));
+				PlayerUI->AddToViewport();
+			}
 		}
 		else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("No value assigned to PlayerUIClass in %s"), *GetName());
 		}
 	
-		if (!DeathUI && DeathUIClass)
+		if (DeathUIClass)
 		{
-			DeathUI = Cast<UDeathUI>(CreateWidget(this, DeathUIClass));
+			if (!DeathUI)
+			{
+				DeathUI = Cast<UDeathUI>(CreateWidget(this, DeathUIClass));
+			}
 		}
 		else
 		{
