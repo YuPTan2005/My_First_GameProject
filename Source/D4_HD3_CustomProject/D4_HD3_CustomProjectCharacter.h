@@ -121,6 +121,8 @@ protected:
 	virtual void Destroyed() override;
 	virtual void PossessedBy(AController* NewController) override;
 	
+	void InitialiseCompanionUI();
+	
 	void Upgrade();
 	int CalculateIncreaseAmount(float Attribute) const;
 	

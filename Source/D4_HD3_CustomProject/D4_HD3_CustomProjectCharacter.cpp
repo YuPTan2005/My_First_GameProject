@@ -137,11 +137,7 @@ void AD4_HD3_CustomProjectCharacter::BeginPlay()
 		);
 		
 		Companion->SetCompanionOwner(this);
-		if (PlayerUI)
-		{
-			PlayerUI->SetCompanion(Companion);
-			PlayerUI->UpdateCompanionValues();
-		}
+		InitialiseCompanionUI();
 	}
 	else
 	{
@@ -174,7 +170,17 @@ void AD4_HD3_CustomProjectCharacter::PossessedBy(AController* NewController)
 	if (PlayerController)
 	{
 		PlayerController->AttachUIWidget(this);
-		PlayerUI->UpdatePlayerValues();
+		if (PlayerUI) PlayerUI->UpdatePlayerValues();
+		InitialiseCompanionUI();
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::InitialiseCompanionUI()
+{
+	if (PlayerUI)
+	{
+		PlayerUI->SetCompanion(Companion);
+		PlayerUI->UpdateCompanionValues();
 	}
 }
 
