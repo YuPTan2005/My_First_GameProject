@@ -485,7 +485,7 @@ void AD4_HD3_CustomProjectCharacter::GainStarvation_Implementation(float Starvat
 
 void AD4_HD3_CustomProjectCharacter::FeedItem(int32 Index) const
 {
-	if (InventoryComponent->GetHasBackpack())
+	if (InventoryComponent->GetHasBackpack() && IsValid(Companion))
 	{
 		InventoryComponent->UseItemAtIndex(Index, Companion);
 		InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
