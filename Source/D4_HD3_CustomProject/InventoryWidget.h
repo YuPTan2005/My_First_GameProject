@@ -51,6 +51,7 @@ public:
 	
 	UFUNCTION()
 	void OnFeedButtonClicked();
+	void CancelFeedButton();
 
 	UFUNCTION()
 	void OnDeleteButtonClicked();

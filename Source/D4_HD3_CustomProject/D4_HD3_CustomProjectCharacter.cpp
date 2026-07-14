@@ -964,6 +964,10 @@ void AD4_HD3_CustomProjectCharacter::ClearCompanionStarvationUI() const
 void AD4_HD3_CustomProjectCharacter::OnCompanionDie() const
 {
 	ClearCompanionStarvationUI();
-	PlayerUI->SetCompanion(nullptr);
-	PlayerUI->UpdateCompanionValues();
+	if (PlayerUI)
+	{
+		PlayerUI->SetCompanion(nullptr);
+		PlayerUI->UpdateCompanionValues();
+	}
+	if (InventoryWidget) InventoryWidget->CancelFeedButton();
 }

@@ -35,6 +35,11 @@ void UInventoryWidget::OnFeedButtonClicked()
 	ResetDisplayItem();
 }
 
+void UInventoryWidget::CancelFeedButton()
+{
+	FeedCompanionButton->SetIsEnabled(false);
+}
+
 void UInventoryWidget::OnDeleteButtonClicked()
 {
 	Owner->DeleteItemAtIndex(SelectedItemIndex);
