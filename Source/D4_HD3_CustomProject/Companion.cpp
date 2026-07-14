@@ -531,13 +531,16 @@ void ACompanion::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	if (StarvationValue < 0 && !bIsCountDownCalled)
+	if (!bIsDead)
 	{
-		StarvationCountDown();
-	}
-	else if (StarvationValue >= 0)
-	{
-		StarvationValue += StarvationDecrementValue * DeltaTime;
+		if (StarvationValue < 0 && !bIsCountDownCalled)
+		{
+			StarvationCountDown();
+		}
+		else if (StarvationValue >= 0)
+		{
+			StarvationValue += StarvationDecrementValue * DeltaTime;
+		}
 	}
 	
 	if (CollectTimer >= CollectInterval)
