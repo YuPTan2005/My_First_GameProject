@@ -4,6 +4,7 @@
 #include "PickupFood.h"
 
 #include "D4_HD3_CustomProjectCharacter.h"
+#include "Food.h"
 #include "FoodCollector.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -29,6 +30,18 @@ void APickupFood::BeginPlay()
 	
 	PickupCollider->OnComponentBeginOverlap.AddDynamic(this, &APickupFood::OnOverlap);
 	PickupCollider->OnComponentEndOverlap.AddDynamic(this, &APickupFood::OnEndOverlap);
+}
+
+void APickupFood::Reset()
+{
+	Super::Reset();
+	
+	if (Food)
+	{
+		Food->Destroy();
+	}
+	
+	Destroy();
 }
 
 // Called every frame
