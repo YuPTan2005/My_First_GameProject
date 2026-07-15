@@ -11,6 +11,9 @@ ADestructibleWall::ADestructibleWall()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
+	
+	GeometryCollectionComponent = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("GeometryCollectionComponent"));
+	RootComponent = GeometryCollectionComponent;
 
 	HealthWidgetComponent = CreateDefaultSubobject<UNPCStatusComponent>(TEXT("HealthBarComponent"));
 	HealthWidgetComponent->SetupAttachment(RootComponent);
@@ -27,8 +30,6 @@ void ADestructibleWall::BeginPlay()
 	
 	CurrentHealth = MaxHealth;
 	bIsDead = false;
-	
-	TriggerExplosion();
 	
 	if (HealthWidgetComponent && HealthWidgetComponent->GetUserWidgetObject())
 	{
@@ -54,7 +55,7 @@ void ADestructibleWall::TriggerExplosion() const
 {
 	if (!MasterField) return;
 	
-	const FName FunctionName = TEXT("CE Trigger"); 
+	const FName FunctionName = TEXT("CE_Trigger"); 
 	if (UFunction* TriggerFunction = MasterField->FindFunction(FunctionName))
 	{
 		MasterField->ProcessEvent(TriggerFunction, nullptr);

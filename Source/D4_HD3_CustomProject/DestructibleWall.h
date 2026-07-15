@@ -28,7 +28,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
 	TObjectPtr<UNPCStatusComponent> HealthWidgetComponent;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Destruction")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Destruction")
 	AFieldSystemActor* MasterField;
 	
 	UPROPERTY(EditAnywhere, Category="Health")
