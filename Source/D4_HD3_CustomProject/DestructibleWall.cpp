@@ -36,6 +36,7 @@ void ADestructibleWall::BeginPlay()
 		if (UNPCStatus* StatusWidget = Cast<UNPCStatus>(HealthWidgetComponent->GetUserWidgetObject()))
 		{
 			StatusWidget->BindingActor = this;
+			StatusWidget->UpdateValues();
 		}
 	}
 }
