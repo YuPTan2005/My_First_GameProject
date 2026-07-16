@@ -137,12 +137,16 @@ void AEnemy::DealDamage_Implementation(float DamageTaken, AActor* DamagedBy)
 	{
 		bIsDead = true;
 		
-		if (AAIController* AIController = Cast<AAIController>(GetController()))
+		
+		if (AController* Controller = GetController())
 		{
-			UBrainComponent* AIBrainComponent = AIController->GetBrainComponent();
-			if (AIBrainComponent && AIBrainComponent->IsRunning())
+			if (AAIController* AIController = Cast<AAIController>(Controller))
 			{
-				AIBrainComponent->StopLogic(TEXT("Character Dead"));
+				UBrainComponent* AIBrainComponent = AIController->GetBrainComponent();
+				if (AIBrainComponent && AIBrainComponent->IsRunning())
+				{
+					AIBrainComponent->StopLogic(TEXT("Character Dead"));
+				}
 			}
 		}
 		GetWorld()->GetTimerManager().SetTimer(

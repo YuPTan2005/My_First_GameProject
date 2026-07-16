@@ -157,7 +157,11 @@ void AD4_HD3_CustomProjectCharacter::Destroyed()
 			{
 				Companion->Destroy();
 			}
-			Cast<AD4_HD3_CustomProjectGameMode>(GameMode)->RespawnPlayer(this);
+			
+			if (AD4_HD3_CustomProjectGameMode* MainCharacterGameMode = Cast<AD4_HD3_CustomProjectGameMode>(GameMode))
+			{
+				MainCharacterGameMode->RespawnPlayer(this);
+			}
 		}
 	}
 }

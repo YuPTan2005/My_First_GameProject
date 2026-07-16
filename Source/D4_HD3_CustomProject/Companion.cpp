@@ -98,9 +98,12 @@ void ACompanion::OnSphereEndOverlap(UPrimitiveComponent* OverlapComp, AActor* Ot
 		if (TargetPickupFood == PickupFood)
 		{
 			TargetPickupFood = nullptr;
-			if (ACompanionAIController* AIController = Cast<ACompanionAIController>(GetController()))
+			if (AController* Controller = GetController())
 			{
-				AIController->ClearFoodTarget();
+				if (ACompanionAIController* AIController = Cast<ACompanionAIController>(Controller))
+				{
+					AIController->ClearFoodTarget();
+				}
 			}
 			SelectNextFoodTarget();
 		}
@@ -131,14 +134,18 @@ void ACompanion::DeathCountDown()
 	bIsDead = true;
 	CompanionOwner->OnCompanionDie();
 	
-	if (AAIController* AIController = Cast<AAIController>(GetController()))
+	if (AController* Controller = GetController())
 	{
-		UBrainComponent* AIBrainComponent = AIController->GetBrainComponent();
-		if (AIBrainComponent && AIBrainComponent->IsRunning())
+		if (AAIController* AIController = Cast<AAIController>(Controller))
 		{
-			AIBrainComponent->StopLogic(TEXT("Character died"));
+			UBrainComponent* AIBrainComponent = AIController->GetBrainComponent();
+			if (AIBrainComponent && AIBrainComponent->IsRunning())
+			{
+				AIBrainComponent->StopLogic(TEXT("Character died"));
+			}
 		}
 	}
+	
 	GetWorld()->GetTimerManager().SetTimer(
 		DeathTimer,
 		this,
@@ -303,9 +310,12 @@ void ACompanion::SelectNextFoodTarget()
 	if (!TargetPickupFood && !PickupFoodList.IsEmpty())
 	{
 		TargetPickupFood = PickupFoodList[0];
-		if (ACompanionAIController* AIController = Cast<ACompanionAIController>(GetController()))
+		if (AController* Controller = GetController())
 		{
-			AIController->SetTargetFood(TargetPickupFood);
+			if (ACompanionAIController* AIController = Cast<ACompanionAIController>(Controller))
+			{
+				AIController->SetTargetFood(TargetPickupFood);
+			}
 		}
 	}
 }
@@ -456,9 +466,12 @@ void ACompanion::SetIsCountDownCalled(bool NewValue)
 void ACompanion::SetTargetEnemy(AEnemy* Enemy)
 {
 	TargetEnemy = Enemy;
-	if (ACompanionAIController* AIController = Cast<ACompanionAIController>(GetController()))
+	if (AController* Controller = GetController())
 	{
-		AIController->SetTargetEnemy(Enemy);
+		if (ACompanionAIController* AIController = Cast<ACompanionAIController>(Controller))
+		{
+			AIController->SetTargetEnemy(Enemy);
+		}
 	}
 }
 

@@ -105,11 +105,17 @@ void APickupFood::AddPickupUI(AActor* Actor)
 		{
 			if (Player->GetHasBackpack())
 			{
-				SpawnedUI = Cast<UFoodPickupUI>(CreateWidget(GetGameInstance(), PickupUIClass));
+				if (PickupUIClass)
+				{
+					SpawnedUI = Cast<UFoodPickupUI>(CreateWidget(GetGameInstance(), PickupUIClass));
+				}
 			}
 			else
 			{
-				SpawnedUI = Cast<UFoodPickupUI>(CreateWidget(GetGameInstance(), EatingUIClass));
+				if (EatingUIClass)
+				{
+					SpawnedUI = Cast<UFoodPickupUI>(CreateWidget(GetGameInstance(), EatingUIClass));
+				}
 			}
 	
 			FVector UITextOffset = PC->PlayerCameraManager->GetActorRightVector();

@@ -7,7 +7,10 @@ void UCompanionAnimInstance::NativeBeginPlay()
 {
 	Super::NativeBeginPlay();
 	
-	Companion = Cast<ACompanion>(TryGetPawnOwner());
+	if (APawn* Owner = TryGetPawnOwner())
+	{
+		Companion = Cast<ACompanion>(Owner);
+	}
 }
 
 void UCompanionAnimInstance::NativeUpdateAnimation(float DeltaSeconds)

@@ -57,9 +57,12 @@ void AEnemyAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 	
-	ControlledCharacter = Cast<AEnemy>(GetPawn());
+	ControlledCharacter = Cast<AEnemy>(InPawn);
 	
-	NavigationSystem = Cast<UNavigationSystemV1>(GetWorld()->GetNavigationSystem());
+	if (UNavigationSystemBase* NavSystemBase = GetWorld()->GetNavigationSystem())
+	{
+		NavigationSystem = Cast<UNavigationSystemV1>(NavSystemBase);
+	}
 	UseBlackboard(AIBlackboard, BlackboardComponent);
 	RunBehaviorTree(WalkBehaviourTree);
 	
