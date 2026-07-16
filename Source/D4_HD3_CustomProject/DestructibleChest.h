@@ -1,0 +1,35 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "DestructibleItem.h"
+#include "PhysicsEngine/PhysicsConstraintComponent.h"
+#include "DestructibleChest.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class D4_HD3_CUSTOMPROJECT_API ADestructibleChest : public ADestructibleItem
+{
+	GENERATED_BODY()
+	
+public:
+	ADestructibleChest();
+	
+protected:
+	virtual void BeginPlay() override;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Mesh")
+	UMeshComponent* ChestTopMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Mesh")
+	UMeshComponent* ChestBottomMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Mesh")
+	UPhysicsConstraintComponent* ChestHinge;
+	
+	virtual void OnDestructed() override;
+	
+	virtual void DealDamage_Implementation(float DamageTaken, AActor* DamagedBy) override;
+	
+};
