@@ -11,6 +11,8 @@ ADestructibleWall::ADestructibleWall()
 	GeometryCollectionComponent = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("GeometryCollectionComponent"));
 	RootComponent = GeometryCollectionComponent;
 	
+	HealthWidgetComponent->SetRelativeLocation(FVector(100.0f, 0.0f, 600.0f)); 
+	
 	MaxHealth = 1500.0f;
 }
 

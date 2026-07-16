@@ -14,8 +14,7 @@ ADestructibleItem::ADestructibleItem()
 	
 	HealthWidgetComponent = CreateDefaultSubobject<UNPCStatusComponent>(TEXT("HealthBarComponent"));
 	HealthWidgetComponent->SetupAttachment(RootComponent);
-
-	HealthWidgetComponent->SetRelativeLocation(FVector(100.0f, 0.0f, 600.0f)); 
+	
 	HealthWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	HealthWidgetComponent->SetDrawSize(FVector2D(150.0f, 40.0f));
 }
