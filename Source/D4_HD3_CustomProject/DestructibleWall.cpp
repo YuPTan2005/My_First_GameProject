@@ -10,6 +10,8 @@ ADestructibleWall::ADestructibleWall()
 {
 	GeometryCollectionComponent = CreateDefaultSubobject<UGeometryCollectionComponent>(TEXT("GeometryCollectionComponent"));
 	RootComponent = GeometryCollectionComponent;
+	
+	MaxHealth = 1500.0f;
 }
 
 // Called when the game starts or when spawned

@@ -26,7 +26,7 @@ protected:
 	TObjectPtr<UNPCStatusComponent> HealthWidgetComponent;
 	
 	UPROPERTY(EditAnywhere, Category="Health")
-	float MaxHealth = 1500.0f;
+	float MaxHealth = 100.0f;
 	float CurrentHealth;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Time")
