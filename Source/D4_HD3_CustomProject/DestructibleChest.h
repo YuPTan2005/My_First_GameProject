@@ -30,6 +30,4 @@ protected:
 	
 	virtual void OnDestructed() override;
 	
-	virtual void DealDamage_Implementation(float DamageTaken, AActor* DamagedBy) override;
-	
 };

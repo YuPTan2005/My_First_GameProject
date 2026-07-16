@@ -40,19 +40,3 @@ void ADestructibleChest::OnDestructed()
 	ChestTopMesh->SetSimulatePhysics(true);
 }
 
-void ADestructibleChest::DealDamage_Implementation(float DamageTaken, AActor* DamagedBy)
-{
-	Super::DealDamage_Implementation(DamageTaken, DamagedBy);
-	
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(
-			-1, 
-			10.0f, 
-			FColor::Yellow, 
-			FString::Printf(TEXT("DealDamage function is called in chest class"))
-			);
-	}
-}
-
-
