@@ -17,6 +17,8 @@ EBTNodeResult::Type ULandingBTTaskNode::ExecuteTask(UBehaviorTreeComponent& Owne
 
 void ULandingBTTaskNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
+	if (!OwnerComp.GetAIOwner()) return;
+	
 	if (AEnemyAIController* AIController = Cast<AEnemyAIController>(OwnerComp.GetAIOwner()))
 	{
 		if (APawn* ControlledPawn = AIController->GetPawn())

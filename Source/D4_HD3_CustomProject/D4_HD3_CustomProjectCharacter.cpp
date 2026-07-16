@@ -172,6 +172,8 @@ void AD4_HD3_CustomProjectCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	
+	if (!NewController) return;
+	
 	PlayerController = Cast<AD4_HD3_CustomProjectPlayerController>(NewController);
 	if (PlayerController)
 	{

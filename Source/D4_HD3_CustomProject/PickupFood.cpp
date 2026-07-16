@@ -107,14 +107,14 @@ void APickupFood::AddPickupUI(AActor* Actor)
 			{
 				if (PickupUIClass)
 				{
-					SpawnedUI = Cast<UFoodPickupUI>(CreateWidget(GetGameInstance(), PickupUIClass));
+					SpawnedUI = CreateWidget<UFoodPickupUI>(GetGameInstance(), PickupUIClass);
 				}
 			}
 			else
 			{
 				if (EatingUIClass)
 				{
-					SpawnedUI = Cast<UFoodPickupUI>(CreateWidget(GetGameInstance(), EatingUIClass));
+					SpawnedUI = CreateWidget<UFoodPickupUI>(GetGameInstance(), EatingUIClass);
 				}
 			}
 	

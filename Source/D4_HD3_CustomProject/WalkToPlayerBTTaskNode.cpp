@@ -32,8 +32,12 @@ EBTNodeResult::Type UWalkToPlayerBTTaskNode::ExecuteTask(UBehaviorTreeComponent&
 	
 	RetrievedAcceptanceRadius = BlackboardComponent->GetValueAsFloat(AcceptanceRadius.SelectedKeyName);
 	ControlledPawn = AIController->GetPawn();
-	UObject* TargetObject = BlackboardComponent->GetValueAsObject(TargetKey.SelectedKeyName);
-	TargetPawn = Cast<APawn>(TargetObject);
+	
+	if (UObject* TargetObject = BlackboardComponent->GetValueAsObject(TargetKey.SelectedKeyName))
+	{
+		TargetPawn = Cast<APawn>(TargetObject);
+	}
+	
 	if (!ControlledPawn || !TargetPawn)
 	{
 		return EBTNodeResult::Failed;

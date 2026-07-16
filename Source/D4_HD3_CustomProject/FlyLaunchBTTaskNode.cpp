@@ -12,10 +12,13 @@ UFlyLaunchBTTaskNode::UFlyLaunchBTTaskNode()
 
 EBTNodeResult::Type UFlyLaunchBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	if (AEnemyAIController* AIController = Cast<AEnemyAIController>(OwnerComp.GetAIOwner()))
+	if (AAIController* AIController = OwnerComp.GetAIOwner())
 	{
-		AIController->OnFlying();
-		return EBTNodeResult::Succeeded;
+		if (AEnemyAIController* EnemyAIController = Cast<AEnemyAIController>(AIController))
+		{
+			EnemyAIController->OnFlying();
+			return EBTNodeResult::Succeeded;
+		}
 	}
 	
 	return EBTNodeResult::Failed;

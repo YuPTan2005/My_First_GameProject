@@ -57,6 +57,8 @@ void AEnemyAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 	
+	if (!InPawn) return;
+	
 	ControlledCharacter = Cast<AEnemy>(InPawn);
 	
 	if (UNavigationSystemBase* NavSystemBase = GetWorld()->GetNavigationSystem())

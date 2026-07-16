@@ -7,13 +7,13 @@
 
 EBTNodeResult::Type UGenRandMidAirLocBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	UBehaviorTreeComponent* TreeComponent = &OwnerComp;
-	AEnemyAIController* Controller = Cast<AEnemyAIController>(TreeComponent->GetOwner());
-	if (Controller)
+	if (AAIController* AIController = OwnerComp.GetAIOwner())
 	{
-		Controller->GenerateNewRandomLocationMidAir();
-		return EBTNodeResult::Succeeded;
+		if (AEnemyAIController* EnemyAIController = Cast<AEnemyAIController>(AIController);)
+		{
+			EnemyAIController->GenerateNewRandomLocationMidAir();
+			return EBTNodeResult::Succeeded;
+		}
 	}
-	
 	return EBTNodeResult::Failed;
 }

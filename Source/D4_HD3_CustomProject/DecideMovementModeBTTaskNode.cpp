@@ -13,12 +13,13 @@ UDecideMovementModeBTTaskNode::UDecideMovementModeBTTaskNode()
 
 EBTNodeResult::Type UDecideMovementModeBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	UBehaviorTreeComponent* Tree = &OwnerComp;
-	AEnemyAIController* Controller = Cast<AEnemyAIController>(Tree->GetOwner());
-	if (Controller)
+	if (AAIController* AIController = OwnerComp.GetAIOwner())
 	{
-		Controller->DecideMovementMode();
-		return EBTNodeResult::Succeeded;
+		if (AEnemyAIController* EnemyAIController = Cast<AEnemyAIController>(AIController))
+		{
+			EnemyAIController->DecideMovementMode();
+			return EBTNodeResult::Succeeded;
+		}
 	}
 	
 	return EBTNodeResult::Failed;

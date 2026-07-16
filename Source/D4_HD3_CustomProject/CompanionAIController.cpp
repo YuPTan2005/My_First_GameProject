@@ -171,6 +171,7 @@ void ACompanionAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 	
+	if (!InPawn) return;
 	ControlledCharacter = Cast<ACompanion>(InPawn);
 	
 	if (ControlledCharacter && BehaviourTree)

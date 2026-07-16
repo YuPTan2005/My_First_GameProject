@@ -36,6 +36,8 @@ void UFlyToActorBTTaskNode::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
 
 EBTNodeResult::Type UFlyToActorBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
+	if (!OwnerComp.GetBlackboardComponent() || !OwnerComp.GetAIOwner()) return EBTNodeResult::Failed;
+	
 	BlackboardComponent = OwnerComp.GetBlackboardComponent();
 	AAIController* AIController = Cast<AAIController>(OwnerComp.GetAIOwner());
 	if (!BlackboardComponent || !AIController)
@@ -51,7 +53,7 @@ EBTNodeResult::Type UFlyToActorBTTaskNode::ExecuteTask(UBehaviorTreeComponent& O
 	
 	ControlledPawn = AIController->GetPawn();
 	UObject* TargetObject = BlackboardComponent->GetValueAsObject(TargetKey.SelectedKeyName);
-	TargetActor = Cast<AActor>(TargetObject);
+	if (IsValid(TargetObject)) TargetActor = Cast<AActor>(TargetObject);
 	if (!ControlledPawn || !TargetActor)
 	{
 		UE_LOG(LogTemp, Error, TEXT("ControlledPawn or TargetPawn is not set in %s"), *OwnerComp.GetName());

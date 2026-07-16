@@ -76,6 +76,7 @@ void AD4_HD3_CustomProjectPlayerController::AttachUIWidget(ACharacter* NewPlayer
 		{
 			if (!StarvationUI)
 			{
+				
 				StarvationUI = CreateWidget<UStarvationUI>(this, StarvationUIClass);
 			}
 		}
@@ -112,8 +113,7 @@ void AD4_HD3_CustomProjectPlayerController::AttachUIWidget(ACharacter* NewPlayer
 		{
 			if (!PlayerUI)
 			{
-				PlayerUI = Cast<UPlayerUI>(CreateWidget(this, PlayerUIClass));
-				PlayerUI->AddToViewport();
+				PlayerUI = CreateWidget<UPlayerUI>(this, PlayerUIClass);
 			}
 		}
 		else
@@ -125,7 +125,7 @@ void AD4_HD3_CustomProjectPlayerController::AttachUIWidget(ACharacter* NewPlayer
 		{
 			if (!DeathUI)
 			{
-				DeathUI = Cast<UDeathUI>(CreateWidget(this, DeathUIClass));
+				DeathUI = CreateWidget<UDeathUI>(this, DeathUIClass);
 			}
 		}
 		else
