@@ -8,6 +8,7 @@
 #include "ItemCollector.h"
 #include "FoodConsumer.h"
 #include "NPCStatusComponent.h"
+#include "PickupFood.h"
 #include "GameFramework/Character.h"
 #include "Companion.generated.h"
 
