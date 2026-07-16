@@ -533,9 +533,12 @@ void ACompanion::SetCompanionOwner(AD4_HD3_CustomProjectCharacter* NewCompanionO
 	GetCharacterMovement()->MaxFlySpeed = CompanionOwner->GetCharacterMovement()->MaxFlySpeed;
 	GetCharacterMovement()->BrakingDecelerationFlying = CompanionOwner->GetCharacterMovement()->BrakingDecelerationFlying;
 	
-	if (ACompanionAIController* AIController = Cast<ACompanionAIController>(GetController()))
+	if (AController* AIController = GetController())
 	{
-		AIController->SetCompanionOwner(CompanionOwner);
+		if (ACompanionAIController* CompanionAIController = Cast<ACompanionAIController>(AIController))
+		{
+			CompanionAIController->SetCompanionOwner(CompanionOwner);
+		}
 	}
 }
 

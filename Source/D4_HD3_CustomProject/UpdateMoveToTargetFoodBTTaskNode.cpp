@@ -9,9 +9,12 @@ void UUpdateMoveToTargetFoodBTTaskNode::TickNode(UBehaviorTreeComponent& OwnerCo
 	float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
-
-	if (ACompanionAIController* AIController = Cast<ACompanionAIController>(OwnerComp.GetAIOwner()))
+	
+	if (AAIController* AIController = OwnerComp.GetAIOwner())
 	{
-		AIController->UpdateMoveToTargetFoodCheck();
+		if (ACompanionAIController* CompanionAIController = Cast<ACompanionAIController>(AIController))
+		{
+			CompanionAIController->UpdateMoveToTargetFoodCheck();
+		}
 	}
 }

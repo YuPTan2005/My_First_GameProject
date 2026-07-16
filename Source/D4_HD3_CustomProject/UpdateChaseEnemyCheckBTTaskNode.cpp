@@ -10,8 +10,11 @@ void UUpdateChaseEnemyCheckBTTaskNode::TickNode(UBehaviorTreeComponent& OwnerCom
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 	
-	if (ACompanionAIController* AIController = Cast<ACompanionAIController>(OwnerComp.GetAIOwner()))
+	if (AAIController* AIController = OwnerComp.GetAIOwner())
 	{
-		AIController->UpdateChaseEnemyCheck();
+		if (ACompanionAIController* CompanionAIController = Cast<ACompanionAIController>(AIController))
+		{
+			CompanionAIController->UpdateChaseEnemyCheck();
+		}
 	}
 }

@@ -18,7 +18,7 @@ UWalkToPlayerBTTaskNode::UWalkToPlayerBTTaskNode()
 EBTNodeResult::Type UWalkToPlayerBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	BlackboardComponent = OwnerComp.GetBlackboardComponent();
-	AIController = Cast<AAIController>(OwnerComp.GetAIOwner());
+	AIController = OwnerComp.GetAIOwner();
 	if (!BlackboardComponent || !AIController)
 	{
 		return EBTNodeResult::Failed;

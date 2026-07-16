@@ -8,11 +8,13 @@
 EBTNodeResult::Type UUpdateCollectibleBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	UBehaviorTreeComponent* TreeComponent = &OwnerComp;
-	ACompanionAIController* AIController = Cast<ACompanionAIController>(TreeComponent->GetOwner());
-	if (AIController)
+	if (AAIController* AIController = TreeComponent->GetAIOwner())
 	{
-		AIController->UpdateCollectible();
-		return EBTNodeResult::Succeeded;
+		if (ACompanionAIController* CompanionAIController = Cast<ACompanionAIController>(AIController))
+		{
+			CompanionAIController->UpdateCollectible();
+			return EBTNodeResult::Succeeded;
+		}
 	}
 	
 	return EBTNodeResult::Failed;

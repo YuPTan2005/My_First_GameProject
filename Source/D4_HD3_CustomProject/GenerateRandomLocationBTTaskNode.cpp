@@ -8,11 +8,13 @@
 EBTNodeResult::Type UGenerateRandomLocationBTTaskNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	UBehaviorTreeComponent* TreeComponent = &OwnerComp;
-	AEnemyAIController* Controller = Cast<AEnemyAIController>(TreeComponent->GetOwner());
-	if (Controller)
+	if (AAIController* AIController = TreeComponent->GetAIOwner())
 	{
-		Controller->GenerateNewRandomLocationLand();
-		return EBTNodeResult::Succeeded;
+		if (AEnemyAIController* EnemyAIController = Cast<AEnemyAIController>(AIController))
+		{
+			EnemyAIController->GenerateNewRandomLocationLand();
+			return EBTNodeResult::Succeeded;
+		}
 	}
 	
 	return EBTNodeResult::Failed;
