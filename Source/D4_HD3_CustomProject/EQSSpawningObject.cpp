@@ -68,7 +68,7 @@ bool AEQSSpawningObject::SpawnFood(FVector SpawnLocation)
 			AFood* FoodSpawned = GetWorld()->
 				SpawnActor<AFood>(FoodToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
 		
-			PickupFoodSpawned->Food = FoodSpawned;
+			PickupFoodSpawned->SetItem(FoodSpawned);
 			PickupFoodSpawned->MeshComponent->SetStaticMesh(FoodMesh);
 			PickupFoodSpawned->MeshComponent->SetMaterial(0, FoodMaterial);
 			PickupFoodSpawned->PickupUIClass = PickupUIClass;

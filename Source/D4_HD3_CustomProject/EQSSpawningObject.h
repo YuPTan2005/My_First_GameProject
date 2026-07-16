@@ -7,7 +7,6 @@
 #include "PickupUI.h"
 #include "PickupFood.h"
 #include "EnvironmentQuery/EnvQueryTypes.h"
-#include "EnvironmentQuery/EQSTestingPawn.h"
 #include "GameFramework/Actor.h"
 #include "EQSSpawningObject.generated.h"
 
