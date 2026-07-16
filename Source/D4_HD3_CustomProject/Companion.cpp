@@ -98,9 +98,9 @@ void ACompanion::OnSphereEndOverlap(UPrimitiveComponent* OverlapComp, AActor* Ot
 		if (TargetPickupFood == PickupFood)
 		{
 			TargetPickupFood = nullptr;
-			if (AController* Controller = GetController())
+			if (AController* CompanionController = GetController())
 			{
-				if (ACompanionAIController* AIController = Cast<ACompanionAIController>(Controller))
+				if (ACompanionAIController* AIController = Cast<ACompanionAIController>(CompanionController))
 				{
 					AIController->ClearFoodTarget();
 				}
@@ -134,9 +134,9 @@ void ACompanion::DeathCountDown()
 	bIsDead = true;
 	CompanionOwner->OnCompanionDie();
 	
-	if (AController* Controller = GetController())
+	if (AController* CompanionController = GetController())
 	{
-		if (AAIController* AIController = Cast<AAIController>(Controller))
+		if (AAIController* AIController = Cast<AAIController>(CompanionController))
 		{
 			UBrainComponent* AIBrainComponent = AIController->GetBrainComponent();
 			if (AIBrainComponent && AIBrainComponent->IsRunning())
@@ -310,9 +310,9 @@ void ACompanion::SelectNextFoodTarget()
 	if (!TargetPickupFood && !PickupFoodList.IsEmpty())
 	{
 		TargetPickupFood = PickupFoodList[0];
-		if (AController* Controller = GetController())
+		if (AController* CompanionController = GetController())
 		{
-			if (ACompanionAIController* AIController = Cast<ACompanionAIController>(Controller))
+			if (ACompanionAIController* AIController = Cast<ACompanionAIController>(CompanionController))
 			{
 				AIController->SetTargetFood(TargetPickupFood);
 			}
@@ -466,9 +466,9 @@ void ACompanion::SetIsCountDownCalled(bool NewValue)
 void ACompanion::SetTargetEnemy(AEnemy* Enemy)
 {
 	TargetEnemy = Enemy;
-	if (AController* Controller = GetController())
+	if (AController* CompanionController = GetController())
 	{
-		if (ACompanionAIController* AIController = Cast<ACompanionAIController>(Controller))
+		if (ACompanionAIController* AIController = Cast<ACompanionAIController>(CompanionController))
 		{
 			AIController->SetTargetEnemy(Enemy);
 		}

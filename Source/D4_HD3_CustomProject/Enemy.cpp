@@ -138,9 +138,9 @@ void AEnemy::DealDamage_Implementation(float DamageTaken, AActor* DamagedBy)
 		bIsDead = true;
 		
 		
-		if (AController* Controller = GetController())
+		if (AController* EnemyController = GetController())
 		{
-			if (AAIController* AIController = Cast<AAIController>(Controller))
+			if (AAIController* AIController = Cast<AAIController>(EnemyController))
 			{
 				UBrainComponent* AIBrainComponent = AIController->GetBrainComponent();
 				if (AIBrainComponent && AIBrainComponent->IsRunning())
