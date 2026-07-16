@@ -124,7 +124,7 @@ protected:
 	void InitialiseCompanionUI();
 	
 	void Upgrade();
-	int CalculateIncreaseAmount(float Attribute) const;
+	float CalculateIncreaseAmount(float Attribute) const;
 	
 	virtual void Tick(float DeltaSeconds) override;
 	
@@ -278,12 +278,14 @@ public:
 	ACompanion* GetCompanion() const;
 	void SetCompanion(ACompanion* NewCompanion);
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackCoolDown = 1.0f;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackDistance = 200;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Damage = 10;
+	float UpgradeDamageValue;
+	void IncreaseDamageValue(const float DamageValue);
 	
 	float AttackTimer = AttackCoolDown;
 	

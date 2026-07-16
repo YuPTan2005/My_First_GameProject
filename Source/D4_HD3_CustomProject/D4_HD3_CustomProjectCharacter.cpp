@@ -101,6 +101,8 @@ void AD4_HD3_CustomProjectCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	UpgradeDamageValue = Damage;
+	
 	if (InventoryComponentClass)
 	{
 		InventoryComponent = NewObject<UInventoryActorComponent>(this, InventoryComponentClass);
@@ -501,7 +503,8 @@ void AD4_HD3_CustomProjectCharacter::Upgrade()
 {
 	if (Level <= MaxLevel)
 	{
-		Damage += CalculateIncreaseAmount(Damage);
+		UpgradeDamageValue = CalculateIncreaseAmount(UpgradeDamageValue);
+		Damage += UpgradeDamageValue;
 		MaxHealth += 20;
 		Health = MaxHealth;
 		Level++;
@@ -516,7 +519,7 @@ void AD4_HD3_CustomProjectCharacter::Upgrade()
 }
 
 // Function to calculate the upgrade degree, larger level has smaller degree
-int AD4_HD3_CustomProjectCharacter::CalculateIncreaseAmount(float Attribute) const
+float AD4_HD3_CustomProjectCharacter::CalculateIncreaseAmount(float Attribute) const
 {
 	return FMath::CeilToInt(Attribute * UpgradeFactor * (1.0f / FMath::Pow(2, Level)));
 }
@@ -868,6 +871,15 @@ void AD4_HD3_CustomProjectCharacter::DealDamage_Implementation(float DamageTook,
 EGameTeam AD4_HD3_CustomProjectCharacter::GetTeam_Implementation()
 {
 	return EGameTeam::Players;
+}
+
+void AD4_HD3_CustomProjectCharacter::IncreaseDamageValue(const float DamageValue)
+{
+	Damage += DamageValue;
+	if (PlayerUI)
+	{
+		PlayerUI->UpdatePlayerValues();
+	}
 }
 
 void AD4_HD3_CustomProjectCharacter::Attack()
