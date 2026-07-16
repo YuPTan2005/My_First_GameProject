@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "FoodPickupUI.generated.h"
+#include "PickupUI.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class D4_HD3_CUSTOMPROJECT_API UFoodPickupUI : public UUserWidget
+class D4_HD3_CUSTOMPROJECT_API UPickupUI : public UUserWidget
 {
 	GENERATED_BODY()
 	

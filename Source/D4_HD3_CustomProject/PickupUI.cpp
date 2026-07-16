@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "FoodPickupUI.h"
+#include "PickupUI.h"
 
-void UFoodPickupUI::NativeConstruct()
+void UPickupUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 	

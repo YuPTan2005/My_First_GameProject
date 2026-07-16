@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Food.h"
-#include "FoodPickupUI.h"
+#include "PickupUI.h"
 #include "PickupFood.h"
 #include "EnvironmentQuery/EnvQueryTypes.h"
 #include "EnvironmentQuery/EQSTestingPawn.h"
@@ -43,7 +43,7 @@ protected:
 	TSubclassOf<APickupFood> PickupFoodClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn")
-	TSubclassOf<UFoodPickupUI> PickupUIClass;
+	TSubclassOf<UPickupUI> PickupUIClass;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* MeshComponent;

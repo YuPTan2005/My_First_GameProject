@@ -39,7 +39,7 @@ protected:
 	TSubclassOf<APickupFood> PickupFoodClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn")
-	TSubclassOf<UFoodPickupUI> PickupUIClass;
+	TSubclassOf<UPickupUI> PickupUIClass;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* SpawnSphereArea;
