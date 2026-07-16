@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PickupFood.h"
+#include "PickupItem.h"
 #include "UObject/Interface.h"
 #include "FoodCollector.generated.h"
 
@@ -24,9 +24,9 @@ class D4_HD3_CUSTOMPROJECT_API IFoodCollector
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void AddCollectibleFood(APickupFood* Food);
+	void AddCollectibleFood(APickupItem* Food);
 	
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void RemoveCollectibleFood(APickupFood* Food);
+	void RemoveCollectibleFood(APickupItem* Food);
 	
 };
