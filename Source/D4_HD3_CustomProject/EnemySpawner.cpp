@@ -26,7 +26,7 @@ FVector AEnemySpawner::GetSpawnPoint()
 	{
 		FNavAgentProperties AgentProps;
 		AgentProps.AgentRadius = 50.0f;
-		AgentProps.AgentHeight = 160.0f; 
+		AgentProps.AgentHeight = 250.0f; 
 		
 		ANavigationData* TargetNavData = NavSys->GetNavDataForProps(AgentProps);
 		
