@@ -13,7 +13,7 @@ ADestructibleWall::ADestructibleWall()
 	
 	HealthWidgetComponent->SetRelativeLocation(FVector(100.0f, 0.0f, 600.0f)); 
 	
-	MaxHealth = 1500.0f;
+	MaxHealth = 2500.0f;
 }
 
 // Called when the game starts or when spawned

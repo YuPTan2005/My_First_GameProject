@@ -18,7 +18,7 @@ ADestructibleChest::ADestructibleChest()
 	HealthWidgetComponent->SetupAttachment(ChestBottomMesh);
 	HealthWidgetComponent->SetRelativeLocation(FVector(0.0f, -25.0f, 100.0f)); 
 	
-	MaxHealth = 30.0f;
+	MaxHealth = 1000.0f;
 }
 
 void ADestructibleChest::BeginPlay()
