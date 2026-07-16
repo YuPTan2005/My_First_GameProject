@@ -216,23 +216,24 @@ bool ACompanion::CollectFood()
 	if (CollectibleFoodList.Contains(TargetPickupFood))
 	{
 		APickupFood* PickupFood = TargetPickupFood;
+		AActor* ItemToCollect = PickupFood->GetItem();
 		AFood* FoodToCollect = nullptr;
        
-		if (!PickupFood->Food)
+		if (ItemToCollect)
 		{
-			FoodToCollect = NewObject<AFood>();
+			FoodToCollect = Cast<AFood>(ItemToCollect);
 		}
 		else
 		{
-			FoodToCollect = PickupFood->Food;
+			FoodToCollect = NewObject<AFood>();
 		}
        
-		if (CompanionOwner && CompanionOwner->AddItem(FoodToCollect))
+		if (FoodToCollect && CompanionOwner && CompanionOwner->AddItem(FoodToCollect))
 		{
 			CollectibleFoodList.RemoveSingle(PickupFood);
 			PickupFoodList.RemoveSingle(PickupFood);
 			
-			CompanionOwner->RemoveCollectibleFood_Implementation(PickupFood);
+			CompanionOwner->RemoveCollectibleItem_Implementation(PickupFood);
 			
 			CollectTimer = 0.0f;
 			TargetPickupFood = nullptr; 
@@ -242,6 +243,8 @@ bool ACompanion::CollectFood()
 			
 			return true;
 		}
+		
+		UE_LOG(LogTemp, Error, TEXT("Item in %s is not a type of food"), *PickupFood->GetName());
 	}
     
 	return false;
@@ -290,14 +293,20 @@ void ACompanion::Upgrade()
 	StarvationValue = MaxStarvationValue;
 }
 
-void ACompanion::AddCollectibleFood_Implementation(APickupFood* Food)
+void ACompanion::AddCollectibleItem_Implementation(APickupItem* Item)
 {
-	CollectibleFoodList.Add(Food);
+	if (APickupFood* Food = Cast<APickupFood>(Item))
+	{
+		CollectibleFoodList.Add(Food);
+	}
 }
 
-void ACompanion::RemoveCollectibleFood_Implementation(APickupFood* Food)
+void ACompanion::RemoveCollectibleItem_Implementation(APickupItem* Item)
 {
-	CollectibleFoodList.RemoveSingle(Food);
+	if (APickupFood* Food = Cast<APickupFood>(Item))
+	{
+		CollectibleFoodList.RemoveSingle(Food);
+	}
 }
 
 bool ACompanion::IsCollectibleFoodListEmpty()

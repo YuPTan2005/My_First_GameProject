@@ -7,7 +7,7 @@
 #include "D4_HD3_CustomProjectPlayerController.h"
 #include "Damageable.h"
 #include "DeathUI.h"
-#include "FoodCollector.h"
+#include "ItemCollector.h"
 #include "FoodConsumer.h"
 #include "InventoryActorComponent.h"
 #include "InventoryWidget.h"
@@ -36,7 +36,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 UCLASS(abstract)
 class AD4_HD3_CustomProjectCharacter : 
 	public ACharacter, 
-	public IFoodCollector,
+	public IItemCollector,
 	public IDamageable,
 	public IFoodConsumer
 {
@@ -216,8 +216,8 @@ public:
 	void UseItem(int32 Index);
 	void FeedItem(int32 Index) const;
 	
-	virtual void AddCollectibleFood_Implementation(APickupFood* Food) override;
-	virtual void RemoveCollectibleFood_Implementation(APickupFood* Food) override;
+	virtual void AddCollectibleItem_Implementation(APickupItem* Item) override;
+	virtual void RemoveCollectibleItem_Implementation(APickupItem* Item) override;
 	
 	UPROPERTY()
 	UPlayerUI* PlayerUI;

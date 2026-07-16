@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Damageable.h"
 #include "Enemy.h"
-#include "FoodCollector.h"
+#include "ItemCollector.h"
 #include "FoodConsumer.h"
 #include "NPCStatusComponent.h"
 #include "GameFramework/Character.h"
@@ -18,7 +18,7 @@ class UNPCStatus;
 UCLASS()
 class D4_HD3_CUSTOMPROJECT_API ACompanion : 
 	public ACharacter, 
-	public IFoodCollector,
+	public IItemCollector,
 	public IDamageable,
 	public IFoodConsumer
 {
@@ -168,8 +168,8 @@ public:
 	
 	void Attack(AActor* Target);
 	
-	virtual void AddCollectibleFood_Implementation(APickupFood* Food) override;
-	virtual void RemoveCollectibleFood_Implementation(APickupFood* Food) override;
+	virtual void AddCollectibleItem_Implementation(APickupItem* Food) override;
+	virtual void RemoveCollectibleItem_Implementation(APickupItem* Food) override;
 	
 	bool IsCollectibleFoodListEmpty();
 	void SelectNextFoodTarget();

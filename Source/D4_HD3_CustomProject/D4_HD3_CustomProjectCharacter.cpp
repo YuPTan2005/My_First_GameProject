@@ -301,59 +301,60 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 	if (InventoryComponent->GetHasBackpack() && CollectibleFood.Num() > 0)
 	{
 		APickupFood* PickupFood = CollectibleFood[0];
-		AFood* FoodToAdd;
+		AActor* ItemToAdd = PickupFood->GetItem();
 		const FVector PickupFoodLocation = PickupFood->GetActorLocation();
 		
-		if (!PickupFood->Food)
+		if (!ItemToAdd)
 		{
-			FoodToAdd = NewObject<AFood>();
-		}
-		else
-		{
-			FoodToAdd = PickupFood->Food;
+			ItemToAdd = NewObject<AFood>();
 		}
 		
-		bool AddFoodSuccess = true;
-		if (AddItem(FoodToAdd))
+		if (ItemToAdd->Implements<UEdible>())
 		{
-			CollectibleFood.RemoveSingle(PickupFood);
-			if (Companion)
-			{
-				Companion->RemoveCollectibleFood_Implementation(PickupFood);
-			}
-			PickupFood->Collected(this);
-		}
-		else
-		{
-			AddFoodSuccess = false;
-			PickupFood->UnCollected();
-		}
-		
-		if (ViewportInfoUIClass)
-		{
-			UViewportInfoUI* ViewportInfoUI = CreateWidget<UViewportInfoUI>(GetGameInstance(), ViewportInfoUIClass);
+			AFood* FoodToAdd = Cast<AFood>(ItemToAdd);
+			bool AddFoodSuccess = true;
 			
-			FVector2D ViewportInfoUILocation;
-			UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
-				PickupFoodLocation, ViewportInfoUILocation);
-			ViewportInfoUI->SetStartLocation(ViewportInfoUILocation);
-			
-			if (AddFoodSuccess)
+			if (FoodToAdd && AddItem(FoodToAdd))
 			{
-				ViewportInfoUI->SetDisplayText(FoodSuccessCollectedText);
-				ViewportInfoUI->SetColorAndOpacity(FLinearColor(0.04f, 0.8f, 0.48f));
+				CollectibleFood.RemoveSingle(PickupFood);
+				if (Companion)
+				{
+					Companion->RemoveCollectibleItem_Implementation(PickupFood);
+				}
+				PickupFood->Collected(this);
 			}
 			else
 			{
-				ViewportInfoUI->SetDisplayText(FoodFailCollectedText);
-				ViewportInfoUI->SetColorAndOpacity(FLinearColor(1.0f, 0.25f, 0.38f));
+				AddFoodSuccess = false;
+				PickupFood->UnCollected();
 			}
+		
+			if (ViewportInfoUIClass)
+			{
+				UViewportInfoUI* ViewportInfoUI = CreateWidget<UViewportInfoUI>(GetGameInstance(), ViewportInfoUIClass);
 			
-			ViewportInfoUI->AddToViewport();
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("No value assigned to CollectionInfoUIClass in %s"), *GetName());
+				FVector2D ViewportInfoUILocation;
+				UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
+					PickupFoodLocation, ViewportInfoUILocation);
+				ViewportInfoUI->SetStartLocation(ViewportInfoUILocation);
+			
+				if (AddFoodSuccess)
+				{
+					ViewportInfoUI->SetDisplayText(FoodSuccessCollectedText);
+					ViewportInfoUI->SetColorAndOpacity(FLinearColor(0.04f, 0.8f, 0.48f));
+				}
+				else
+				{
+					ViewportInfoUI->SetDisplayText(FoodFailCollectedText);
+					ViewportInfoUI->SetColorAndOpacity(FLinearColor(1.0f, 0.25f, 0.38f));
+				}
+			
+				ViewportInfoUI->AddToViewport();
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("No value assigned to CollectionInfoUIClass in %s"), *GetName());
+			}
 		}
 	}
 }
@@ -363,43 +364,44 @@ void AD4_HD3_CustomProjectCharacter::Eat()
 	if (!InventoryComponent->GetHasBackpack() && EdibleFood.Num() > 0)
 	{
 		APickupFood* PickupFood = EdibleFood[0];
-		AFood* FoodToEat;
+		AActor* FoodToEat = PickupFood->GetItem();
 		const FVector PickupFoodLocation = PickupFood->GetActorLocation();
 		
-		if (!PickupFood->Food)
+		if (!FoodToEat)
 		{
 			FoodToEat = NewObject<AFood>();
 		}
-		else
-		{
-			FoodToEat = PickupFood->Food;
-		}
-
-		Execute_Eat(this, FoodToEat);
-		EdibleFood.RemoveSingle(PickupFood);
-		if (Companion)
-		{
-			Companion->RemoveCollectibleFood_Implementation(PickupFood);
-		}
-		PickupFood->Eaten();
 		
-		if (ViewportInfoUIClass)
+		if (FoodToEat->Implements<UEdible>())
 		{
-			UViewportInfoUI* ViewportInfoUI = CreateWidget<UViewportInfoUI>(GetGameInstance(), ViewportInfoUIClass);
+			Execute_Eat(this, FoodToEat);
+			EdibleFood.RemoveSingle(PickupFood);
+			if (Companion)
+			{
+				Companion->RemoveCollectibleItem_Implementation(PickupFood);
+			}
+			PickupFood->PickedUp();
+		
+			if (ViewportInfoUIClass)
+			{
+				UViewportInfoUI* ViewportInfoUI = CreateWidget<UViewportInfoUI>(GetGameInstance(), ViewportInfoUIClass);
 			
-			FVector2D ViewportInfoUILocation;
-			UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
-				PickupFoodLocation, ViewportInfoUILocation);
+				FVector2D ViewportInfoUILocation;
+				UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
+					PickupFoodLocation, ViewportInfoUILocation);
 			
-			ViewportInfoUI->SetStartLocation(ViewportInfoUILocation);
-			ViewportInfoUI->SetDisplayText(FoodEatenText);
-			ViewportInfoUI->SetColorAndOpacity(FLinearColor(0.85f, 0.55f, 0.08f));
-			ViewportInfoUI->AddToViewport();
+				ViewportInfoUI->SetStartLocation(ViewportInfoUILocation);
+				ViewportInfoUI->SetDisplayText(FoodEatenText);
+				ViewportInfoUI->SetColorAndOpacity(FLinearColor(0.85f, 0.55f, 0.08f));
+				ViewportInfoUI->AddToViewport();
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("No value assigned to ViewportInfoUIClass in %s"), *GetName());
+			}
 		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("No value assigned to ViewportInfoUIClass in %s"), *GetName());
-		}
+		
+		UE_LOG(LogTemp, Error, TEXT("Item in %s is not a type of food"), *PickupFood->GetName());
 	}
 }
 
@@ -655,27 +657,33 @@ void AD4_HD3_CustomProjectCharacter::UseItem(int32 Index)
 	}
 }
 
-void AD4_HD3_CustomProjectCharacter::AddCollectibleFood_Implementation(APickupFood* Food)
+void AD4_HD3_CustomProjectCharacter::AddCollectibleItem_Implementation(APickupItem* Item)
 {
-	if (InventoryComponent->GetHasBackpack())
+	if (APickupFood* Food = Cast<APickupFood>(Item))
 	{
-		CollectibleFood.Add(Food);
-	}
-	else
-	{
-		EdibleFood.Add(Food);
+		if (InventoryComponent->GetHasBackpack())
+		{
+			CollectibleFood.Add(Food);
+		}
+		else
+		{
+			EdibleFood.Add(Food);
+		}
 	}
 }
 
-void AD4_HD3_CustomProjectCharacter::RemoveCollectibleFood_Implementation(APickupFood* Food)
+void AD4_HD3_CustomProjectCharacter::RemoveCollectibleItem_Implementation(APickupItem* Item)
 {
-	if (InventoryComponent->GetHasBackpack())
+	if (APickupFood* Food = Cast<APickupFood>(Item))
 	{
-		CollectibleFood.Remove(Food);
-	}
-	else
-	{
-		EdibleFood.Remove(Food);
+		if (InventoryComponent->GetHasBackpack())
+		{
+			CollectibleFood.Remove(Food);
+		}
+		else
+		{
+			EdibleFood.Remove(Food);
+		}
 	}
 }
 
