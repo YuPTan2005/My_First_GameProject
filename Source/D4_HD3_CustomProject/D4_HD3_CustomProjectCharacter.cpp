@@ -178,7 +178,11 @@ void AD4_HD3_CustomProjectCharacter::PossessedBy(AController* NewController)
 	if (PlayerController)
 	{
 		PlayerController->AttachUIWidget(this);
-		if (PlayerUI) PlayerUI->UpdatePlayerValues();
+		if (PlayerUI)
+		{
+			PlayerUI->UpdatePlayerValues();
+			PlayerUI->AddToViewport();
+		}
 		InitialiseCompanionUI();
 	}
 }
