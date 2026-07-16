@@ -5,11 +5,11 @@
 #include "CoreMinimal.h"
 #include "PickupItem.h"
 #include "UObject/Interface.h"
-#include "FoodCollector.generated.h"
+#include "ItemCollector.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
-class UFoodCollector : public UInterface
+class UItemCollector : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -17,16 +17,16 @@ class UFoodCollector : public UInterface
 /**
  * 
  */
-class D4_HD3_CUSTOMPROJECT_API IFoodCollector
+class D4_HD3_CUSTOMPROJECT_API IItemCollector
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void AddCollectibleFood(APickupItem* Food);
+	void AddCollectibleItem(APickupItem* Food);
 	
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
-	void RemoveCollectibleFood(APickupItem* Food);
+	void RemoveCollectibleItem(APickupItem* Food);
 	
 };
