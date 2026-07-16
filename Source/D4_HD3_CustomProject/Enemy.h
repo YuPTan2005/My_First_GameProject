@@ -45,6 +45,8 @@ public:
 	float MaxHealth = 100;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float DamageValue = 10;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DefeatedDamageValue = 5;
 	
 	virtual float GetCurrentHealth_Implementation() override;
 	virtual float GetMaxHealth_Implementation() override;

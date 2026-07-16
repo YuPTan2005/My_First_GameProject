@@ -137,7 +137,6 @@ void AEnemy::DealDamage_Implementation(float DamageTaken, AActor* DamagedBy)
 	{
 		bIsDead = true;
 		
-		
 		if (AController* EnemyController = GetController())
 		{
 			if (AAIController* AIController = Cast<AAIController>(EnemyController))
@@ -149,6 +148,12 @@ void AEnemy::DealDamage_Implementation(float DamageTaken, AActor* DamagedBy)
 				}
 			}
 		}
+		
+		if (AD4_HD3_CustomProjectCharacter* MainCharacter = Cast<AD4_HD3_CustomProjectCharacter>(DamagedBy))
+		{
+			MainCharacter->IncreaseDamageValue(DefeatedDamageValue);
+		}
+		
 		GetWorld()->GetTimerManager().SetTimer(
 			DeadTimer,
 			this,
