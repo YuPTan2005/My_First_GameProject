@@ -227,24 +227,29 @@ bool ACompanion::CollectFood()
 		{
 			FoodToCollect = NewObject<AFood>();
 		}
-       
-		if (FoodToCollect && CompanionOwner && CompanionOwner->AddItem(FoodToCollect))
-		{
-			CollectibleFoodList.RemoveSingle(PickupFood);
-			PickupFoodList.RemoveSingle(PickupFood);
-			
-			CompanionOwner->RemoveCollectibleItem_Implementation(PickupFood);
-			
-			CollectTimer = 0.0f;
-			TargetPickupFood = nullptr; 
-			
-			PickupFood->Collected(CompanionOwner);
-			SelectNextFoodTarget();
-			
-			return true;
-		}
 		
-		UE_LOG(LogTemp, Error, TEXT("Item in %s is not a type of food"), *PickupFood->GetName());
+		if (FoodToCollect)
+		{
+			if (CompanionOwner && CompanionOwner->AddItem(FoodToCollect))
+			{
+				CollectibleFoodList.RemoveSingle(PickupFood);
+				PickupFoodList.RemoveSingle(PickupFood);
+			
+				CompanionOwner->RemoveCollectibleItem_Implementation(PickupFood);
+			
+				CollectTimer = 0.0f;
+				TargetPickupFood = nullptr; 
+			
+				PickupFood->Collected(CompanionOwner);
+				SelectNextFoodTarget();
+			
+				return true;
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Item in %s is not a type of food"), *PickupFood->GetName());
+		}
 	}
     
 	return false;

@@ -404,8 +404,10 @@ void AD4_HD3_CustomProjectCharacter::Eat()
 				UE_LOG(LogTemp, Warning, TEXT("No value assigned to ViewportInfoUIClass in %s"), *GetName());
 			}
 		}
-		
-		UE_LOG(LogTemp, Error, TEXT("Item in %s is not a type of food"), *PickupFood->GetName());
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Item in %s is not a type of food"), *PickupFood->GetName());
+		}
 	}
 }
 
