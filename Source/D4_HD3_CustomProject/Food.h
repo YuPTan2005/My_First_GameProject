@@ -4,11 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Edible.h"
+#include "InventoryItem.h"
 #include "GameFramework/Actor.h"
 #include "Food.generated.h"
 
 UCLASS(Abstract)
-class D4_HD3_CUSTOMPROJECT_API AFood : public AActor, public IEdible
+class D4_HD3_CUSTOMPROJECT_API AFood : public AActor, public IEdible, public IInventoryItem
 {
 	GENERATED_BODY()
 	
@@ -41,7 +42,7 @@ public:
 	void SetName(FString Name);
 	void SetDescription(FString Description);
 	
-	FString GetName();
-	FString GetDescription();
+	virtual FString GetName_Implementation() override;
+	virtual FString GetDescription_Implementation() override;
 
 };

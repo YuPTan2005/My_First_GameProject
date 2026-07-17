@@ -49,12 +49,12 @@ void AFood::SetDescription(FString Description)
 	FoodDescription = Description;
 }
 
-FString AFood::GetName()
+FString AFood::GetName_Implementation()
 {
 	return FoodName;
 }
 
-FString AFood::GetDescription()
+FString AFood::GetDescription_Implementation()
 {
 	return FoodDescription;
 }
