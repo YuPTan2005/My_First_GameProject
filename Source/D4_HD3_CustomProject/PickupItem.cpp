@@ -73,19 +73,20 @@ void APickupItem::OnEndOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherAc
 
 void APickupItem::AddPickupUI()
 {
-	if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
+	if (PickupUIClass)
 	{
-		if (PickupUIClass)
+		SpawnedUI = CreateWidget<UPickupUI>(GetGameInstance(), PickupUIClass);
+		if (SpawnedUI)
 		{
-			SpawnedUI = CreateWidget<UPickupUI>(GetGameInstance(), PickupUIClass);
-			
-			FVector UITextOffset = PC->PlayerCameraManager->GetActorRightVector();
+			if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
+			{
+				FVector UITextOffset = PC->PlayerCameraManager->GetActorRightVector();
+				UITextOffset *= 100;
 
-			UITextOffset *= 100;
-
-			UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
-			MeshComponent->GetComponentLocation() + UITextOffset, SpawnedUI->CurrentLocation);
-
+				UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
+				MeshComponent->GetComponentLocation() + UITextOffset, SpawnedUI->CurrentLocation);
+			}
+			SpawnedUI->SetDisplayText(CollectItemText);
 			SpawnedUI->AddToViewport();
 		}
 	}

@@ -20,8 +20,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* MeshComponent;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<UPickupUI> PickupUIClass;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString CollectItemText = "Press C to collect";
 
 protected:
 	// Called when the game starts or when spawned
