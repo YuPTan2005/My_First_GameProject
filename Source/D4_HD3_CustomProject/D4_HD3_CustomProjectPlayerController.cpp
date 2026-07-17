@@ -97,11 +97,11 @@ void AD4_HD3_CustomProjectPlayerController::AttachUIWidget(ACharacter* NewPlayer
 			UE_LOG(LogTemp, Warning, TEXT("No value assigned to CompanionStarvationUIClass in %s"), *GetName());
 		}
 		
-		if (InventoryWidgetClass)
+		if (FoodInventoryWidgetClass)
 		{
-			if (!InventoryWidget)
+			if (!FoodInventoryWidget)
 			{
-				InventoryWidget = CreateWidget<UInventoryWidget>(this, InventoryWidgetClass);
+				FoodInventoryWidget = CreateWidget<UFoodInventoryWidget>(this, FoodInventoryWidgetClass);
 			}
 		}
 		else
@@ -143,10 +143,10 @@ void AD4_HD3_CustomProjectPlayerController::AttachUIWidget(ACharacter* NewPlayer
 			PlayerCharacter->CompanionStarvationUI = CompanionStarvationUI;
 		}
 		
-		if (InventoryWidget)
+		if (FoodInventoryWidget)
 		{
-			PlayerCharacter->InventoryWidget = InventoryWidget;
-			InventoryWidget->Owner = PlayerCharacter;
+			PlayerCharacter->FoodInventoryWidget = FoodInventoryWidget;
+			FoodInventoryWidget->Owner = PlayerCharacter;
 		}
 		
 		if (PlayerUI)

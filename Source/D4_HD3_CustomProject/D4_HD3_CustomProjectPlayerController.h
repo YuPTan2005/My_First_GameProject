@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "CompanionStarvationUI.h"
 #include "DeathUI.h"
-#include "InventoryWidget.h"
+#include "FoodInventoryWidget.h"
 #include "PlayerUI.h"
 #include "StarvationUI.h"
 #include "GameFramework/PlayerController.h"
@@ -61,9 +61,9 @@ public:
 	UPlayerUI* PlayerUI;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UInventoryWidget> InventoryWidgetClass;
+	TSubclassOf<UFoodInventoryWidget> FoodInventoryWidgetClass;
 	UPROPERTY()
-	UInventoryWidget* InventoryWidget;
+	UFoodInventoryWidget* FoodInventoryWidget;
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UStarvationUI> StarvationUIClass;
