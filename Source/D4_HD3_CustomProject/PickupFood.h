@@ -16,9 +16,6 @@ class D4_HD3_CUSTOMPROJECT_API APickupFood : public APickupItem
 public:	
 	// Sets default values for this actor's properties
 	APickupFood();
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UPickupUI> EatingUIClass;
 
 protected:
 	// Called when the game starts or when spawned
@@ -28,6 +25,9 @@ protected:
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, 
 		const FHitResult& SweepResult) override;
 	void AddEatingUI();
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString EatFoodText = "Press E to eat";
 
 public:	
 	// Called every frame

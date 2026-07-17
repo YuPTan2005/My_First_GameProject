@@ -31,9 +31,9 @@ void APickupFood::OnOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor
 
 void APickupFood::AddEatingUI()
 {
-	if (EatingUIClass)
+	if (PickupUIClass)
 	{
-		SpawnedUI = CreateWidget<UPickupUI>(GetGameInstance(), EatingUIClass);
+		SpawnedUI = CreateWidget<UPickupUI>(GetGameInstance(), PickupUIClass);
 		
 		if (SpawnedUI)
 		{
@@ -45,9 +45,9 @@ void APickupFood::AddEatingUI()
 
 				UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
 				MeshComponent->GetComponentLocation() + UITextOffset, SpawnedUI->CurrentLocation);
-
-				SpawnedUI->AddToViewport();
 			}
+			SpawnedUI->SetDisplayText(EatFoodText);
+			SpawnedUI->AddToViewport();
 		}
 	}
 }
