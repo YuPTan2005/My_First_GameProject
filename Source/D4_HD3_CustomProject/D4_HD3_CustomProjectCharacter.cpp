@@ -499,7 +499,7 @@ void AD4_HD3_CustomProjectCharacter::GainStarvation_Implementation(float Starvat
 	}
 }
 
-void AD4_HD3_CustomProjectCharacter::FeedItem(int32 Index) const
+void AD4_HD3_CustomProjectCharacter::FeedItem(const int8 Index) const
 {
 	if (FoodInventoryComponent->GetHasBackpack() && IsValid(Companion))
 	{
@@ -507,6 +507,54 @@ void AD4_HD3_CustomProjectCharacter::FeedItem(int32 Index) const
 		FoodInventoryWidget->RefreshInventory(FoodInventoryComponent->GetAllItems());
 		Companion->UpdateStatus();
 	}
+}
+
+void AD4_HD3_CustomProjectCharacter::ToggleWeaponInventory()
+{
+	if (PlayerController)
+	{
+		if (bIsWeaponInventoryOpen) 
+		{
+			WeaponInventoryWidget->RemoveFromParent();
+			PlayerController->SetInputMode(FInputModeGameOnly());
+		}
+		else
+		{
+			WeaponInventoryWidget->AddToViewport();
+			WeaponInventoryWidget->RefreshInventory(WeaponInventoryComponent->GetAllItems());
+			PlayerController->SetInputMode(FInputModeGameAndUI());
+		}
+		
+		bIsWeaponInventoryOpen = !bIsWeaponInventoryOpen;
+	}
+}
+
+AActor* AD4_HD3_CustomProjectCharacter::GetWeaponAtIndex(const int8 Index) const
+{
+	return WeaponInventoryComponent->GetItemAtIndex(Index);
+}
+
+void AD4_HD3_CustomProjectCharacter::DeleteWeaponAtIndex(const int8 Index) const
+{
+	WeaponInventoryComponent->DeleteItemAtIndex(Index);
+	WeaponInventoryWidget->RefreshInventory(WeaponInventoryComponent->GetAllItems());
+}
+
+bool AD4_HD3_CustomProjectCharacter::AddWeapon(AActor* NewItem) const
+{
+	if (WeaponInventoryComponent->AddItem(NewItem))
+	{
+		WeaponInventoryWidget->RefreshInventory(WeaponInventoryComponent->GetAllItems());
+		return true;
+	}
+	return false;
+}
+
+void AD4_HD3_CustomProjectCharacter::UseWeapon(const int8 Index)
+{
+	WeaponInventoryComponent->UseItemAtIndex(Index, this);
+	WeaponInventoryWidget->RefreshInventory(WeaponInventoryComponent->GetAllItems());
+	PlayerUI->UpdatePlayerValues();
 }
 
 void AD4_HD3_CustomProjectCharacter::Upgrade()
@@ -624,7 +672,7 @@ void AD4_HD3_CustomProjectCharacter::ShowDeathUI()
 	}
 }
 
-AActor* AD4_HD3_CustomProjectCharacter::GetItemAtIndex(int32 Index)
+AActor* AD4_HD3_CustomProjectCharacter::GetItemAtIndex(const int8 Index) const
 {
 	if (FoodInventoryComponent->GetHasBackpack())
 	{
@@ -634,7 +682,7 @@ AActor* AD4_HD3_CustomProjectCharacter::GetItemAtIndex(int32 Index)
 	return nullptr;
 }
 
-void AD4_HD3_CustomProjectCharacter::DeleteItemAtIndex(int32 Index)
+void AD4_HD3_CustomProjectCharacter::DeleteItemAtIndex(const int8 Index) const
 {
 	if (FoodInventoryComponent->GetHasBackpack())
 	{
@@ -643,7 +691,7 @@ void AD4_HD3_CustomProjectCharacter::DeleteItemAtIndex(int32 Index)
 	}
 }
 
-bool AD4_HD3_CustomProjectCharacter::AddItem(AFood* NewItem)
+bool AD4_HD3_CustomProjectCharacter::AddItem(AFood* NewItem) const
 {
 	if (FoodInventoryComponent->GetHasBackpack() && FoodInventoryComponent->AddItem(NewItem))
 	{
@@ -653,7 +701,7 @@ bool AD4_HD3_CustomProjectCharacter::AddItem(AFood* NewItem)
 	return false;
 }
 
-void AD4_HD3_CustomProjectCharacter::UseItem(int32 Index)
+void AD4_HD3_CustomProjectCharacter::UseItem(const int8 Index)
 {
 	if (FoodInventoryComponent->GetHasBackpack())
 	{

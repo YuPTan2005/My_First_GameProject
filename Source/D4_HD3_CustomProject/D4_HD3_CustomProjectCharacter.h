@@ -15,6 +15,9 @@
 #include "PlayerUI.h"
 #include "StarvationUI.h"
 #include "ViewportInfoUI.h"
+#include "Weapon.h"
+#include "WeaponInventoryActorComponent.h"
+#include "WeaponInventoryWidget.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "D4_HD3_CustomProjectCharacter.generated.h"
@@ -105,6 +108,16 @@ protected:
 	ACompanion* Companion;
 	
 	bool bIsInventoryOpen;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actor Component Class")
+	TSubclassOf<UFoodInventoryActorComponent> FoodInventoryComponentClass;
+	UPROPERTY()
+	UFoodInventoryActorComponent* FoodInventoryComponent;
+	
+	bool bIsWeaponInventoryOpen;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actor Component Class")
+	TSubclassOf<UWeaponInventoryActorComponent> WeaponInventoryComponentClass;
+	UPROPERTY()
+	UWeaponInventoryActorComponent* WeaponInventoryComponent;
 	
 	UPROPERTY()
 	TArray<APickupFood*> CollectibleFood;
@@ -147,8 +160,6 @@ protected:
 	
 	float OriginalFlyBrake = 1500.0f;
 	float DashFlyBrake = 3500.0f;
-
-protected:
 
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
@@ -200,21 +211,24 @@ public:
 	void GainExperience(float ExperienceAmount);
 	virtual void GainStarvation_Implementation(float StarvationAmount) override;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actor Component Class")
-	TSubclassOf<UFoodInventoryActorComponent> FoodInventoryComponentClass;
-	
-	UPROPERTY()
-	UFoodInventoryActorComponent* FoodInventoryComponent;
 	UPROPERTY()
 	UFoodInventoryWidget* FoodInventoryWidget;
-	
 	void ToggleInventory();
 	
-	AActor* GetItemAtIndex(int32 Index);
-	void DeleteItemAtIndex(int32 Index);
-	bool AddItem(AFood* NewItem);
-	void UseItem(int32 Index);
-	void FeedItem(int32 Index) const;
+	AActor* GetItemAtIndex(const int8 Index) const;
+	void DeleteItemAtIndex(const int8 Index) const;
+	bool AddItem(AFood* NewItem) const;
+	void UseItem(const int8 Index);
+	void FeedItem(const int8 Index) const;
+	
+	UPROPERTY()
+	UWeaponInventoryWidget* WeaponInventoryWidget;
+	void ToggleWeaponInventory();
+	
+	AActor* GetWeaponAtIndex(const int8 Index) const;
+	void DeleteWeaponAtIndex(const int8 Index) const;
+	bool AddWeapon(AActor* NewItem) const;
+	void UseWeapon(const int8 Index);
 	
 	virtual void AddCollectibleItem_Implementation(APickupItem* Item) override;
 	virtual void RemoveCollectibleItem_Implementation(APickupItem* Item) override;
