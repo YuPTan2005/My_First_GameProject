@@ -106,7 +106,19 @@ void AD4_HD3_CustomProjectPlayerController::AttachUIWidget(ACharacter* NewPlayer
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("No value assigned to InventoryWidgetClass in %s"), *GetName());
+			UE_LOG(LogTemp, Warning, TEXT("No value assigned to FoodInventoryWidgetClass in %s"), *GetName());
+		}
+		
+		if (WeaponInventoryWidgetClass)
+		{
+			if (!WeaponInventoryWidget)
+			{
+				WeaponInventoryWidget = CreateWidget<UWeaponInventoryWidget>(this, WeaponInventoryWidgetClass);
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No value assigned to WeaponInventoryWidgetClass in %s"), *GetName());
 		}
 	
 		if (PlayerUIClass)
@@ -147,6 +159,12 @@ void AD4_HD3_CustomProjectPlayerController::AttachUIWidget(ACharacter* NewPlayer
 		{
 			PlayerCharacter->FoodInventoryWidget = FoodInventoryWidget;
 			FoodInventoryWidget->Owner = PlayerCharacter;
+		}
+		
+		if (WeaponInventoryWidget)
+		{
+			PlayerCharacter->WeaponInventoryWidget = WeaponInventoryWidget;
+			WeaponInventoryWidget->Owner = PlayerCharacter;
 		}
 		
 		if (PlayerUI)

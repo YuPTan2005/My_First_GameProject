@@ -8,6 +8,7 @@
 #include "FoodInventoryWidget.h"
 #include "PlayerUI.h"
 #include "StarvationUI.h"
+#include "WeaponInventoryWidget.h"
 #include "GameFramework/PlayerController.h"
 #include "D4_HD3_CustomProjectPlayerController.generated.h"
 
@@ -64,6 +65,11 @@ public:
 	TSubclassOf<UFoodInventoryWidget> FoodInventoryWidgetClass;
 	UPROPERTY()
 	UFoodInventoryWidget* FoodInventoryWidget;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UWeaponInventoryWidget> WeaponInventoryWidgetClass;
+	UPROPERTY()
+	UWeaponInventoryWidget* WeaponInventoryWidget;
 	
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UStarvationUI> StarvationUIClass;
