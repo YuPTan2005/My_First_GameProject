@@ -2,8 +2,6 @@
 
 
 #include "InventoryActorComponent.h"
-#include "Food.h"
-#include "D4_HD3_CustomProjectCharacter.h"
 
 
 // Sets default values for this component's properties
@@ -16,12 +14,12 @@ UInventoryActorComponent::UInventoryActorComponent()
 	InventorySize = 9;
 }
 
-TArray<AFood*> UInventoryActorComponent::GetAllItems()
+TArray<AActor*> UInventoryActorComponent::GetAllItems()
 {
 	return InventoryItems;
 }
 
-AFood* UInventoryActorComponent::GetItemAtIndex(int32 Index)
+AActor* UInventoryActorComponent::GetItemAtIndex(int32 Index)
 {
 	if(Index >= InventoryItems.Num() || Index < 0)
 	{
@@ -32,13 +30,10 @@ AFood* UInventoryActorComponent::GetItemAtIndex(int32 Index)
 
 bool UInventoryActorComponent::UseItemAtIndex(int32 Index, AActor* Character)
 {
-	if(Index >= InventoryItems.Num() || Index < 0 || !Character->Implements<UFoodConsumer>())
+	if(Index >= InventoryItems.Num() || Index < 0)
 	{
 		return false;
 	}
-	
-	AFood* UsedItem = InventoryItems[Index];
-	IFoodConsumer::Execute_Eat(Character, UsedItem);
 	InventoryItems.RemoveAt(Index);
 	return true;
 }
@@ -52,7 +47,7 @@ bool UInventoryActorComponent::DeleteItemAtIndex(int32 Index)
 	return true;
 }
 
-bool UInventoryActorComponent::AddItem(AFood* NewItem)
+bool UInventoryActorComponent::AddItem(AActor* NewItem)
 {
 	if(IsFull()) return false;
 	InventoryItems.Add(NewItem);
@@ -62,16 +57,6 @@ bool UInventoryActorComponent::AddItem(AFood* NewItem)
 bool UInventoryActorComponent::IsFull() const
 {
 	return InventoryItems.Num() >= InventorySize;
-}
-
-bool UInventoryActorComponent::GetHasBackpack() const
-{
-	return bHasBackpack;
-}
-
-void UInventoryActorComponent::SetHasBackpack(bool NewValue)
-{
-	bHasBackpack = NewValue;
 }
 
 // Called when the game starts

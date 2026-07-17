@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Companion.h"
 #include "Components/ActorComponent.h"
 #include "InventoryActorComponent.generated.h"
 
@@ -20,18 +19,13 @@ public:
 	// Sets default values for this component's properties
 	UInventoryActorComponent();
 	
-	TArray<AFood*> GetAllItems();
-	AFood* GetItemAtIndex(int32 Index);
-	bool UseItemAtIndex(int32 Index, AActor* Character);
+	TArray<AActor*> GetAllItems();
+	AActor* GetItemAtIndex(int32 Index);
+	virtual bool UseItemAtIndex(int32 Index, AActor* Character);
 	bool DeleteItemAtIndex(int32 Index);
-	bool AddItem(AFood* NewItem);
+	bool AddItem(AActor* NewItem);
 	UFUNCTION(BlueprintPure)
 	bool IsFull() const;
-	
-	UFUNCTION(BlueprintPure)
-	bool GetHasBackpack() const;
-	UFUNCTION(BlueprintCallable)
-	void SetHasBackpack(bool NewValue);
 	
 protected:
 	// Called when the game starts
@@ -41,8 +35,6 @@ protected:
 	int32 InventorySize;
 	
 	UPROPERTY()
-	TArray<AFood*> InventoryItems;
+	TArray<AActor*> InventoryItems;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Getter = GetHasBackpack,Setter = SetHasBackpack)
-	bool bHasBackpack;
 };
