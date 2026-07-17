@@ -14,9 +14,7 @@ ADestructibleChest::ADestructibleChest()
 	ChestBottomMesh->SetupAttachment(RootComponent);
 	ChestTopMesh->SetupAttachment(ChestBottomMesh);
 	ChestHinge->SetupAttachment(ChestBottomMesh);
-	
 	HealthWidgetComponent->SetupAttachment(ChestBottomMesh);
-	HealthWidgetComponent->SetRelativeLocation(FVector(0.0f, -25.0f, 100.0f)); 
 	
 	MaxHealth = 1000.0f;
 }
@@ -31,6 +29,13 @@ void ADestructibleChest::BeginPlay()
 	ECR_Ignore);
 	ChestTopMesh->SetCollisionResponseToChannel(ECC_WorldStatic, 
 	ECR_Ignore);
+}
+
+void ADestructibleChest::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+	
+	HealthWidgetComponent->SetRelativeLocation(FVector(0.0f, -25.0f, 100.0f));
 }
 
 void ADestructibleChest::OnDestructed()
