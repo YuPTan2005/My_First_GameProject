@@ -71,6 +71,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetPickerActor(AActor* NewActor);
 	
-	void PickedUp();
+	virtual void PickedUp();
 
 };
