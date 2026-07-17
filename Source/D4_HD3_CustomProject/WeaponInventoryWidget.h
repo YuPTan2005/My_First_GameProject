@@ -1,0 +1,21 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "InventoryWidget.h"
+#include "WeaponInventoryWidget.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class D4_HD3_CUSTOMPROJECT_API UWeaponInventoryWidget : public UInventoryWidget
+{
+	GENERATED_BODY()
+	
+public:
+	virtual void OnButtonWasClicked(UInventoryButtonWidget* Button) override;
+	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
+	
+};
