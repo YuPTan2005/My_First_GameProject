@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/TextBlock.h"
 #include "PickupUI.generated.h"
 
 /**
@@ -14,9 +15,15 @@ class D4_HD3_CUSTOMPROJECT_API UPickupUI : public UUserWidget
 {
 	GENERATED_BODY()
 	
+protected:
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* DisplayText;
+	
+	virtual void NativeConstruct() override;
+	
 public:
 	FVector2D CurrentLocation;
 	
-	virtual void NativeConstruct() override;
+	void SetDisplayText(const FString& NewText) const;
 	
 };

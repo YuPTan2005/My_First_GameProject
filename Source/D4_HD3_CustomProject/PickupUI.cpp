@@ -9,3 +9,8 @@ void UPickupUI::NativeConstruct()
 	
 	SetPositionInViewport(CurrentLocation);
 }
+
+void UPickupUI::SetDisplayText(const FString& NewText) const
+{
+	DisplayText->SetText(FText::FromString(NewText));
+}
