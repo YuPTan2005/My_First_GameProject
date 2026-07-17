@@ -103,13 +103,13 @@ void AD4_HD3_CustomProjectCharacter::BeginPlay()
 	
 	UpgradeDamageValue = Damage;
 	
-	if (InventoryComponentClass)
+	if (FoodInventoryComponentClass)
 	{
-		InventoryComponent = NewObject<UInventoryActorComponent>(this, InventoryComponentClass);
+		FoodInventoryComponent = NewObject<UFoodInventoryActorComponent>(this, FoodInventoryComponentClass);
         
-		if (InventoryComponent)
+		if (FoodInventoryComponent)
 		{
-			InventoryComponent->RegisterComponent();
+			FoodInventoryComponent->RegisterComponent();
 		}
 	}
 	else
@@ -302,7 +302,7 @@ void AD4_HD3_CustomProjectCharacter::DoJumpEnd()
 
 void AD4_HD3_CustomProjectCharacter::Collect()
 {
-	if (InventoryComponent->GetHasBackpack() && CollectibleFood.Num() > 0)
+	if (FoodInventoryComponent->GetHasBackpack() && CollectibleFood.Num() > 0)
 	{
 		APickupFood* PickupFood = CollectibleFood[0];
 		AActor* ItemToAdd = PickupFood->GetItem();
@@ -365,7 +365,7 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 
 void AD4_HD3_CustomProjectCharacter::Eat()
 {
-	if (!InventoryComponent->GetHasBackpack() && EdibleFood.Num() > 0)
+	if (!FoodInventoryComponent->GetHasBackpack() && EdibleFood.Num() > 0)
 	{
 		APickupFood* PickupFood = EdibleFood[0];
 		AActor* FoodToEat = PickupFood->GetItem();
@@ -501,10 +501,10 @@ void AD4_HD3_CustomProjectCharacter::GainStarvation_Implementation(float Starvat
 
 void AD4_HD3_CustomProjectCharacter::FeedItem(int32 Index) const
 {
-	if (InventoryComponent->GetHasBackpack() && IsValid(Companion))
+	if (FoodInventoryComponent->GetHasBackpack() && IsValid(Companion))
 	{
-		InventoryComponent->UseItemAtIndex(Index, Companion);
-		InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
+		FoodInventoryComponent->UseItemAtIndex(Index, Companion);
+		FoodInventoryWidget->RefreshInventory(FoodInventoryComponent->GetAllItems());
 		Companion->UpdateStatus();
 	}
 }
@@ -624,11 +624,11 @@ void AD4_HD3_CustomProjectCharacter::ShowDeathUI()
 	}
 }
 
-AFood* AD4_HD3_CustomProjectCharacter::GetItemAtIndex(int32 Index)
+AActor* AD4_HD3_CustomProjectCharacter::GetItemAtIndex(int32 Index)
 {
-	if (InventoryComponent->GetHasBackpack())
+	if (FoodInventoryComponent->GetHasBackpack())
 	{
-		return InventoryComponent->GetItemAtIndex(Index);
+		return FoodInventoryComponent->GetItemAtIndex(Index);
 	}
 	
 	return nullptr;
@@ -636,18 +636,18 @@ AFood* AD4_HD3_CustomProjectCharacter::GetItemAtIndex(int32 Index)
 
 void AD4_HD3_CustomProjectCharacter::DeleteItemAtIndex(int32 Index)
 {
-	if (InventoryComponent->GetHasBackpack())
+	if (FoodInventoryComponent->GetHasBackpack())
 	{
-		InventoryComponent->DeleteItemAtIndex(Index);
-		InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
+		FoodInventoryComponent->DeleteItemAtIndex(Index);
+		FoodInventoryWidget->RefreshInventory(FoodInventoryComponent->GetAllItems());
 	}
 }
 
 bool AD4_HD3_CustomProjectCharacter::AddItem(AFood* NewItem)
 {
-	if (InventoryComponent->GetHasBackpack() && InventoryComponent->AddItem(NewItem))
+	if (FoodInventoryComponent->GetHasBackpack() && FoodInventoryComponent->AddItem(NewItem))
 	{
-		InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
+		FoodInventoryWidget->RefreshInventory(FoodInventoryComponent->GetAllItems());
 		return true;
 	}
 	return false;
@@ -655,10 +655,10 @@ bool AD4_HD3_CustomProjectCharacter::AddItem(AFood* NewItem)
 
 void AD4_HD3_CustomProjectCharacter::UseItem(int32 Index)
 {
-	if (InventoryComponent->GetHasBackpack())
+	if (FoodInventoryComponent->GetHasBackpack())
 	{
-		InventoryComponent->UseItemAtIndex(Index, this);
-		InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
+		FoodInventoryComponent->UseItemAtIndex(Index, this);
+		FoodInventoryWidget->RefreshInventory(FoodInventoryComponent->GetAllItems());
 		PlayerUI->UpdatePlayerValues();
 	}
 }
@@ -667,7 +667,7 @@ void AD4_HD3_CustomProjectCharacter::AddCollectibleItem_Implementation(APickupIt
 {
 	if (APickupFood* Food = Cast<APickupFood>(Item))
 	{
-		if (InventoryComponent->GetHasBackpack())
+		if (FoodInventoryComponent->GetHasBackpack())
 		{
 			CollectibleFood.Add(Food);
 		}
@@ -682,7 +682,7 @@ void AD4_HD3_CustomProjectCharacter::RemoveCollectibleItem_Implementation(APicku
 {
 	if (APickupFood* Food = Cast<APickupFood>(Item))
 	{
-		if (InventoryComponent->GetHasBackpack())
+		if (FoodInventoryComponent->GetHasBackpack())
 		{
 			CollectibleFood.Remove(Food);
 		}
@@ -695,21 +695,21 @@ void AD4_HD3_CustomProjectCharacter::RemoveCollectibleItem_Implementation(APicku
 
 void AD4_HD3_CustomProjectCharacter::ToggleInventory()
 {
-	if (PlayerController && InventoryComponent->GetHasBackpack())
+	if (PlayerController && FoodInventoryComponent->GetHasBackpack())
 	{
 		if (bIsInventoryOpen) 
 		{
-			InventoryWidget->RemoveFromParent();
+			FoodInventoryWidget->RemoveFromParent();
 			PlayerController->SetShowMouseCursor(false);
 			PlayerController->SetInputMode(FInputModeGameOnly());
 		}
 		else
 		{
-			InventoryWidget->AddToViewport();
-			InventoryWidget->RefreshInventory(InventoryComponent->GetAllItems());
+			FoodInventoryWidget->AddToViewport();
+			FoodInventoryWidget->RefreshInventory(FoodInventoryComponent->GetAllItems());
 			PlayerController->SetShowMouseCursor(true);
 			FInputModeUIOnly InputMode;
-			InputMode.SetWidgetToFocus(InventoryWidget->TakeWidget());
+			InputMode.SetWidgetToFocus(FoodInventoryWidget->TakeWidget());
 			PlayerController->SetInputMode(InputMode);
 		}
 		
@@ -849,12 +849,12 @@ void AD4_HD3_CustomProjectCharacter::SetDashCoolDown(const float NewValue)
 
 bool AD4_HD3_CustomProjectCharacter::GetHasBackpack() const
 {
-	return InventoryComponent->GetHasBackpack();
+	return FoodInventoryComponent->GetHasBackpack();
 }
 
 void AD4_HD3_CustomProjectCharacter::SetHasBackpack(const bool NewValue) const
 {
-	InventoryComponent->SetHasBackpack(NewValue);
+	FoodInventoryComponent->SetHasBackpack(NewValue);
 }
 
 ACompanion* AD4_HD3_CustomProjectCharacter::GetCompanion() const
@@ -1001,5 +1001,5 @@ void AD4_HD3_CustomProjectCharacter::OnCompanionDie() const
 		PlayerUI->SetCompanion(nullptr);
 		PlayerUI->UpdateCompanionValues();
 	}
-	if (InventoryWidget) InventoryWidget->CancelFeedButton();
+	if (FoodInventoryWidget) FoodInventoryWidget->CancelFeedButton();
 }

@@ -9,8 +9,8 @@
 #include "DeathUI.h"
 #include "ItemCollector.h"
 #include "FoodConsumer.h"
-#include "InventoryActorComponent.h"
-#include "InventoryWidget.h"
+#include "FoodInventoryActorComponent.h"
+#include "FoodInventoryWidget.h"
 #include "PickupFood.h"
 #include "PlayerUI.h"
 #include "StarvationUI.h"
@@ -201,16 +201,16 @@ public:
 	virtual void GainStarvation_Implementation(float StarvationAmount) override;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actor Component Class")
-	TSubclassOf<UInventoryActorComponent> InventoryComponentClass;
+	TSubclassOf<UFoodInventoryActorComponent> FoodInventoryComponentClass;
 	
 	UPROPERTY()
-	UInventoryActorComponent* InventoryComponent;
+	UFoodInventoryActorComponent* FoodInventoryComponent;
 	UPROPERTY()
-	UInventoryWidget* InventoryWidget;
+	UFoodInventoryWidget* FoodInventoryWidget;
 	
 	void ToggleInventory();
 	
-	AFood* GetItemAtIndex(int32 Index);
+	AActor* GetItemAtIndex(int32 Index);
 	void DeleteItemAtIndex(int32 Index);
 	bool AddItem(AFood* NewItem);
 	void UseItem(int32 Index);
