@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "DestructibleItem.h"
 #include "PhysicsEngine/PhysicsConstraintComponent.h"
+#include "PickupItem.h"
 #include "DestructibleChest.generated.h"
 
 /**
@@ -28,6 +29,9 @@ protected:
 	UMeshComponent* ChestBottomMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Mesh")
 	UPhysicsConstraintComponent* ChestHinge;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<APickupItem*> ChestItems;
 	
 	virtual void OnDestructed() override;
 	

@@ -3,6 +3,8 @@
 
 #include "DestructibleChest.h"
 
+#include "ChestItem.h"
+
 ADestructibleChest::ADestructibleChest()
 {
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Scene Component"));
@@ -43,5 +45,13 @@ void ADestructibleChest::OnDestructed()
 	Super::OnDestructed();
 	
 	ChestTopMesh->SetSimulatePhysics(true);
+	
+	for (APickupItem* Item : ChestItems)
+	{
+		if (Item->Implements<UChestItem>())
+		{
+			IChestItem::Execute_NotifyCollectible(Item);
+		}
+	}
 }
 
