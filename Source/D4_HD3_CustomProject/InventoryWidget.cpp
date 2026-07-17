@@ -3,47 +3,27 @@
 
 #include "InventoryWidget.h"
 #include "D4_HD3_CustomProjectCharacter.h"
+#include "InventoryItem.h"
 #include "Blueprint/WidgetTree.h"
-#include "Components/Button.h"
-#include "Food.h"
 
 void UInventoryWidget::OnButtonWasClicked(UInventoryButtonWidget* Button)
 {
 	SelectedItemIndex = ButtonList.Find(Button);
 	
-	if(AFood* SelectedItem = Owner->GetItemAtIndex(SelectedItemIndex)) {
-		ItemNameTextBlock->
-			  SetText(FText::FromString(SelectedItem->GetName()));
-		ItemDescriptionTextBlock->
-			SetText(FText::FromString(SelectedItem->GetDescription()));
+	if(AActor* SelectedItem = Owner->GetItemAtIndex(SelectedItemIndex)) 
+	{
+		if (SelectedItem->Implements<UInventoryItem>())
+		{
+			ItemNameTextBlock->
+				 SetText(FText::FromString(IInventoryItem::Execute_GetName(SelectedItem)));
+			ItemDescriptionTextBlock->
+				SetText(FText::FromString(IInventoryItem::Execute_GetDescription(SelectedItem)));
+		}
 	}
 	else
 	{
 		ResetDisplayItem();
 	}
-}
-
-void UInventoryWidget::OnUseButtonClicked()
-{
-	Owner->UseItem(SelectedItemIndex);
-	ResetDisplayItem();
-}
-
-void UInventoryWidget::OnFeedButtonClicked()
-{
-	Owner->FeedItem(SelectedItemIndex);
-	ResetDisplayItem();
-}
-
-void UInventoryWidget::CancelFeedButton()
-{
-	FeedCompanionButton->SetIsEnabled(false);
-}
-
-void UInventoryWidget::OnDeleteButtonClicked()
-{
-	Owner->DeleteItemAtIndex(SelectedItemIndex);
-	ResetDisplayItem();
 }
 
 FReply UInventoryWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
@@ -62,7 +42,7 @@ FReply UInventoryWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKey
 	return Super::NativeOnKeyDown(InGeometry, InKeyEvent);
 }
 
-void UInventoryWidget::RefreshInventory(TArray<AFood*> Items)
+void UInventoryWidget::RefreshInventory(TArray<AActor*> Items)
 {
 	for(UInventoryButtonWidget* Btn : ButtonList)
 	{
@@ -115,10 +95,6 @@ void UInventoryWidget::NativeConstruct()
 	
 	ItemNameTextBlock->SetText(FText::FromString("No Item Selected"));
 	ItemDescriptionTextBlock->SetText(FText::FromString("No Item Selected"));
-
-	UseItemButton->OnClicked.AddUniqueDynamic(this, &UInventoryWidget::OnUseButtonClicked);
-	FeedCompanionButton->OnClicked.AddUniqueDynamic(this, &UInventoryWidget::OnFeedButtonClicked);
-	DeleteItemButton->OnClicked.AddUniqueDynamic(this, &UInventoryWidget::OnDeleteButtonClicked);
 	
 	ItemDescriptionTextBlock->SetAutoWrapText(true);
 	DescriptionContainer->AddChild(ItemDescriptionTextBlock);

@@ -17,18 +17,27 @@ class AD4_HD3_CustomProjectCharacter;
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract)
 class D4_HD3_CUSTOMPROJECT_API UInventoryWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
+	UFUNCTION()
+	virtual void OnButtonWasClicked(UInventoryButtonWidget* Button);
+
+	UPROPERTY()
+	AD4_HD3_CustomProjectCharacter* Owner;
+	
+	void RefreshInventory(TArray<AActor*> Items);
+
+protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UInventoryButtonWidget> BPButtonWidget;
 
 	UPROPERTY(meta=(BindWidget))
 	UGridPanel* InventoryGrid;
-
+	
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* ItemNameTextBlock;
 	UPROPERTY(meta=(BindWidget))
@@ -36,37 +45,9 @@ public:
 	UPROPERTY(meta=(BindWidget))
 	UScrollBox* DescriptionContainer;
 	
-	UPROPERTY(meta=(BindWidget))
-	UButton* UseItemButton;
-	UPROPERTY(meta=(BindWidget))
-	UButton* FeedCompanionButton;
-	UPROPERTY(meta=(BindWidget))
-	UButton* DeleteItemButton;
-
-	UFUNCTION()
-	void OnButtonWasClicked(UInventoryButtonWidget* Button);
-
-	UFUNCTION()
-	void OnUseButtonClicked();
-	
-	UFUNCTION()
-	void OnFeedButtonClicked();
-	void CancelFeedButton();
-
-	UFUNCTION()
-	void OnDeleteButtonClicked();
-	
-	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
-
-	UPROPERTY()
-	AD4_HD3_CustomProjectCharacter* Owner;
-	
-	void RefreshInventory(TArray<AFood*> Items);
-
-protected:
 	virtual void NativeConstruct() override;
-	
-	void ResetDisplayItem();
+	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
+	virtual void ResetDisplayItem();
 
 	UPROPERTY()
 	TArray<UInventoryButtonWidget*> ButtonList;
@@ -74,9 +55,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<FString, UTexture2D*> ImageMap;
 
-	int32 SelectedItemIndex = -1;
+	int8 SelectedItemIndex = -1;
 	
-	int32 NumButtonWidth = 3;
-	int32 NumButtonHeight = 3;
+	int8 NumButtonWidth = 3;
+	int8 NumButtonHeight = 3;
 	
 };
