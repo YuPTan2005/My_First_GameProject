@@ -49,13 +49,7 @@ void APickupItem::OnOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor
 {
 	if (OtherActor->Implements<UItemCollector>() && OtherActor != this && !SpawnedUI)
 	{
-		if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(OtherActor))
-		{
-			if (Player->GetHasBackpack())
-			{
-				AddPickupUI();
-			}
-		}
+		AddPickupUI();
 		IItemCollector::Execute_AddCollectibleItem(OtherActor, this);
 	}
 }

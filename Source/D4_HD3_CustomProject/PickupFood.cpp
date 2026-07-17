@@ -21,11 +21,16 @@ void APickupFood::BeginPlay()
 void APickupFood::OnOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	Super::OnOverlap(OverlapComp, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-	
-	if (!SpawnedUI && Cast<AD4_HD3_CustomProjectCharacter>(OtherActor))
+	if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(OtherActor))
 	{
-		AddEatingUI();
+		if (Player->GetHasBackpack())
+		{
+			Super::OnOverlap(OverlapComp, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+		}
+		else if (!SpawnedUI)
+		{
+			AddEatingUI();
+		}
 	}
 }
 
