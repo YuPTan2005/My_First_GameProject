@@ -55,7 +55,7 @@ void UInventoryWidget::RefreshInventory(TArray<AActor*> Items)
 			return;
 		}
 		
-		if (Items[i]->Implements<UInventoryItem>())
+		if (Items[i]->Implements<UInventoryItem>() && !IInventoryItem::Execute_GetName(Items[i]).IsEmpty())
 		{
 			if (UTexture2D* Image = *ImageMap.Find(IInventoryItem::Execute_GetName(Items[i])))
 			{
