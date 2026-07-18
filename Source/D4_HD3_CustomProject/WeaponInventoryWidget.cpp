@@ -42,7 +42,7 @@ FReply UWeaponInventoryWidget::NativeOnKeyDown(const FGeometry& InGeometry, cons
 {
 	FKey PressedKey = InKeyEvent.GetKey();
 	
-	if (PressedKey == EKeys::O)
+	if (PressedKey == EKeys::G)
 	{
 		if (Owner)
 		{
