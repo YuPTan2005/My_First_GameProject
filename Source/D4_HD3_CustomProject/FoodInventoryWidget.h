@@ -28,8 +28,6 @@ protected:
 	
 	virtual void NativeConstruct() override;
 	
-	virtual void OnButtonWasClicked(UInventoryButtonWidget* Button) override;
-	
 	UFUNCTION()
 	void OnUseButtonClicked();
 	UFUNCTION()

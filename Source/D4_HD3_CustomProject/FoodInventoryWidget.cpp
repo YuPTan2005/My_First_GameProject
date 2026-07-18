@@ -4,10 +4,6 @@
 #include "FoodInventoryWidget.h"
 #include "D4_HD3_CustomProjectCharacter.h"
 
-void UFoodInventoryWidget::OnButtonWasClicked(UInventoryButtonWidget* Button)
-{
-	Super::OnButtonWasClicked(Button);
-}
 
 void UFoodInventoryWidget::OnUseButtonClicked()
 {
