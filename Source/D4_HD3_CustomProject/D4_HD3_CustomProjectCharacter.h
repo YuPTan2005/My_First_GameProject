@@ -113,16 +113,16 @@ protected:
 	UPROPERTY()
 	UFoodInventoryActorComponent* FoodInventoryComponent;
 	
+	UPROPERTY()
+	TArray<APickupFood*> CollectibleFood;
+	UPROPERTY()
+	TArray<APickupFood*> EdibleFood;
+	
 	bool bIsWeaponInventoryOpen;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actor Component Class")
 	TSubclassOf<UWeaponInventoryActorComponent> WeaponInventoryComponentClass;
 	UPROPERTY()
 	UWeaponInventoryActorComponent* WeaponInventoryComponent;
-	
-	UPROPERTY()
-	TArray<APickupFood*> CollectibleFood;
-	UPROPERTY()
-	TArray<APickupFood*> EdibleFood;
 	
 	UPROPERTY()
 	AD4_HD3_CustomProjectPlayerController* PlayerController;
@@ -229,6 +229,8 @@ public:
 	void DeleteWeaponAtIndex(const int8 Index) const;
 	bool AddWeapon(AActor* NewItem) const;
 	void UseWeapon(const int8 Index);
+	void DisattachWeaponFromSocket(AWeapon* Weapon) const;
+	void AttachWeaponToSocket(AWeapon* Weapon, const FString& SocketName) const;
 	
 	virtual void AddCollectibleItem_Implementation(APickupItem* Item) override;
 	virtual void RemoveCollectibleItem_Implementation(APickupItem* Item) override;

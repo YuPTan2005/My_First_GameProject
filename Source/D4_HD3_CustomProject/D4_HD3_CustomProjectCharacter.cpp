@@ -553,8 +553,34 @@ bool AD4_HD3_CustomProjectCharacter::AddWeapon(AActor* NewItem) const
 void AD4_HD3_CustomProjectCharacter::UseWeapon(const int8 Index)
 {
 	WeaponInventoryComponent->UseItemAtIndex(Index, this);
-	WeaponInventoryWidget->RefreshInventory(WeaponInventoryComponent->GetAllItems());
-	PlayerUI->UpdatePlayerValues();
+}
+
+void AD4_HD3_CustomProjectCharacter::DisattachWeaponFromSocket(AWeapon* Weapon) const
+{
+	if (Weapon)
+	{
+		FDetachmentTransformRules DetachRules(
+			EDetachmentRule::KeepWorld,
+			true
+		);
+		
+		Weapon->DetachFromActor(DetachRules);
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::AttachWeaponToSocket(AWeapon* Weapon, const FString& SocketName) const
+{
+	if (Weapon && GetMesh())
+	{
+		const FAttachmentTransformRules AttachRules(
+			EAttachmentRule::SnapToTarget,
+			EAttachmentRule::SnapToTarget,
+			EAttachmentRule::SnapToTarget,
+			true
+		);
+
+		Weapon->AttachToComponent(GetMesh(), AttachRules, FName(SocketName));
+	}
 }
 
 void AD4_HD3_CustomProjectCharacter::Upgrade()
