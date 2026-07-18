@@ -564,6 +564,7 @@ void AD4_HD3_CustomProjectCharacter::DisattachWeaponFromSocket(AWeapon* Weapon) 
 			true
 		);
 		
+		Weapon->SetWeaponMeshVisibility(false);
 		Weapon->DetachFromActor(DetachRules);
 	}
 }
@@ -580,6 +581,7 @@ void AD4_HD3_CustomProjectCharacter::AttachWeaponToSocket(AWeapon* Weapon, const
 		);
 
 		Weapon->AttachToComponent(GetMesh(), AttachRules, FName(SocketName));
+		Weapon->SetWeaponMeshVisibility(true);
 	}
 }
 
