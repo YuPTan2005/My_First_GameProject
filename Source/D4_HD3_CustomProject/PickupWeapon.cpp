@@ -8,7 +8,7 @@
 
 APickupWeapon::APickupWeapon()
 {
-	CollectItemText = "Press B to pick up";
+	CollectItemText = "Press X to pick up";
 }
 
 void APickupWeapon::PickedUp()
