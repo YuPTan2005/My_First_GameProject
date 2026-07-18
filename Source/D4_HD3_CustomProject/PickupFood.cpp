@@ -4,7 +4,6 @@
 #include "PickupFood.h"
 
 #include "D4_HD3_CustomProjectCharacter.h"
-#include "ItemCollector.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -30,6 +29,7 @@ void APickupFood::OnOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor
 		else if (!SpawnedUI)
 		{
 			AddEatingUI();
+			IItemCollector::Execute_AddCollectibleItem(OtherActor, this);
 		}
 	}
 }
