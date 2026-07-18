@@ -15,6 +15,7 @@ class D4_HD3_CUSTOMPROJECT_API UWeaponInventoryWidget : public UInventoryWidget
 	GENERATED_BODY()
 	
 public:
+	UWeaponInventoryWidget();
 	virtual void OnButtonWasClicked(UInventoryButtonWidget* Button) override;
 	
 protected:

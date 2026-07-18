@@ -6,6 +6,12 @@
 #include "InventoryItem.h"
 
 
+UWeaponInventoryWidget::UWeaponInventoryWidget()
+{
+	NumButtonHeight = 2;
+	NumButtonWidth = 1;
+}
+
 void UWeaponInventoryWidget::OnButtonWasClicked(UInventoryButtonWidget* Button)
 {
 	int8 NewSelectedItemIndex = ButtonList.Find(Button);
