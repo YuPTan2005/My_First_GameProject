@@ -62,12 +62,12 @@ void UPlayerUI::SetCompanion(ACompanion* NewCompanion)
 
 bool UPlayerUI::SetNewWeaponImage(UTexture2D* NewWeaponImage) const
 {
-	if (!Weapon1Image)
+	if (Weapon1Image->GetBrush().GetResourceObject() == nullptr)
 	{
 		Weapon1Image->SetBrushFromTexture(NewWeaponImage);
 		return true;
 	}
-	if (!Weapon2Image)
+	if (Weapon2Image->GetBrush().GetResourceObject() == nullptr)
 	{
 		Weapon2Image->SetBrushFromTexture(NewWeaponImage);
 		return true;
