@@ -11,9 +11,9 @@ AWeapon::AWeapon()
 	PrimaryActorTick.bCanEverTick = false;
 	
 	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
-	RootComponent = WeaponMesh;
-	
+	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	WeaponMesh->SetVisibility(false);
+	RootComponent = WeaponMesh;
 }
 
 // Called when the game starts or when spawned
