@@ -82,14 +82,15 @@ void AD4_HD3_CustomProjectCharacter::SetupPlayerInputComponent(UInputComponent* 
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AD4_HD3_CustomProjectCharacter::Look);
 		
 		EnhancedInputComponent->BindAction(CollectAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Collect);
+		EnhancedInputComponent->BindAction(EatAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Eat);
+		EnhancedInputComponent->BindAction(PickupAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Pickup);
 		
-		EnhancedInputComponent->BindAction(InventoryAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::ToggleInventory);
+		EnhancedInputComponent->BindAction(FoodInventoryAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::ToggleInventory);
+		EnhancedInputComponent->BindAction(WeaponInventoryAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::ToggleWeaponInventory);
 		
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Attack);
 		
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Dash);
-		
-		EnhancedInputComponent->BindAction(EatAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Eat);
 	}
 	else
 	{
@@ -357,7 +358,7 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("No value assigned to CollectionInfoUIClass in %s"), *GetName());
+				UE_LOG(LogTemp, Warning, TEXT("No value assigned to ViewportInfoUIClass in %s"), *GetName());
 			}
 		}
 	}
@@ -407,6 +408,61 @@ void AD4_HD3_CustomProjectCharacter::Eat()
 		else
 		{
 			UE_LOG(LogTemp, Error, TEXT("Item in %s is not a type of food"), *PickupFood->GetName());
+		}
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::Pickup()
+{
+	if (CollectibleWeapon.Num() > 0)
+	{
+		APickupWeapon* PickupWeapon = CollectibleWeapon[0];
+		AActor* ItemToAdd = PickupWeapon->GetItem();
+		const FVector PickupWeaponLocation = PickupWeapon->GetActorLocation();
+		
+		if (!ItemToAdd)
+		{
+			ItemToAdd = NewObject<AWeapon>();
+		}
+		
+		AWeapon* WeaponToAdd = Cast<AWeapon>(ItemToAdd);
+		bool AddWeaponSuccess = true;
+		
+		if (WeaponToAdd && AddWeapon(WeaponToAdd))
+		{
+			CollectibleWeapon.RemoveSingle(PickupWeapon);
+			PickupWeapon->PickedUp();
+		}
+		else
+		{
+			AddWeaponSuccess = false;
+		}
+	
+		if (ViewportInfoUIClass)
+		{
+			UViewportInfoUI* ViewportInfoUI = CreateWidget<UViewportInfoUI>(GetGameInstance(), ViewportInfoUIClass);
+		
+			FVector2D ViewportInfoUILocation;
+			UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
+				PickupWeaponLocation, ViewportInfoUILocation);
+			ViewportInfoUI->SetStartLocation(ViewportInfoUILocation);
+		
+			if (AddWeaponSuccess)
+			{
+				ViewportInfoUI->SetDisplayText(WeaponSuccessCollectedText);
+				ViewportInfoUI->SetColorAndOpacity(FLinearColor(0.04f, 0.8f, 0.48f));
+			}
+			else
+			{
+				ViewportInfoUI->SetDisplayText(WeaponFailCollectedText);
+				ViewportInfoUI->SetColorAndOpacity(FLinearColor(1.0f, 0.25f, 0.38f));
+			}
+		
+			ViewportInfoUI->AddToViewport();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No value assigned to ViewportInfoUIClass in %s"), *GetName());
 		}
 	}
 }
@@ -538,12 +594,21 @@ void AD4_HD3_CustomProjectCharacter::DeleteWeaponAtIndex(const int8 Index) const
 {
 	WeaponInventoryComponent->DeleteItemAtIndex(Index);
 	WeaponInventoryWidget->RefreshInventory(WeaponInventoryComponent->GetAllItems());
+	if (PlayerUI)
+	{
+		PlayerUI->RemoveWeaponImage(Index);
+		PlayerUI->ResetWeaponBorderColor(Index);
+	}
 }
 
 bool AD4_HD3_CustomProjectCharacter::AddWeapon(AActor* NewItem) const
 {
 	if (WeaponInventoryComponent->AddItem(NewItem))
 	{
+		if (const AWeapon* NewWeapon = Cast<AWeapon>(NewItem))
+		{
+			if (PlayerUI) PlayerUI->SetNewWeaponImage(NewWeapon->GetWeaponImage());
+		}
 		WeaponInventoryWidget->RefreshInventory(WeaponInventoryComponent->GetAllItems());
 		return true;
 	}
@@ -553,6 +618,18 @@ bool AD4_HD3_CustomProjectCharacter::AddWeapon(AActor* NewItem) const
 void AD4_HD3_CustomProjectCharacter::UseWeapon(const int8 Index)
 {
 	WeaponInventoryComponent->UseItemAtIndex(Index, this);
+	if (PlayerUI)
+	{
+		PlayerUI->SetWeaponBorderColor(Index, WeaponOnUsedColor);
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::UnuseWeapon(const int8 WeaponIndex) const
+{
+	if (PlayerUI)
+	{
+		PlayerUI->ResetWeaponBorderColor(WeaponIndex);
+	}
 }
 
 void AD4_HD3_CustomProjectCharacter::DisattachWeaponFromSocket(AWeapon* Weapon) const

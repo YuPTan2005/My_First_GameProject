@@ -12,6 +12,7 @@
 #include "FoodInventoryActorComponent.h"
 #include "FoodInventoryWidget.h"
 #include "PickupFood.h"
+#include "PickupWeapon.h"
 #include "PlayerUI.h"
 #include "StarvationUI.h"
 #include "ViewportInfoUI.h"
@@ -75,13 +76,19 @@ protected:
 	UInputAction* CollectAction;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
-	UInputAction* InventoryAction;
+	UInputAction* FoodInventoryAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* WeaponInventoryAction;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* DashAction;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* EatAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* PickupAction;
 
 public:
 
@@ -117,6 +124,12 @@ protected:
 	TArray<APickupFood*> CollectibleFood;
 	UPROPERTY()
 	TArray<APickupFood*> EdibleFood;
+	UPROPERTY()
+	TArray<APickupWeapon*> CollectibleWeapon;
+	
+	void Collect();
+	void Eat();
+	void Pickup();
 	
 	bool bIsWeaponInventoryOpen;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actor Component Class")
@@ -190,12 +203,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoJumpEnd();
 	
-	void Collect();
-	void Eat();
-	
 	FString FoodSuccessCollectedText = "Food added to inventory!";
-	FString FoodFailCollectedText = "Inventory is full!";
+	FString FoodFailCollectedText = "Food inventory is full!";
 	FString FoodEatenText = "Food eaten!";
+	FString WeaponSuccessCollectedText = "Weapon added to inventory!";
+	FString WeaponFailCollectedText = "Weapon inventory is full!";
 	
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void Dash();
@@ -228,7 +240,10 @@ public:
 	AActor* GetWeaponAtIndex(const int8 Index) const;
 	void DeleteWeaponAtIndex(const int8 Index) const;
 	bool AddWeapon(AActor* NewItem) const;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FLinearColor WeaponOnUsedColor = FLinearColor(0.0f, 0.45f, 0.95f);
 	void UseWeapon(const int8 Index);
+	void UnuseWeapon(const int8 WeaponIndex) const;
 	void DisattachWeaponFromSocket(AWeapon* Weapon) const;
 	void AttachWeaponToSocket(AWeapon* Weapon, const FString& SocketName) const;
 	
