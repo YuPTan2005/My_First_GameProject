@@ -10,15 +10,3 @@ APickupWeapon::APickupWeapon()
 {
 	CollectItemText = "Press X to pick up";
 }
-
-void APickupWeapon::PickedUp()
-{
-	if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(PickerActor))
-	{
-		if (Cast<AWeapon>(Item))
-		{
-			Player->AddWeapon(Item);
-			Super::PickedUp();
-		}
-	}
-}
