@@ -846,6 +846,10 @@ void AD4_HD3_CustomProjectCharacter::AddCollectibleItem_Implementation(APickupIt
 			EdibleFood.Add(Food);
 		}
 	}
+	else if (APickupWeapon* Weapon = Cast<APickupWeapon>(Item))
+	{
+		CollectibleWeapon.Add(Weapon);
+	}
 }
 
 void AD4_HD3_CustomProjectCharacter::RemoveCollectibleItem_Implementation(APickupItem* Item)
