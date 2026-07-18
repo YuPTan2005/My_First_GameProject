@@ -20,6 +20,6 @@ public:
 protected:
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 	
-	void UnequipOwnerWeapon() const;
+	void UnequipOwnerWeapon(int8 WeaponIndex) const;
 	
 };
