@@ -63,6 +63,7 @@ AD4_HD3_CustomProjectCharacter::AD4_HD3_CustomProjectCharacter()
 	this->GetCharacterMovement()->MaxFlySpeed = 1000;
 	
 	bIsInventoryOpen = false;
+	bIsWeaponInventoryOpen = false;
 }
 
 void AD4_HD3_CustomProjectCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -115,7 +116,21 @@ void AD4_HD3_CustomProjectCharacter::BeginPlay()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("No value assigned to inventory component class in %s"), *GetName());
+		UE_LOG(LogTemp, Warning, TEXT("No value assigned to FoodInventoryComponentClass in %s"), *GetName());
+	}
+	
+	if (WeaponInventoryComponentClass)
+	{
+		WeaponInventoryComponent = NewObject<UWeaponInventoryActorComponent>(this, WeaponInventoryComponentClass);
+        
+		if (WeaponInventoryComponent)
+		{
+			WeaponInventoryComponent->RegisterComponent();
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No value assigned to WeaponInventoryComponentClass in %s"), *GetName());
 	}
 	
 	if (CompanionClass)
@@ -567,17 +582,19 @@ void AD4_HD3_CustomProjectCharacter::FeedItem(const int8 Index) const
 
 void AD4_HD3_CustomProjectCharacter::ToggleWeaponInventory()
 {
-	if (PlayerController)
+	if (PlayerController && WeaponInventoryWidget)
 	{
-		if (bIsWeaponInventoryOpen) 
+		if (bIsWeaponInventoryOpen)
 		{
 			WeaponInventoryWidget->RemoveFromParent();
+			PlayerController->bShowMouseCursor(false);
 			PlayerController->SetInputMode(FInputModeGameOnly());
 		}
 		else
 		{
 			WeaponInventoryWidget->AddToViewport();
 			WeaponInventoryWidget->RefreshInventory(WeaponInventoryComponent->GetAllItems());
+			PlayerController->bShowMouseCursor(true);
 			PlayerController->SetInputMode(FInputModeGameAndUI());
 		}
 		
@@ -848,7 +865,7 @@ void AD4_HD3_CustomProjectCharacter::RemoveCollectibleItem_Implementation(APicku
 
 void AD4_HD3_CustomProjectCharacter::ToggleInventory()
 {
-	if (PlayerController && FoodInventoryComponent->GetHasBackpack())
+	if (PlayerController && FoodInventoryComponent && FoodInventoryComponent->GetHasBackpack())
 	{
 		if (bIsInventoryOpen) 
 		{
