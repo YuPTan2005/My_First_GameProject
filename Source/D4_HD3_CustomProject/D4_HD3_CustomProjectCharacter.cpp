@@ -587,14 +587,14 @@ void AD4_HD3_CustomProjectCharacter::ToggleWeaponInventory()
 		if (bIsWeaponInventoryOpen)
 		{
 			WeaponInventoryWidget->RemoveFromParent();
-			PlayerController->bShowMouseCursor(false);
+			PlayerController->SetShowMouseCursor(false);
 			PlayerController->SetInputMode(FInputModeGameOnly());
 		}
 		else
 		{
 			WeaponInventoryWidget->AddToViewport();
 			WeaponInventoryWidget->RefreshInventory(WeaponInventoryComponent->GetAllItems());
-			PlayerController->bShowMouseCursor(true);
+			PlayerController->SetShowMouseCursor(true);
 			PlayerController->SetInputMode(FInputModeGameAndUI());
 		}
 		
