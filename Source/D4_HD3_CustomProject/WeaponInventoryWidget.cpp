@@ -13,12 +13,15 @@ void UWeaponInventoryWidget::OnButtonWasClicked(UInventoryButtonWidget* Button)
 	if (SelectedItemIndex == NewSelectedItemIndex)
 	{
 		ResetDisplayItem();
+		UnequipOwnerWeapon();
 	}
 	else
 	{
 		if(AActor* SelectedItem = Owner->GetWeaponAtIndex(NewSelectedItemIndex)) 
 		{
 			SelectedItemIndex = NewSelectedItemIndex;
+			Owner->UseWeapon(SelectedItemIndex);
+			
 			if (SelectedItem->Implements<UInventoryItem>())
 			{
 				ItemNameTextBlock->
@@ -49,4 +52,14 @@ FReply UWeaponInventoryWidget::NativeOnKeyDown(const FGeometry& InGeometry, cons
 	}
 	
 	return Super::NativeOnKeyDown(InGeometry, InKeyEvent);
+}
+
+void UWeaponInventoryWidget::UnequipOwnerWeapon() const
+{
+	AActor* OwnerCurrentWeapon = Owner->GetWeaponAtIndex(SelectedItemIndex);
+	
+	if (AWeapon* WeaponToDisattach = Cast<AWeapon>(OwnerCurrentWeapon))
+	{
+		Owner->DisattachWeaponFromSocket(WeaponToDisattach);
+	}
 }

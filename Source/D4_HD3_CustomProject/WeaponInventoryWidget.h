@@ -16,6 +16,10 @@ class D4_HD3_CUSTOMPROJECT_API UWeaponInventoryWidget : public UInventoryWidget
 	
 public:
 	virtual void OnButtonWasClicked(UInventoryButtonWidget* Button) override;
+	
+protected:
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
+	
+	void UnequipOwnerWeapon() const;
 	
 };
