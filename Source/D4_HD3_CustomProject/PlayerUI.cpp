@@ -8,6 +8,13 @@
 #include "D4_HD3_CustomProjectCharacter.h"
 
 
+void UPlayerUI::NativeConstruct()
+{
+	Super::NativeConstruct();
+	
+	BorderOriginalColor = Weapon1Border->GetBrushColor();
+}
+
 void UPlayerUI::UpdateValues() const
 {
 	UpdatePlayerValues();
@@ -51,4 +58,56 @@ void UPlayerUI::UpdateCompanionValues() const
 void UPlayerUI::SetCompanion(ACompanion* NewCompanion)
 {
 	Companion = NewCompanion;
+}
+
+bool UPlayerUI::SetNewWeaponImage(UTexture2D* NewWeaponImage) const
+{
+	if (!Weapon1Image)
+	{
+		Weapon1Image->SetBrushFromTexture(NewWeaponImage);
+		return true;
+	}
+	if (!Weapon2Image)
+	{
+		Weapon2Image->SetBrushFromTexture(NewWeaponImage);
+		return true;
+	}
+	
+	return false;
+}
+
+void UPlayerUI::RemoveWeaponImage(int8 WeaponIndex) const
+{
+	if (WeaponIndex == 0)
+	{
+		Weapon1Image->SetBrushFromTexture(nullptr);
+	}
+	else if (WeaponIndex == 1)
+	{
+		Weapon2Image->SetBrushFromTexture(nullptr);
+	}
+}
+
+void UPlayerUI::ResetWeaponBorderColor(int8 WeaponIndex) const
+{
+	if (WeaponIndex == 0)
+	{
+		Weapon1Border->SetBrushColor(BorderOriginalColor);
+	}
+	else if (WeaponIndex == 1)
+	{
+		Weapon2Border->SetBrushColor(BorderOriginalColor);
+	}
+}
+
+void UPlayerUI::SetWeaponBorderColor(const int8 WeaponIndex, FLinearColor BorderColor) const
+{
+	if (WeaponIndex == 0)
+	{
+		Weapon1Border->SetBrushColor(BorderColor);
+	}
+	else
+	{
+		Weapon2Border->SetBrushColor(BorderColor);
+	}
 }

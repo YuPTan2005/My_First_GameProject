@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Companion.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Border.h"
+#include "Components/Image.h"
 #include "PlayerUI.generated.h"
 
 class UProgressBar;
@@ -18,12 +20,7 @@ class D4_HD3_CUSTOMPROJECT_API UPlayerUI : public UUserWidget
 {
 	GENERATED_BODY()
 	
-public:
-	UPROPERTY()
-	AD4_HD3_CustomProjectCharacter* Player;
-	UPROPERTY()
-	ACompanion* Companion;
-	
+protected:
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* ExperienceBar;
 	UPROPERTY(meta = (BindWidget))
@@ -51,9 +48,36 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* CompanionDamageText;
 	
+	UPROPERTY(meta=(BindWidget))
+	UBorder* Weapon1Border;
+	UPROPERTY(meta=(BindWidget))
+	UImage* Weapon1Image;
+	
+	UPROPERTY(meta=(BindWidget))
+	UBorder* Weapon2Border;
+	UPROPERTY(meta=(BindWidget))
+	UImage* Weapon2Image;
+	
+	virtual void NativeConstruct() override;
+	
+	FLinearColor BorderOriginalColor;
+	
+public:
+	UPROPERTY()
+	AD4_HD3_CustomProjectCharacter* Player;
+	UPROPERTY()
+	ACompanion* Companion;
+	
 	void UpdateValues() const;
 	void UpdatePlayerValues() const;
 	void UpdateCompanionValues() const;
 	
 	void SetCompanion(ACompanion* NewCompanion);
+	
+	bool SetNewWeaponImage(UTexture2D* NewWeaponImage) const;
+	void RemoveWeaponImage(int8 WeaponIndex) const;
+	
+	void SetWeaponBorderColor(const int8 WeaponIndex, FLinearColor BorderColor) const;
+	void ResetWeaponBorderColor(int8 WeaponIndex) const;
+	
 };
