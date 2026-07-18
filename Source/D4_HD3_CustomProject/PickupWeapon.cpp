@@ -15,6 +15,10 @@ void APickupWeapon::PickedUp()
 {
 	if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(PickerActor))
 	{
-		if (Cast<AWeapon>(Item)) Player->AddWeapon(Item);
+		if (Cast<AWeapon>(Item))
+		{
+			Player->AddWeapon(Item);
+			Super::PickedUp();
+		}
 	}
 }
