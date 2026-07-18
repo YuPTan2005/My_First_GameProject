@@ -54,13 +54,21 @@ void UInventoryWidget::RefreshInventory(TArray<AActor*> Items)
 		{
 			return;
 		}
-		if (UTexture2D* Image = *ImageMap.Find(Items[i]->GetName()))
+		
+		if (Items[i]->Implements<UInventoryItem>())
 		{
-			ButtonList[i]->UpdateItemIcon(Image);
+			if (UTexture2D* Image = *ImageMap.Find(IInventoryItem::Execute_GetName(Items[i])))
+			{
+				ButtonList[i]->UpdateItemIcon(Image);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("Item %s does not have image mapping for its name in inventory"), *Items[i]->GetName());
+			}
 		}
 		else
 		{
-			UE_LOG(LogTemp, Error, TEXT("Item %s does not have image mapping for its name in inventory"), *Items[i]->GetName());
+			UE_LOG(LogTemp, Error, TEXT("Item in inventory widget does not implement InventoryItem interface"));
 		}
 	}
 }
