@@ -16,7 +16,7 @@ void UWeaponInventoryWidget::OnButtonWasClicked(UInventoryButtonWidget* Button)
 	}
 	else
 	{
-		if(AActor* SelectedItem = Owner->GetItemAtIndex(NewSelectedItemIndex)) 
+		if(AActor* SelectedItem = Owner->GetWeaponAtIndex(NewSelectedItemIndex)) 
 		{
 			SelectedItemIndex = NewSelectedItemIndex;
 			if (SelectedItem->Implements<UInventoryItem>())
