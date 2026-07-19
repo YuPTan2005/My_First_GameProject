@@ -87,7 +87,5 @@ AActor* APickupFood::PickedUp()
 			);
 	}
 	
-	Destroy();
-	
 	return FoodCreated;
 }
