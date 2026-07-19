@@ -77,6 +77,8 @@ void UInventoryWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
+	SetIsFocusable(true);
+	
 	if(ButtonList.Num() > 0) {
 		return;
 	}

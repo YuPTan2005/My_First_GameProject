@@ -52,7 +52,7 @@ FReply UWeaponInventoryWidget::NativeOnKeyDown(const FGeometry& InGeometry, cons
 	{
 		if (Owner)
 		{
-			Owner->ToggleInventory();
+			Owner->ToggleWeaponInventory();
 			return FReply::Handled();
 		}
 	}
