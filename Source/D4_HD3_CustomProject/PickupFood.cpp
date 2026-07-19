@@ -82,7 +82,7 @@ AActor* APickupFood::PickedUp()
 	if (!IsValid(FoodCreated))
 	{
 		FoodCreated = GetWorld()->SpawnActor<AActor>(
-			ItemClass,
+			AFood::StaticClass(),
 			GetActorLocation(),
 			GetActorRotation()
 			);

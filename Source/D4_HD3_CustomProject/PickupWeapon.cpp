@@ -17,7 +17,7 @@ AActor* APickupWeapon::PickedUp()
 	if (!IsValid(WeaponCreated))
 	{
 		WeaponCreated = GetWorld()->SpawnActor<AActor>(
-			ItemClass,
+			AWeapon::StaticClass(),
 			GetActorLocation(),
 			GetActorRotation()
 			);
