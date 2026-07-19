@@ -589,6 +589,10 @@ void AD4_HD3_CustomProjectCharacter::ToggleWeaponInventory()
 			WeaponInventoryWidget->RemoveFromParent();
 			PlayerController->SetShowMouseCursor(false);
 			PlayerController->SetInputMode(FInputModeGameOnly());
+			if (PlayerUI)
+			{
+				PlayerUI->SetWeaponUIVisibility(true);
+			}
 		}
 		else
 		{
@@ -596,6 +600,10 @@ void AD4_HD3_CustomProjectCharacter::ToggleWeaponInventory()
 			WeaponInventoryWidget->RefreshInventory(WeaponInventoryComponent->GetAllItems());
 			PlayerController->SetShowMouseCursor(true);
 			PlayerController->SetInputMode(FInputModeGameAndUI());
+			if (PlayerUI)
+			{
+				PlayerUI->SetWeaponUIVisibility(false);
+			}
 		}
 		
 		bIsWeaponInventoryOpen = !bIsWeaponInventoryOpen;
