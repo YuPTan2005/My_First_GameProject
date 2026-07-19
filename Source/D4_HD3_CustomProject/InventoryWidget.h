@@ -5,9 +5,9 @@
 #include "CoreMinimal.h"
 #include "InventoryButtonWidget.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/GridPanel.h"
 #include "Components/ScrollBox.h"
 #include "Components/TextBlock.h"
+#include "Components/UniformGridPanel.h"
 #include "InventoryWidget.generated.h"
 
 class UInputAction;
@@ -36,7 +36,7 @@ protected:
 	TSubclassOf<UInventoryButtonWidget> BPButtonWidget;
 
 	UPROPERTY(meta=(BindWidget))
-	UGridPanel* InventoryGrid;
+	UUniformGridPanel* InventoryGrid;
 	
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* ItemNameTextBlock;

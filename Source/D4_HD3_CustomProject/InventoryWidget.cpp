@@ -93,7 +93,7 @@ void UInventoryWidget::NativeConstruct()
 
 				ButtonList.Add(Button);
 				Button->OnClickedDelegate.AddDynamic(this, &UInventoryWidget::OnButtonWasClicked);
-				InventoryGrid->AddChildToGrid(Button, Y, X);
+				InventoryGrid->AddChildToUniformGrid(Button, Y, X);
 			}
 			else {
 				UE_LOG(LogTemp, Warning, TEXT("BPButtonWidget is null"));
