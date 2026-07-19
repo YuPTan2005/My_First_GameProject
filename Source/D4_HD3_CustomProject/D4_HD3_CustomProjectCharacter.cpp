@@ -338,7 +338,6 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 				}
 				PickupFood->Collected(this);
 				AddFoodSuccess = true;
-				PickupFood->Destroy();
 			}
 		}
 		
