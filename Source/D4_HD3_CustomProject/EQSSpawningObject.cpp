@@ -54,7 +54,7 @@ void AEQSSpawningObject::BeginPlay()
 
 bool AEQSSpawningObject::SpawnFood(FVector SpawnLocation)
 {
-	if (PickupFoodClass && FoodToSpawn)
+	if (PickupFoodClass)
 	{
 		FRotator SpawnRotation = FRotator::ZeroRotator;
 		
@@ -65,10 +65,7 @@ bool AEQSSpawningObject::SpawnFood(FVector SpawnLocation)
 		{
 			APickupFood* PickupFoodSpawned = GetWorld()->
 			SpawnActor<APickupFood>(PickupFoodClass, SpawnLocation, SpawnRotation, SpawnParams);
-			AFood* FoodSpawned = GetWorld()->
-				SpawnActor<AFood>(FoodToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
-		
-			PickupFoodSpawned->SetItem(FoodSpawned);
+			
 			PickupFoodSpawned->MeshComponent->SetStaticMesh(FoodMesh);
 			PickupFoodSpawned->MeshComponent->SetMaterial(0, FoodMaterial);
 			PickupFoodSpawned->PickupUIClass = PickupUIClass;
