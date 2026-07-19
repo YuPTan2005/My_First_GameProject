@@ -111,3 +111,17 @@ void UPlayerUI::SetWeaponBorderColor(const int8 WeaponIndex, FLinearColor Border
 		Weapon2Border->SetBrushColor(BorderColor);
 	}
 }
+
+void UPlayerUI::SetWeaponUIVisibility(const bool bIsVisible) const
+{
+	if (bIsVisible)
+	{
+		Weapon1Border->SetVisibility(ESlateVisibility::Visible);
+		Weapon2Border->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		Weapon1Border->SetVisibility(ESlateVisibility::Hidden);
+		Weapon2Border->SetVisibility(ESlateVisibility::Hidden);
+	}
+}

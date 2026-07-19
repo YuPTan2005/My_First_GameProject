@@ -80,4 +80,6 @@ public:
 	void SetWeaponBorderColor(const int8 WeaponIndex, FLinearColor BorderColor) const;
 	void ResetWeaponBorderColor(int8 WeaponIndex) const;
 	
+	void SetWeaponUIVisibility(const bool bIsVisible) const;
+	
 };
