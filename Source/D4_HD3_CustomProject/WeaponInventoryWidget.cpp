@@ -60,15 +60,27 @@ FReply UWeaponInventoryWidget::NativeOnKeyDown(const FGeometry& InGeometry, cons
 	return Super::NativeOnKeyDown(InGeometry, InKeyEvent);
 }
 
+FReply UWeaponInventoryWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
+{
+	return FReply::Handled();
+}
+
+FEventReply UWeaponInventoryWidget::OnBackgroundButtonClicked(FGeometry MyGeometry, const FPointerEvent& MouseEvent)
+{
+	if (Owner)
+	{
+		Owner->ToggleWeaponInventory();
+	}
+	
+	FEventReply Reply;
+	Reply.NativeReply = FReply::Handled();
+	return Reply;
+}
+
 void UWeaponInventoryWidget::UnequipOwnerWeapon(int8 WeaponIndex) const
 {
-	AActor* OwnerCurrentWeapon = Owner->GetWeaponAtIndex(SelectedItemIndex);
-	
-	if (AWeapon* WeaponToDisattach = Cast<AWeapon>(OwnerCurrentWeapon))
-	{
-		Owner->UnuseWeapon(WeaponIndex);
-		Owner->DisattachWeaponFromSocket(WeaponToDisattach);
-	}
+	Owner->UnuseWeapon(WeaponIndex);
+	ResetButtonBorderColor(WeaponIndex);
 }
 
 void UWeaponInventoryWidget::SetButtonBorderColor(const int8 ButtonIndex, const FLinearColor NewColor) const
@@ -91,4 +103,14 @@ void UWeaponInventoryWidget::ResetButtonBorderColor(const int8 ButtonIndex) cons
 			ButtonWidget->ResetBorderColor();
 		}
 	}
+}
+
+void UWeaponInventoryWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
+	
+	BackgroundCloseBorder->OnMouseButtonDownEvent.BindUFunction(
+		this, 
+		GET_FUNCTION_NAME_CHECKED(UWeaponInventoryWidget, OnBackgroundButtonClicked)
+		);
 }
