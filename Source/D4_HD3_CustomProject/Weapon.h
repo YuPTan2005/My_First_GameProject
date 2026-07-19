@@ -24,10 +24,10 @@ protected:
 	UStaticMeshComponent* WeaponMesh;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString WeaponName = "DefaultWeaponName";
+	FString WeaponName = "Default Weapon Name";
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString WeaponDescription = "DefaultWeaponDescription";
+	FString WeaponDescription = "Default Weapon Description";
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UTexture2D* WeaponImage;
