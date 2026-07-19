@@ -215,40 +215,33 @@ bool ACompanion::CollectFood()
 	
 	if (CollectibleFoodList.Contains(TargetPickupFood))
 	{
-		APickupFood* PickupFood = TargetPickupFood;
-		AActor* ItemToCollect = PickupFood->GetItem();
-		AFood* FoodToCollect = nullptr;
-       
-		if (ItemToCollect)
+		if (CompanionOwner && !CompanionOwner->GetIsFoodInventoryFull())
 		{
-			FoodToCollect = Cast<AFood>(ItemToCollect);
-		}
-		else
-		{
-			FoodToCollect = NewObject<AFood>();
-		}
+			AActor* ItemToCollect = TargetPickupFood->PickedUp();
 		
-		if (FoodToCollect)
-		{
-			if (CompanionOwner && CompanionOwner->AddItem(FoodToCollect))
+			if (AFood* FoodToCollect = Cast<AFood>(ItemToCollect))
 			{
-				CollectibleFoodList.RemoveSingle(PickupFood);
-				PickupFoodList.RemoveSingle(PickupFood);
+				if (CompanionOwner->AddItem(FoodToCollect))
+				{
+					CollectibleFoodList.RemoveSingle(TargetPickupFood);
+					PickupFoodList.RemoveSingle(TargetPickupFood);
 			
-				CompanionOwner->RemoveCollectibleItem_Implementation(PickupFood);
+					CompanionOwner->RemoveCollectibleItem_Implementation(TargetPickupFood);
 			
-				CollectTimer = 0.0f;
-				TargetPickupFood = nullptr; 
+					CollectTimer = 0.0f;
+					
+					TargetPickupFood->Collected(CompanionOwner);
+					TargetPickupFood = nullptr;
+					
+					SelectNextFoodTarget();
 			
-				PickupFood->Collected(CompanionOwner);
-				SelectNextFoodTarget();
-			
-				return true;
+					return true;
+				}
 			}
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("Item in %s is not a type of food"), *PickupFood->GetName());
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("Item in %s is not a type of food"), *TargetPickupFood->GetName());
+			}
 		}
 	}
     
