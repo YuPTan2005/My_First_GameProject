@@ -7,10 +7,16 @@
 
 bool UFoodInventoryActorComponent::UseItemAtIndex(int32 Index, AActor* Character)
 {
-	if (Character->Implements<UFoodConsumer>() && Super::UseItemAtIndex(Index, Character))
+	if(Index >= InventoryItems.Num() || Index < 0)
+	{
+		return false;
+	}
+	
+	if (Character->Implements<UFoodConsumer>())
 	{
 		AActor* UsedItem = InventoryItems[Index];
 		IFoodConsumer::Execute_Eat(Character, UsedItem);
+		InventoryItems.RemoveAt(Index);
 		
 		return true;
 	}

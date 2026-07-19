@@ -7,8 +7,11 @@
 
 void UFoodInventoryWidget::OnUseButtonClicked()
 {
-	Owner->UseItem(SelectedItemIndex);
-	ResetDisplayItem();
+	if (SelectedItemIndex != -1)
+	{
+		Owner->UseItem(SelectedItemIndex);
+		ResetDisplayItem();
+	}
 }
 
 void UFoodInventoryWidget::OnDeleteButtonClicked()
