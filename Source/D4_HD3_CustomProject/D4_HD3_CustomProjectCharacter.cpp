@@ -321,19 +321,14 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 	if (FoodInventoryComponent->GetHasBackpack() && CollectibleFood.Num() > 0)
 	{
 		APickupFood* PickupFood = CollectibleFood[0];
-		AActor* ItemToAdd = PickupFood->GetItem();
+		AActor* ItemToAdd = PickupFood->PickedUp();
 		const FVector PickupFoodLocation = PickupFood->GetActorLocation();
 		
-		if (!ItemToAdd)
-		{
-			ItemToAdd = NewObject<AFood>();
-		}
+		bool AddFoodSuccess = false;
 		
-		if (ItemToAdd->Implements<UEdible>())
+		if (!FoodInventoryComponent->IsFull())
 		{
 			AFood* FoodToAdd = Cast<AFood>(ItemToAdd);
-			bool AddFoodSuccess = true;
-			
 			if (FoodToAdd && AddItem(FoodToAdd))
 			{
 				CollectibleFood.RemoveSingle(PickupFood);
@@ -342,39 +337,40 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 					Companion->RemoveCollectibleItem_Implementation(PickupFood);
 				}
 				PickupFood->Collected(this);
+				AddFoodSuccess = true;
+			}
+		}
+		
+		if (!AddFoodSuccess)
+		{
+			PickupFood->UnCollected();
+		}
+	
+		if (ViewportInfoUIClass)
+		{
+			UViewportInfoUI* ViewportInfoUI = CreateWidget<UViewportInfoUI>(GetGameInstance(), ViewportInfoUIClass);
+		
+			FVector2D ViewportInfoUILocation;
+			UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
+				PickupFoodLocation, ViewportInfoUILocation);
+			ViewportInfoUI->SetStartLocation(ViewportInfoUILocation);
+		
+			if (AddFoodSuccess)
+			{
+				ViewportInfoUI->SetDisplayText(FoodSuccessCollectedText);
+				ViewportInfoUI->SetColorAndOpacity(FLinearColor(0.04f, 0.8f, 0.48f));
 			}
 			else
 			{
-				AddFoodSuccess = false;
-				PickupFood->UnCollected();
+				ViewportInfoUI->SetDisplayText(FoodFailCollectedText);
+				ViewportInfoUI->SetColorAndOpacity(FLinearColor(1.0f, 0.25f, 0.38f));
 			}
 		
-			if (ViewportInfoUIClass)
-			{
-				UViewportInfoUI* ViewportInfoUI = CreateWidget<UViewportInfoUI>(GetGameInstance(), ViewportInfoUIClass);
-			
-				FVector2D ViewportInfoUILocation;
-				UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
-					PickupFoodLocation, ViewportInfoUILocation);
-				ViewportInfoUI->SetStartLocation(ViewportInfoUILocation);
-			
-				if (AddFoodSuccess)
-				{
-					ViewportInfoUI->SetDisplayText(FoodSuccessCollectedText);
-					ViewportInfoUI->SetColorAndOpacity(FLinearColor(0.04f, 0.8f, 0.48f));
-				}
-				else
-				{
-					ViewportInfoUI->SetDisplayText(FoodFailCollectedText);
-					ViewportInfoUI->SetColorAndOpacity(FLinearColor(1.0f, 0.25f, 0.38f));
-				}
-			
-				ViewportInfoUI->AddToViewport();
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("No value assigned to ViewportInfoUIClass in %s"), *GetName());
-			}
+			ViewportInfoUI->AddToViewport();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("No value assigned to ViewportInfoUIClass in %s"), *GetName());
 		}
 	}
 }
@@ -384,13 +380,8 @@ void AD4_HD3_CustomProjectCharacter::Eat()
 	if (!FoodInventoryComponent->GetHasBackpack() && EdibleFood.Num() > 0)
 	{
 		APickupFood* PickupFood = EdibleFood[0];
-		AActor* FoodToEat = PickupFood->GetItem();
+		AActor* FoodToEat = PickupFood->PickedUp();
 		const FVector PickupFoodLocation = PickupFood->GetActorLocation();
-		
-		if (!FoodToEat)
-		{
-			FoodToEat = NewObject<AFood>();
-		}
 		
 		if (FoodToEat->Implements<UEdible>())
 		{
@@ -400,7 +391,6 @@ void AD4_HD3_CustomProjectCharacter::Eat()
 			{
 				Companion->RemoveCollectibleItem_Implementation(PickupFood);
 			}
-			PickupFood->PickedUp();
 		
 			if (ViewportInfoUIClass)
 			{
@@ -431,26 +421,19 @@ void AD4_HD3_CustomProjectCharacter::Pickup()
 {
 	if (CollectibleWeapon.Num() > 0)
 	{
+		bool AddWeaponSuccess = false;
 		APickupWeapon* PickupWeapon = CollectibleWeapon[0];
-		AActor* ItemToAdd = PickupWeapon->GetItem();
+		AActor* ItemToAdd = PickupWeapon->PickedUp();
 		const FVector PickupWeaponLocation = PickupWeapon->GetActorLocation();
 		
-		if (!ItemToAdd)
+		if (!WeaponInventoryComponent->IsFull())
 		{
-			ItemToAdd = NewObject<AWeapon>();
-		}
-		
-		AWeapon* WeaponToAdd = Cast<AWeapon>(ItemToAdd);
-		bool AddWeaponSuccess = true;
-		
-		if (WeaponToAdd && AddWeapon(WeaponToAdd))
-		{
-			CollectibleWeapon.RemoveSingle(PickupWeapon);
-			PickupWeapon->PickedUp();
-		}
-		else
-		{
-			AddWeaponSuccess = false;
+			AWeapon* WeaponToAdd = Cast<AWeapon>(ItemToAdd);
+			if (WeaponToAdd && AddWeapon(WeaponToAdd))
+			{
+				CollectibleWeapon.RemoveSingle(PickupWeapon);
+				AddWeaponSuccess = true;
+			}
 		}
 	
 		if (ViewportInfoUIClass)
