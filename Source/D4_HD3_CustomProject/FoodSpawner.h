@@ -33,9 +33,6 @@ protected:
 	UMaterialInterface* FoodMaterial;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn")
-	TSubclassOf<AFood> FoodToSpawn;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn")
 	TSubclassOf<APickupFood> PickupFoodClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn")

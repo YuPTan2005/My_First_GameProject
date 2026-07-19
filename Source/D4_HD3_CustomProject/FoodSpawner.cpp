@@ -67,7 +67,7 @@ FVector AFoodSpawner::GetSpawnPoint()
 
 bool AFoodSpawner::SpawnObject()
 {
-	if (PickupFoodClass && FoodToSpawn)
+	if (PickupFoodClass)
 	{
 		FVector SpawnLocation = GetSpawnPoint();
 		FRotator SpawnRotation = FRotator::ZeroRotator;
@@ -79,10 +79,7 @@ bool AFoodSpawner::SpawnObject()
 		{
 			APickupFood* PickupFoodSpawned = GetWorld()->
 			SpawnActor<APickupFood>(PickupFoodClass, SpawnLocation, SpawnRotation, SpawnParams);
-			AFood* FoodSpawned = GetWorld()->
-				SpawnActor<AFood>(FoodToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
-		
-			PickupFoodSpawned->SetItem(FoodSpawned);
+			
 			PickupFoodSpawned->MeshComponent->SetStaticMesh(FoodMesh);
 			PickupFoodSpawned->MeshComponent->SetMaterial(0, FoodMaterial);
 			PickupFoodSpawned->PickupUIClass = PickupUIClass;
