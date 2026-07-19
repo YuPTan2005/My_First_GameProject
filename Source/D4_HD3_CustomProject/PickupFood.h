@@ -40,5 +40,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void UnCollected();
 	virtual void UnCollected_Implementation();
+	
+	virtual AActor* PickedUp() override;
 
 };

@@ -3,10 +3,27 @@
 
 #include "PickupWeapon.h"
 #include "D4_HD3_CustomProjectCharacter.h"
-#include "Weapon.h"
 
 
 APickupWeapon::APickupWeapon()
 {
 	CollectItemText = "Press X to pick up";
+}
+
+AActor* APickupWeapon::PickedUp()
+{
+	AActor* WeaponCreated = Super::PickedUp();
+	
+	if (!IsValid(WeaponCreated))
+	{
+		WeaponCreated = GetWorld()->SpawnActor<AActor>(
+			ItemClass,
+			GetActorLocation(),
+			GetActorRotation()
+			);
+	}
+	
+	Destroy();
+	
+	return WeaponCreated;
 }

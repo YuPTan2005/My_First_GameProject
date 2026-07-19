@@ -36,11 +36,6 @@ void APickupItem::Reset()
 {
 	Super::Reset();
 	
-	if (Item)
-	{
-		Item->Destroy();
-	}
-	
 	Destroy();
 }
 
@@ -96,16 +91,6 @@ void APickupItem::SetIsNotPickedUp(bool NewValue)
 	bIsNotPickedUp = NewValue;
 }
 
-AActor* APickupItem::GetItem() const
-{
-	return Item;
-}
-
-void APickupItem::SetItem(AActor* NewItem)
-{
-	Item = NewItem;
-}
-
 AActor* APickupItem::GetPickerActor() const
 {
 	return PickerActor;
@@ -116,9 +101,20 @@ void APickupItem::SetPickerActor(AActor* NewActor)
 	PickerActor = NewActor;
 }
 
-void APickupItem::PickedUp()
+AActor* APickupItem::PickedUp()
 {
-	Destroy();
+	AActor* ItemCreated = nullptr;
+	
+	if (ItemClass)
+	{
+		ItemCreated = GetWorld()->SpawnActor<AActor>(
+			ItemClass,
+			GetActorLocation(),
+			GetActorRotation()
+			);
+	}
+	
+	return ItemCreated;
 }
 
 // Called every frame

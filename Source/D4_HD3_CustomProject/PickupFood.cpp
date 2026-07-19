@@ -4,6 +4,7 @@
 #include "PickupFood.h"
 
 #include "D4_HD3_CustomProjectCharacter.h"
+#include "Food.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -72,4 +73,22 @@ void APickupFood::Collected_Implementation(AActor* OtherActor)
 
 void APickupFood::UnCollected_Implementation()
 {
+}
+
+AActor* APickupFood::PickedUp()
+{
+	AActor* FoodCreated = Super::PickedUp();
+	
+	if (!IsValid(FoodCreated))
+	{
+		FoodCreated = GetWorld()->SpawnActor<AActor>(
+			ItemClass,
+			GetActorLocation(),
+			GetActorRotation()
+			);
+	}
+	
+	Destroy();
+	
+	return FoodCreated;
 }

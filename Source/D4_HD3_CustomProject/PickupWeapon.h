@@ -17,4 +17,6 @@ class D4_HD3_CUSTOMPROJECT_API APickupWeapon : public APickupItem
 public:
 	APickupWeapon();
 	
+	virtual AActor* PickedUp() override;
+	
 };

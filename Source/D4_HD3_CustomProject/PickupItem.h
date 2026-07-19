@@ -36,7 +36,7 @@ protected:
 	USphereComponent* PickupCollider;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item Details")
-	AActor* Item;
+	TSubclassOf<AActor> ItemClass;
 	
 	virtual void Reset() override;
 	
@@ -63,14 +63,12 @@ public:
 	
 	bool GetIsNotPickedUp() const;
 	void SetIsNotPickedUp(bool NewValue);
-	AActor* GetItem() const;
-	void SetItem(AActor* NewItem);
 	
 	UFUNCTION(BlueprintPure)
 	AActor* GetPickerActor() const;
 	UFUNCTION(BlueprintCallable)
 	void SetPickerActor(AActor* NewActor);
 	
-	virtual void PickedUp();
+	virtual AActor* PickedUp();
 
 };
