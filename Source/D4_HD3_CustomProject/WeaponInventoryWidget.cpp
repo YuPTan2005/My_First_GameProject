@@ -70,3 +70,25 @@ void UWeaponInventoryWidget::UnequipOwnerWeapon(int8 WeaponIndex) const
 		Owner->DisattachWeaponFromSocket(WeaponToDisattach);
 	}
 }
+
+void UWeaponInventoryWidget::SetButtonBorderColor(const int8 ButtonIndex, const FLinearColor NewColor) const
+{
+	if (UWidget* IndexWidget = InventoryGrid->GetChildAt(ButtonIndex))
+	{
+		if (const UInventoryButtonWidget* ButtonWidget = Cast<UInventoryButtonWidget>(IndexWidget))
+		{
+			ButtonWidget->SetBorderColor(NewColor);
+		}
+	}
+}
+
+void UWeaponInventoryWidget::ResetButtonBorderColor(const int8 ButtonIndex) const
+{
+	if (UWidget* IndexWidget = InventoryGrid->GetChildAt(ButtonIndex))
+	{
+		if (const UInventoryButtonWidget* ButtonWidget = Cast<UInventoryButtonWidget>(IndexWidget))
+		{
+			ButtonWidget->ResetBorderColor();
+		}
+	}
+}
