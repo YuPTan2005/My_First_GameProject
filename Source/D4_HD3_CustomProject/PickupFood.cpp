@@ -68,7 +68,6 @@ void APickupFood::Tick(float DeltaTime)
 void APickupFood::Collected_Implementation(AActor* OtherActor)
 {
 	SetPickerActor(OtherActor);
-	Destroy();
 }
 
 void APickupFood::UnCollected_Implementation()
