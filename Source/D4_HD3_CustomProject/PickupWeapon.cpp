@@ -23,7 +23,5 @@ AActor* APickupWeapon::PickedUp()
 			);
 	}
 	
-	Destroy();
-	
 	return WeaponCreated;
 }
