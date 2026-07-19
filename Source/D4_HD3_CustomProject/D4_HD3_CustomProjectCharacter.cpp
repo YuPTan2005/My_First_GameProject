@@ -647,6 +647,11 @@ void AD4_HD3_CustomProjectCharacter::UseWeapon(const int8 Index)
 	{
 		PlayerUI->SetWeaponBorderColor(Index, WeaponOnUsedColor);
 	}
+	
+	if (WeaponInventoryWidget)
+	{
+		WeaponInventoryWidget->SetButtonBorderColor(Index, WeaponOnUsedColor);
+	}
 }
 
 void AD4_HD3_CustomProjectCharacter::UnuseWeapon(const int8 WeaponIndex) const
@@ -654,6 +659,11 @@ void AD4_HD3_CustomProjectCharacter::UnuseWeapon(const int8 WeaponIndex) const
 	if (PlayerUI)
 	{
 		PlayerUI->ResetWeaponBorderColor(WeaponIndex);
+	}
+	
+	if (WeaponInventoryWidget)
+	{
+		WeaponInventoryWidget->ResetButtonBorderColor(WeaponIndex);
 	}
 }
 
