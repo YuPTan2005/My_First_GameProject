@@ -661,9 +661,10 @@ void AD4_HD3_CustomProjectCharacter::UnuseWeapon(const int8 WeaponIndex) const
 		PlayerUI->ResetWeaponBorderColor(WeaponIndex);
 	}
 	
-	if (WeaponInventoryWidget)
+	AActor* CurrentWeapon = GetWeaponAtIndex(WeaponIndex);
+	if (AWeapon* WeaponToDisattach = Cast<AWeapon>(CurrentWeapon))
 	{
-		WeaponInventoryWidget->ResetButtonBorderColor(WeaponIndex);
+		DisattachWeaponFromSocket(WeaponToDisattach);
 	}
 }
 
