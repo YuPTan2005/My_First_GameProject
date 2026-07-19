@@ -321,13 +321,13 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 	if (FoodInventoryComponent->GetHasBackpack() && CollectibleFood.Num() > 0)
 	{
 		APickupFood* PickupFood = CollectibleFood[0];
-		AActor* ItemToAdd = PickupFood->PickedUp();
 		const FVector PickupFoodLocation = PickupFood->GetActorLocation();
 		
 		bool AddFoodSuccess = false;
 		
 		if (!FoodInventoryComponent->IsFull())
 		{
+			AActor* ItemToAdd = PickupFood->PickedUp();
 			AFood* FoodToAdd = Cast<AFood>(ItemToAdd);
 			if (FoodToAdd && AddItem(FoodToAdd))
 			{
@@ -338,6 +338,7 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 				}
 				PickupFood->Collected(this);
 				AddFoodSuccess = true;
+				PickupFood->Destroy();
 			}
 		}
 		
@@ -391,6 +392,7 @@ void AD4_HD3_CustomProjectCharacter::Eat()
 			{
 				Companion->RemoveCollectibleItem_Implementation(PickupFood);
 			}
+			PickupFood->Destroy();
 		
 			if (ViewportInfoUIClass)
 			{
@@ -423,16 +425,17 @@ void AD4_HD3_CustomProjectCharacter::Pickup()
 	{
 		bool AddWeaponSuccess = false;
 		APickupWeapon* PickupWeapon = CollectibleWeapon[0];
-		AActor* ItemToAdd = PickupWeapon->PickedUp();
 		const FVector PickupWeaponLocation = PickupWeapon->GetActorLocation();
 		
 		if (!WeaponInventoryComponent->IsFull())
 		{
+			AActor* ItemToAdd = PickupWeapon->PickedUp();
 			AWeapon* WeaponToAdd = Cast<AWeapon>(ItemToAdd);
 			if (WeaponToAdd && AddWeapon(WeaponToAdd))
 			{
 				CollectibleWeapon.RemoveSingle(PickupWeapon);
 				AddWeaponSuccess = true;
+				PickupWeapon->Destroy();
 			}
 		}
 	
@@ -1041,6 +1044,11 @@ ACompanion* AD4_HD3_CustomProjectCharacter::GetCompanion() const
 void AD4_HD3_CustomProjectCharacter::SetCompanion(ACompanion* NewCompanion)
 {
 	Companion = NewCompanion;
+}
+
+bool AD4_HD3_CustomProjectCharacter::GetIsFoodInventoryFull() const
+{
+	return FoodInventoryComponent->IsFull();
 }
 
 void AD4_HD3_CustomProjectCharacter::DealDamage_Implementation(float DamageTook, AActor* DamagedBy)

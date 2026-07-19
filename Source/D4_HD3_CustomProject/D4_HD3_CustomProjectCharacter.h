@@ -309,6 +309,8 @@ public:
 	ACompanion* GetCompanion() const;
 	void SetCompanion(ACompanion* NewCompanion);
 	
+	bool GetIsFoodInventoryFull() const;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float AttackCoolDown = 1.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
