@@ -103,9 +103,7 @@ void UInventoryWidget::NativeConstruct()
 	
 	ItemNameTextBlock->SetText(FText::FromString("No Item Selected"));
 	ItemDescriptionTextBlock->SetText(FText::FromString("No Item Selected"));
-	
 	ItemDescriptionTextBlock->SetAutoWrapText(true);
-	DescriptionContainer->AddChild(ItemDescriptionTextBlock);
 	
 	DescriptionContainer->SetOrientation(Orient_Vertical);
 	DescriptionContainer->SetScrollBarVisibility(ESlateVisibility::Visible);
