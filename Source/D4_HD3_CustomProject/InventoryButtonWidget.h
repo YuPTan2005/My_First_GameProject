@@ -27,6 +27,7 @@ public:
 
 protected:
 	virtual void NativeConstruct() override;
+	virtual void NativeOnInitialized() override;
 
 	UPROPERTY(meta=(BindWidget))
 	UBorder* ButtonBorder;
