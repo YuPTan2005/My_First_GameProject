@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Border.h"
+#include "Components/Button.h"
 #include "InventoryButtonWidget.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUItemButtonOnClicked, class UInventoryButtonWidget*, Button);
@@ -19,12 +21,19 @@ class D4_HD3_CUSTOMPROJECT_API UInventoryButtonWidget : public UUserWidget
 public:
 	FUItemButtonOnClicked OnClickedDelegate;
 	void UpdateItemIcon(UTexture2D* NewIcon);
+	
+	void SetBorderColor(const FLinearColor BorderColor) const;
+	void ResetBorderColor() const;
 
 protected:
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(meta=(BindWidget))
-	class UButton* MainButton;
+	UBorder* ButtonBorder;
+	FLinearColor BorderOriginalColor;
+	
+	UPROPERTY(meta=(BindWidget))
+	UButton* MainButton;
 
 	UFUNCTION()
 	void OnButtonClicked();

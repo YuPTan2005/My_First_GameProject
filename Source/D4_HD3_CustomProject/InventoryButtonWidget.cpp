@@ -19,9 +19,20 @@ void UInventoryButtonWidget::NativeConstruct()
 	Super::NativeConstruct();
 	
 	MainButton->OnClicked.AddUniqueDynamic(this, &UInventoryButtonWidget::OnButtonClicked);
+	BorderOriginalColor = ButtonBorder->GetBrushColor();
 }
 
 void UInventoryButtonWidget::OnButtonClicked()
 {
 	OnClickedDelegate.Broadcast(this);
+}
+
+void UInventoryButtonWidget::SetBorderColor(const FLinearColor BorderColor) const
+{
+	ButtonBorder->SetBrushColor(BorderColor);
+}
+
+void UInventoryButtonWidget::ResetBorderColor() const
+{
+	ButtonBorder->SetBrushColor(BorderOriginalColor);
 }
