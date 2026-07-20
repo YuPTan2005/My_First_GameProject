@@ -23,6 +23,11 @@ void UWeaponInventoryWidget::OnButtonWasClicked(UInventoryButtonWidget* Button)
 	}
 	else
 	{
+		if (SelectedItemIndex != -1)
+		{
+			UnequipOwnerWeapon(SelectedItemIndex);
+		}
+		
 		if(AActor* SelectedItem = Owner->GetWeaponAtIndex(NewSelectedItemIndex)) 
 		{
 			SelectedItemIndex = NewSelectedItemIndex;
