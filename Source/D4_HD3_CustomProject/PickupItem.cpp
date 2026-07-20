@@ -12,15 +12,17 @@ APickupItem::APickupItem()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root Component"));
 	
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh Component"));
-	MeshComponent->SetupAttachment(RootComponent);
+	RootComponent = MeshComponent;
 	
 	PickupCollider = CreateDefaultSubobject<USphereComponent>(TEXT("Pickup Collider"));
-	PickupCollider->SetupAttachment(RootComponent);
+	PickupCollider->SetupAttachment(MeshComponent);
 
+	PickupCollider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	PickupCollider->SetCollisionObjectType(ECC_WorldDynamic);
+	PickupCollider->SetCollisionResponseToAllChannels(ECR_Ignore);
+	PickupCollider->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 }
 
 // Called when the game starts or when spawned
