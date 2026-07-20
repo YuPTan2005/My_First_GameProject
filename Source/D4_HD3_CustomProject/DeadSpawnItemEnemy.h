@@ -16,7 +16,7 @@ class D4_HD3_CUSTOMPROJECT_API ADeadSpawnItemEnemy : public AEnemy
 	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn")
-	TSubclassOf<AActor> ItemClassToSpawn;
+	TArray<TSubclassOf<AActor>> ItemClassToSpawn;
 	
 public:
 	virtual void Dead() override;

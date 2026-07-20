@@ -5,8 +5,11 @@
 
 void ADeadSpawnItemEnemy::Dead()
 {
+	const int RandomIndex = FMath::RandRange(0, ItemClassToSpawn.Num() - 1);
+	const TSubclassOf<AActor> RandomItemClass = ItemClassToSpawn[RandomIndex];
+	
 	GetWorld()->SpawnActor<AActor>(
-		ItemClassToSpawn, 
+		RandomItemClass, 
 		GetActorLocation(), 
 		GetActorRotation()
 		);
