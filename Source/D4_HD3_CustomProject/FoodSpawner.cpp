@@ -87,7 +87,7 @@ bool AFoodSpawner::SpawnObject()
 		else
 		{
 			UE_LOG(LogTemp, Warning, 
-				TEXT("No FoodMesh, FoodMaterial, and PickupUIClass attached to SpawningTree class"));
+				TEXT("No FoodMesh, FoodMaterial, and PickupUIClass attached to %s"), *GetName());
 		}
 		
 		return true;
