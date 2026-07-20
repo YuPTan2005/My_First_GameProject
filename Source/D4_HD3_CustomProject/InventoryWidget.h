@@ -30,6 +30,8 @@ public:
 	AD4_HD3_CustomProjectCharacter* Owner;
 	
 	void RefreshInventory(TArray<AActor*> Items);
+	
+	void SetSelectedItemIndex(const int8 NewValue);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

@@ -73,6 +73,11 @@ void UInventoryWidget::RefreshInventory(TArray<AActor*> Items)
 	}
 }
 
+void UInventoryWidget::SetSelectedItemIndex(const int8 NewValue)
+{
+	SelectedItemIndex = NewValue;
+}
+
 void UInventoryWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
