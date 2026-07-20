@@ -90,6 +90,6 @@ public:
 	bool bIsDead;
 	
 	FTimerHandle DeadTimer;
-	void Dead();
+	virtual void Dead();
 
 };
