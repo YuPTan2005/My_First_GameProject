@@ -10,6 +10,9 @@
 // Sets default values
 APickupFood::APickupFood()
 {
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Scene Component"));
+	
+	MeshComponent->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
