@@ -26,7 +26,7 @@ public:
 	bool AddItem(AActor* NewItem);
 	UFUNCTION(BlueprintPure)
 	bool IsFull() const;
-	int GetInventorySize() const;
+	int GetInventoryItemSize() const;
 	
 protected:
 	// Called when the game starts

@@ -57,9 +57,9 @@ bool UInventoryActorComponent::IsFull() const
 	return InventoryItems.Num() >= InventorySize;
 }
 
-int UInventoryActorComponent::GetInventorySize() const
+int UInventoryActorComponent::GetInventoryItemSize() const
 {
-	return InventorySize;
+	return InventoryItems.Num();
 }
 
 // Called when the game starts
