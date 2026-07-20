@@ -89,6 +89,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* PickupAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* SwapWeaponAction;
 
 public:
 
@@ -136,6 +139,10 @@ protected:
 	TSubclassOf<UWeaponInventoryActorComponent> WeaponInventoryComponentClass;
 	UPROPERTY()
 	UWeaponInventoryActorComponent* WeaponInventoryComponent;
+	
+	int8 WeaponInventorySize;
+	int8 WeaponUsingIndex;
+	void SwapWeapon();
 	
 	UPROPERTY()
 	AD4_HD3_CustomProjectPlayerController* PlayerController;

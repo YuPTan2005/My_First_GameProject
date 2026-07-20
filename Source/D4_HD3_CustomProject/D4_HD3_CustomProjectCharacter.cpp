@@ -64,6 +64,8 @@ AD4_HD3_CustomProjectCharacter::AD4_HD3_CustomProjectCharacter()
 	
 	bIsInventoryOpen = false;
 	bIsWeaponInventoryOpen = false;
+	WeaponInventorySize = 0;
+	WeaponUsingIndex = -1;
 }
 
 void AD4_HD3_CustomProjectCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -92,6 +94,8 @@ void AD4_HD3_CustomProjectCharacter::SetupPlayerInputComponent(UInputComponent* 
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Attack);
 		
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Dash);
+		
+		EnhancedInputComponent->BindAction(SwapWeaponAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::SwapWeapon);
 	}
 	else
 	{
@@ -126,6 +130,7 @@ void AD4_HD3_CustomProjectCharacter::BeginPlay()
 		if (WeaponInventoryComponent)
 		{
 			WeaponInventoryComponent->RegisterComponent();
+			WeaponInventorySize = WeaponInventoryComponent->GetInventorySize();
 		}
 	}
 	else
@@ -487,7 +492,7 @@ void AD4_HD3_CustomProjectCharacter::Dash()
 			GetWorldTimerManager().ClearTimer(FlyDashTimerHandle);
 			GetWorldTimerManager().SetTimer(
 				FlyDashTimerHandle, 
-				this, 
+				this,
 				&AD4_HD3_CustomProjectCharacter::RestoreFlyBrake, 
 				0.5f, 
 				false);
@@ -498,6 +503,31 @@ void AD4_HD3_CustomProjectCharacter::Dash()
 void AD4_HD3_CustomProjectCharacter::RestoreFlyBrake()
 {
 	GetCharacterMovement()->BrakingDecelerationFlying = OriginalFlyBrake;
+}
+
+void AD4_HD3_CustomProjectCharacter::SwapWeapon()
+{
+	WeaponUsingIndex += 1;
+	
+	if (WeaponUsingIndex >= WeaponInventorySize)
+	{
+		WeaponUsingIndex = -1;
+		UnuseWeapon(WeaponInventorySize - 1);
+	}
+	else if (WeaponUsingIndex == 0)
+	{
+		UseWeapon(WeaponUsingIndex);
+	}
+	else
+	{
+		UnuseWeapon(WeaponUsingIndex - 1);
+		UseWeapon(WeaponUsingIndex);
+	}
+	
+	if (WeaponInventoryWidget)
+	{
+		WeaponInventoryWidget->SetSelectedItemIndex(WeaponUsingIndex);
+	}
 }
 
 void AD4_HD3_CustomProjectCharacter::NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other,
@@ -627,15 +657,19 @@ bool AD4_HD3_CustomProjectCharacter::AddWeapon(AActor* NewItem) const
 
 void AD4_HD3_CustomProjectCharacter::UseWeapon(const int8 Index)
 {
-	WeaponInventoryComponent->UseItemAtIndex(Index, this);
-	if (PlayerUI)
+	if (WeaponInventoryComponent->UseItemAtIndex(Index, this))
 	{
-		PlayerUI->SetWeaponBorderColor(Index, WeaponOnUsedColor);
-	}
+		WeaponUsingIndex = Index;
+		
+		if (PlayerUI)
+		{
+			PlayerUI->SetWeaponBorderColor(Index, WeaponOnUsedColor);
+		}
 	
-	if (WeaponInventoryWidget)
-	{
-		WeaponInventoryWidget->SetButtonBorderColor(Index, WeaponOnUsedColor);
+		if (WeaponInventoryWidget)
+		{
+			WeaponInventoryWidget->SetButtonBorderColor(Index, WeaponOnUsedColor);
+		}
 	}
 }
 
