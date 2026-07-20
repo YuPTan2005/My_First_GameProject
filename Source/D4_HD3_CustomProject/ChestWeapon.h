@@ -5,16 +5,16 @@
 #include "CoreMinimal.h"
 #include "ChestItem.h"
 #include "PickupWeapon.h"
-#include "ChestHammer.generated.h"
+#include "ChestWeapon.generated.h"
 
 UCLASS()
-class D4_HD3_CUSTOMPROJECT_API AChestHammer : public APickupWeapon, public IChestItem
+class D4_HD3_CUSTOMPROJECT_API AChestWeapon : public APickupWeapon, public IChestItem
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	AChestHammer();
+	AChestWeapon();
 	virtual void NotifyCollectible_Implementation() override;
 
 protected:
