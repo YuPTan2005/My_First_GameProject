@@ -26,13 +26,14 @@ public:
 	bool AddItem(AActor* NewItem);
 	UFUNCTION(BlueprintPure)
 	bool IsFull() const;
+	int GetInventorySize() const;
 	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Inventory")
-	int32 InventorySize;
+	int InventorySize = 9;
 	
 	UPROPERTY()
 	TArray<AActor*> InventoryItems;

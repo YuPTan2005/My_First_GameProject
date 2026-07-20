@@ -10,8 +10,6 @@ UInventoryActorComponent::UInventoryActorComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
-	
-	InventorySize = 9;
 }
 
 TArray<AActor*> UInventoryActorComponent::GetAllItems()
@@ -57,6 +55,11 @@ bool UInventoryActorComponent::AddItem(AActor* NewItem)
 bool UInventoryActorComponent::IsFull() const
 {
 	return InventoryItems.Num() >= InventorySize;
+}
+
+int UInventoryActorComponent::GetInventorySize() const
+{
+	return InventorySize;
 }
 
 // Called when the game starts
