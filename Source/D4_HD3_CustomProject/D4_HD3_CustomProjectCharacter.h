@@ -140,7 +140,6 @@ protected:
 	UPROPERTY()
 	UWeaponInventoryActorComponent* WeaponInventoryComponent;
 	
-	int8 WeaponInventorySize;
 	int8 WeaponUsingIndex;
 	void SwapWeapon();
 	

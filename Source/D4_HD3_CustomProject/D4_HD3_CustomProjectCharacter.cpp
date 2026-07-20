@@ -64,7 +64,6 @@ AD4_HD3_CustomProjectCharacter::AD4_HD3_CustomProjectCharacter()
 	
 	bIsInventoryOpen = false;
 	bIsWeaponInventoryOpen = false;
-	WeaponInventorySize = 0;
 	WeaponUsingIndex = -1;
 }
 
@@ -130,7 +129,6 @@ void AD4_HD3_CustomProjectCharacter::BeginPlay()
 		if (WeaponInventoryComponent)
 		{
 			WeaponInventoryComponent->RegisterComponent();
-			WeaponInventorySize = WeaponInventoryComponent->GetInventorySize();
 		}
 	}
 	else
@@ -507,26 +505,29 @@ void AD4_HD3_CustomProjectCharacter::RestoreFlyBrake()
 
 void AD4_HD3_CustomProjectCharacter::SwapWeapon()
 {
-	WeaponUsingIndex += 1;
-	
-	if (WeaponUsingIndex >= WeaponInventorySize)
+	if (WeaponInventoryComponent)
 	{
-		WeaponUsingIndex = -1;
-		UnuseWeapon(WeaponInventorySize - 1);
-	}
-	else if (WeaponUsingIndex == 0)
-	{
-		UseWeapon(WeaponUsingIndex);
-	}
-	else
-	{
-		UnuseWeapon(WeaponUsingIndex - 1);
-		UseWeapon(WeaponUsingIndex);
-	}
-	
-	if (WeaponInventoryWidget)
-	{
-		WeaponInventoryWidget->SetSelectedItemIndex(WeaponUsingIndex);
+		int8 WeaponInventorySize = WeaponInventoryComponent->GetInventoryItemSize();
+		if (WeaponInventorySize != 0)
+		{
+			const int8 PreviousIndex = WeaponUsingIndex;
+
+			WeaponUsingIndex++;
+			if (WeaponUsingIndex >= WeaponInventorySize)
+			{
+				WeaponUsingIndex = -1;
+			}
+			
+			if (PreviousIndex >= 0 && PreviousIndex < WeaponInventorySize)
+			{
+				UnuseWeapon(PreviousIndex);
+			}
+			
+			if (WeaponUsingIndex >= 0 && WeaponUsingIndex < WeaponInventorySize)
+			{
+				UseWeapon(WeaponUsingIndex);
+			}
+		}
 	}
 }
 
@@ -668,6 +669,7 @@ void AD4_HD3_CustomProjectCharacter::UseWeapon(const int8 Index)
 	
 		if (WeaponInventoryWidget)
 		{
+			WeaponInventoryWidget->SetSelectedItemIndex(WeaponUsingIndex);
 			WeaponInventoryWidget->SetButtonBorderColor(Index, WeaponOnUsedColor);
 		}
 	}
@@ -678,6 +680,11 @@ void AD4_HD3_CustomProjectCharacter::UnuseWeapon(const int8 WeaponIndex) const
 	if (PlayerUI)
 	{
 		PlayerUI->ResetWeaponBorderColor(WeaponIndex);
+	}
+	
+	if (WeaponInventoryWidget)
+	{
+		WeaponInventoryWidget->ResetButtonBorderColor(WeaponIndex);
 	}
 	
 	AActor* CurrentWeapon = GetWeaponAtIndex(WeaponIndex);
