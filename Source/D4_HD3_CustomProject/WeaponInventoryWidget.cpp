@@ -110,9 +110,9 @@ void UWeaponInventoryWidget::ResetButtonBorderColor(const int8 ButtonIndex) cons
 	}
 }
 
-void UWeaponInventoryWidget::NativeConstruct()
+void UWeaponInventoryWidget::NativeOnInitialized()
 {
-	Super::NativeConstruct();
+	Super::NativeOnInitialized();
 	
 	BackgroundCloseBorder->OnMouseButtonDownEvent.BindUFunction(
 		this, 

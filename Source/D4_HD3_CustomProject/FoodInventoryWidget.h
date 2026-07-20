@@ -26,7 +26,7 @@ protected:
 	UPROPERTY(meta=(BindWidget))
 	UButton* DeleteItemButton;
 	
-	virtual void NativeConstruct() override;
+	virtual void NativeOnInitialized() override;
 	
 	UFUNCTION()
 	void OnUseButtonClicked();

@@ -31,9 +31,9 @@ void UFoodInventoryWidget::CancelFeedButton() const
 	FeedCompanionButton->SetIsEnabled(false);
 }
 
-void UFoodInventoryWidget::NativeConstruct()
+void UFoodInventoryWidget::NativeOnInitialized()
 {
-	Super::NativeConstruct();
+	Super::NativeOnInitialized();
 	
 	UseItemButton->OnClicked.AddUniqueDynamic(this, &UFoodInventoryWidget::OnUseButtonClicked);
 	FeedCompanionButton->OnClicked.AddUniqueDynamic(this, &UFoodInventoryWidget::OnFeedButtonClicked);

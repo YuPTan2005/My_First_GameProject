@@ -78,9 +78,9 @@ void UInventoryWidget::SetSelectedItemIndex(const int8 NewValue)
 	SelectedItemIndex = NewValue;
 }
 
-void UInventoryWidget::NativeConstruct()
+void UInventoryWidget::NativeOnInitialized()
 {
-	Super::NativeConstruct();
+	Super::NativeOnInitialized();
 	
 	SetIsFocusable(true);
 	
