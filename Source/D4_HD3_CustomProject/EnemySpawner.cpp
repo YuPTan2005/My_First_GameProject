@@ -10,13 +10,21 @@ AEnemySpawner::AEnemySpawner()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	GameStartEnemyNumber = 3;
-
+	bCanSpawnDropItemEnemy = false;
 }
 
 // Called when the game starts or when spawned
 void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	GetWorldTimerManager().SetTimer(
+		DropItemEnemyTimeTracker,
+		this,
+		&AEnemySpawner::ToggleCanSpawnDropItemEnemy,
+		TimeSpawnDropItemEnemy,
+		false
+		);
 
 }
 
@@ -64,6 +72,33 @@ bool AEnemySpawner::SpawnObject()
 	return false;
 }
 
+bool AEnemySpawner::SpawnDropItemEnemy()
+{
+	if (!DeadSpawnItemEnemyClass.IsEmpty())
+	{
+		FVector SpawnLocation = GetSpawnPoint();
+		FRotator SpawnRotation = FRotator::ZeroRotator;
+		
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		
+		int RandomEnemyIndex = FMath::RandRange(0, DeadSpawnItemEnemyClass.Num()-1);
+		TSubclassOf<ADeadSpawnItemEnemy> EnemyClassToSpawn = DeadSpawnItemEnemyClass[RandomEnemyIndex];
+		
+		GetWorld()->SpawnActor<ADeadSpawnItemEnemy>(EnemyClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+		
+		return true;
+	}
+	
+	UE_LOG(LogTemp, Error, TEXT("Enemy fails to be spawned"));
+	return false;
+}
+
+void AEnemySpawner::ToggleCanSpawnDropItemEnemy()
+{
+	bCanSpawnDropItemEnemy = true;
+}
+
 // Called every frame
 void AEnemySpawner::Tick(float DeltaTime)
 {
@@ -72,8 +107,19 @@ void AEnemySpawner::Tick(float DeltaTime)
 	TimePast += DeltaTime;
 	if (TimePast >= TimeToSpawn)
 	{
+		if (bCanSpawnDropItemEnemy && 
+			FMath::RandRange(0.0f, 1.0f) < DropItemEnemySpawnPercent &&
+			NumberOfDropItemEnemy > 0)
+		{
+			SpawnDropItemEnemy();
+			NumberOfDropItemEnemy -= 1;
+		}
+		else
+		{
+			SpawnObject();
+		}
+		
 		TimePast = 0.0f;
-		SpawnObject();
 	}
 }
 
