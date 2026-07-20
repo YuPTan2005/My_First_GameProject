@@ -108,8 +108,9 @@ void AEnemySpawner::Tick(float DeltaTime)
 	if (TimePast >= TimeToSpawn)
 	{
 		if (bCanSpawnDropItemEnemy && 
-			FMath::RandRange(0.0f, 1.0f) < DropItemEnemySpawnPercent &&
-			NumberOfDropItemEnemy > 0)
+			NumberOfDropItemEnemy > 0 &&
+			FMath::RandRange(0.0f, 1.0f) < DropItemEnemySpawnPercent
+			)
 		{
 			SpawnDropItemEnemy();
 			NumberOfDropItemEnemy -= 1;
