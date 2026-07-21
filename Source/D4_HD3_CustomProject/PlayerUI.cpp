@@ -29,9 +29,9 @@ void UPlayerUI::UpdatePlayerValues() const
 		CurrentExperienceText->SetText(FText::FromString(FString::FromInt(Player->GetExperience())));
 		MaxExperienceText->SetText(FText::FromString(FString::FromInt(Player->GetMaxExperience())));
 		
-		HealthBar->SetPercent(Player->GetCurrentHealth() / Player->GetMaxHealth());
-		CurrentHealthText->SetText(FText::FromString(FString::FromInt(Player->GetCurrentHealth())));
-		MaxHealthText->SetText(FText::FromString(FString::FromInt(Player->GetMaxHealth())));
+		HealthBar->SetPercent(Player->GetCurrentHealth_Implementation() / Player->GetMaxHealth_Implementation());
+		CurrentHealthText->SetText(FText::FromString(FString::FromInt(Player->GetCurrentHealth_Implementation())));
+		MaxHealthText->SetText(FText::FromString(FString::FromInt(Player->GetMaxHealth_Implementation())));
 		
 		PlayerLevelText->SetText(FText::FromString(FString::FromInt(Player->GetCurrentLevel())));
 		

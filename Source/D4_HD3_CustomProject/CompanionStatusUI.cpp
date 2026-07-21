@@ -8,12 +8,12 @@ void UCompanionStatusUI::UpdateValues() const
 {
 	if (BindingActor)
 	{
-		HealthBar->SetPercent(BindingActor->GetCurrentHealth() /
-			BindingActor->GetMaxHealth());
+		HealthBar->SetPercent(BindingActor->GetCurrentHealth_Implementation() /
+			BindingActor->GetMaxHealth_Implementation());
 		CurrentHealthText->SetText(FText::FromString(FString::FromInt
-			(BindingActor->GetCurrentHealth())));
+			(BindingActor->GetCurrentHealth_Implementation())));
 		MaxHealthText->SetText(FText::FromString(FString::FromInt
-			(BindingActor->GetMaxHealth())));
+			(BindingActor->GetMaxHealth_Implementation())));
 		
 		StarvationBar->SetPercent(BindingActor->GetStarvationValue() /
 			BindingActor->GetMaxStarvationValue());
