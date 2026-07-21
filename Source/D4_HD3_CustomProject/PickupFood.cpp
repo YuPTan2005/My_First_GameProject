@@ -24,16 +24,20 @@ void APickupFood::BeginPlay()
 void APickupFood::OnOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(OtherActor))
+	if (OtherActor->Implements<UItemCollector>() && OtherActor != this)
 	{
-		if (Player->GetHasBackpack())
+		if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(OtherActor))
+		{
+			if (!Player->GetHasBackpack() && !SpawnedUI)
+			{
+				AddEatingUI();
+				IItemCollector::Execute_AddCollectibleItem(OtherActor, this);
+			}
+		}
+		
+		if (!SpawnedUI)
 		{
 			Super::OnOverlap(OverlapComp, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-		}
-		else if (!SpawnedUI)
-		{
-			AddEatingUI();
-			IItemCollector::Execute_AddCollectibleItem(OtherActor, this);
 		}
 	}
 }
