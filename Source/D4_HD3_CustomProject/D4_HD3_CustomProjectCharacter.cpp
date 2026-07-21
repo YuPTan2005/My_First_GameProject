@@ -84,8 +84,9 @@ void AD4_HD3_CustomProjectCharacter::SetupPlayerInputComponent(UInputComponent* 
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AD4_HD3_CustomProjectCharacter::Look);
 		
 		EnhancedInputComponent->BindAction(CollectAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Collect);
-		EnhancedInputComponent->BindAction(EatAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Eat);
 		EnhancedInputComponent->BindAction(PickupAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Pickup);
+		EnhancedInputComponent->BindAction(EatAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Eat);
+		EnhancedInputComponent->BindAction(FeedAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::Feed);
 		
 		EnhancedInputComponent->BindAction(FoodInventoryAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::ToggleInventory);
 		EnhancedInputComponent->BindAction(WeaponInventoryAction, ETriggerEvent::Started, this, &AD4_HD3_CustomProjectCharacter::ToggleWeaponInventory);
@@ -362,26 +363,36 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 
 void AD4_HD3_CustomProjectCharacter::Eat()
 {
-	if (!FoodInventoryComponent->GetHasBackpack() && EdibleFood.Num() > 0)
+	Eat(this, FoodEatenText);
+}
+
+void AD4_HD3_CustomProjectCharacter::Feed()
+{
+	if (Companion)
+	{
+		Eat(Companion, FoodFedText);
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::Eat(AActor* Consumer, const FString& EatenText)
+{
+	if (Consumer->Implements<UFoodConsumer>() && !FoodInventoryComponent->GetHasBackpack() && EdibleFood.Num() > 0)
 	{
 		APickupFood* PickupFood = EdibleFood[0];
 		AActor* FoodToEat = PickupFood->PickedUp();
 		const FVector PickupFoodLocation = PickupFood->GetActorLocation();
 		
-		if (FoodToEat->Implements<UEdible>())
+		if (FoodToEat->Implements<UEdible>() && Companion)
 		{
-			Execute_Eat(this, FoodToEat);
+			Execute_Eat(Consumer, FoodToEat);
 			EdibleFood.RemoveSingle(PickupFood);
-			if (Companion)
-			{
-				Companion->RemoveCollectibleItem_Implementation(PickupFood);
-			}
+			Companion->RemoveCollectibleItem_Implementation(PickupFood);
 			PickupFood->Destroy();
 			
 			AddInfoUIToViewport(
 				PickupFoodLocation, 
 				true,
-				FoodEatenText,
+				EatenText,
 				FLinearColor(0.85f, 0.55f, 0.08f)
 				);
 		}

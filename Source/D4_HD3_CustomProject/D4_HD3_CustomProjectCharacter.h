@@ -76,6 +76,9 @@ protected:
 	UInputAction* CollectAction;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
+	UInputAction* PickupAction;
+	
+	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* FoodInventoryAction;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
@@ -88,7 +91,7 @@ protected:
 	UInputAction* EatAction;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
-	UInputAction* PickupAction;
+	UInputAction* FeedAction;
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* SwapWeaponAction;
@@ -131,8 +134,10 @@ protected:
 	TArray<APickupWeapon*> CollectibleWeapon;
 	
 	void Collect();
-	void Eat();
 	void Pickup();
+	void Eat();
+	void Feed();
+	void Eat(AActor* Consumer, const FString& EatenText);
 	
 	void AddInfoUIToViewport(
 		const FVector& ItemLocation,
@@ -220,9 +225,10 @@ public:
 	
 	FString FoodSuccessCollectedText = "Food added to inventory!";
 	FString FoodFailCollectedText = "Food inventory is full!";
-	FString FoodEatenText = "Food eaten!";
 	FString WeaponSuccessCollectedText = "Weapon added to inventory!";
 	FString WeaponFailCollectedText = "Weapon inventory is full!";
+	FString FoodEatenText = "Food eaten!";
+	FString FoodFedText = "Food fed!";
 	
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void Dash();
