@@ -349,32 +349,14 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 			PickupFood->UnCollected();
 		}
 	
-		if (ViewportInfoUIClass)
-		{
-			UViewportInfoUI* ViewportInfoUI = CreateWidget<UViewportInfoUI>(GetGameInstance(), ViewportInfoUIClass);
-		
-			FVector2D ViewportInfoUILocation;
-			UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
-				PickupFoodLocation, ViewportInfoUILocation);
-			ViewportInfoUI->SetStartLocation(ViewportInfoUILocation);
-		
-			if (AddFoodSuccess)
-			{
-				ViewportInfoUI->SetDisplayText(FoodSuccessCollectedText);
-				ViewportInfoUI->SetColorAndOpacity(FLinearColor(0.04f, 0.8f, 0.48f));
-			}
-			else
-			{
-				ViewportInfoUI->SetDisplayText(FoodFailCollectedText);
-				ViewportInfoUI->SetColorAndOpacity(FLinearColor(1.0f, 0.25f, 0.38f));
-			}
-		
-			ViewportInfoUI->AddToViewport();
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("No value assigned to ViewportInfoUIClass in %s"), *GetName());
-		}
+		AddInfoUIToViewport(
+			PickupFoodLocation, 
+			AddFoodSuccess,
+			WeaponSuccessCollectedText,
+			FLinearColor(0.04f, 0.8f, 0.48f),
+			WeaponFailCollectedText,
+			FLinearColor(1.0f, 0.25f, 0.38f)
+			);
 	}
 }
 
@@ -395,24 +377,13 @@ void AD4_HD3_CustomProjectCharacter::Eat()
 				Companion->RemoveCollectibleItem_Implementation(PickupFood);
 			}
 			PickupFood->Destroy();
-		
-			if (ViewportInfoUIClass)
-			{
-				UViewportInfoUI* ViewportInfoUI = CreateWidget<UViewportInfoUI>(GetGameInstance(), ViewportInfoUIClass);
 			
-				FVector2D ViewportInfoUILocation;
-				UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
-					PickupFoodLocation, ViewportInfoUILocation);
-			
-				ViewportInfoUI->SetStartLocation(ViewportInfoUILocation);
-				ViewportInfoUI->SetDisplayText(FoodEatenText);
-				ViewportInfoUI->SetColorAndOpacity(FLinearColor(0.85f, 0.55f, 0.08f));
-				ViewportInfoUI->AddToViewport();
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("No value assigned to ViewportInfoUIClass in %s"), *GetName());
-			}
+			AddInfoUIToViewport(
+				PickupFoodLocation, 
+				true,
+				FoodEatenText,
+				FLinearColor(0.85f, 0.55f, 0.08f)
+				);
 		}
 		else
 		{
@@ -440,33 +411,50 @@ void AD4_HD3_CustomProjectCharacter::Pickup()
 				PickupWeapon->Destroy();
 			}
 		}
-	
-		if (ViewportInfoUIClass)
+		
+		AddInfoUIToViewport(
+			PickupWeaponLocation, 
+			AddWeaponSuccess,
+			WeaponSuccessCollectedText,
+			FLinearColor(0.04f, 0.8f, 0.48f),
+			WeaponFailCollectedText,
+			FLinearColor(1.0f, 0.25f, 0.38f)
+			);
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::AddInfoUIToViewport(const FVector& ItemLocation, const bool CollectionResult,
+	const FString& SuccessCollectionText, const FLinearColor SuccessCollectionColor, 
+	TOptional<FString> FailCollectionText, TOptional<FLinearColor> FailCollectionColor) const
+{
+	if (ViewportInfoUIClass)
+	{
+		UViewportInfoUI* ViewportInfoUI = CreateWidget<UViewportInfoUI>(GetGameInstance(), ViewportInfoUIClass);
+		
+		FVector2D ViewportInfoUILocation;
+		UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
+			ItemLocation, ViewportInfoUILocation);
+		ViewportInfoUI->SetStartLocation(ViewportInfoUILocation);
+		
+		if (CollectionResult)
 		{
-			UViewportInfoUI* ViewportInfoUI = CreateWidget<UViewportInfoUI>(GetGameInstance(), ViewportInfoUIClass);
-		
-			FVector2D ViewportInfoUILocation;
-			UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
-				PickupWeaponLocation, ViewportInfoUILocation);
-			ViewportInfoUI->SetStartLocation(ViewportInfoUILocation);
-		
-			if (AddWeaponSuccess)
-			{
-				ViewportInfoUI->SetDisplayText(WeaponSuccessCollectedText);
-				ViewportInfoUI->SetColorAndOpacity(FLinearColor(0.04f, 0.8f, 0.48f));
-			}
-			else
-			{
-				ViewportInfoUI->SetDisplayText(WeaponFailCollectedText);
-				ViewportInfoUI->SetColorAndOpacity(FLinearColor(1.0f, 0.25f, 0.38f));
-			}
-		
-			ViewportInfoUI->AddToViewport();
+			ViewportInfoUI->SetDisplayText(SuccessCollectionText);
+			ViewportInfoUI->SetColorAndOpacity(SuccessCollectionColor);
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("No value assigned to ViewportInfoUIClass in %s"), *GetName());
+			if (FailCollectionText.IsSet() && FailCollectionColor.IsSet())
+			{
+				ViewportInfoUI->SetDisplayText(FailCollectionText.GetValue());
+				ViewportInfoUI->SetColorAndOpacity(FailCollectionColor.GetValue());
+			}
 		}
+		
+		ViewportInfoUI->AddToViewport();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No value assigned to ViewportInfoUIClass in %s"), *GetName());
 	}
 }
 

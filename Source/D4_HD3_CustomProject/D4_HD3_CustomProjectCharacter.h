@@ -134,6 +134,15 @@ protected:
 	void Eat();
 	void Pickup();
 	
+	void AddInfoUIToViewport(
+		const FVector& ItemLocation,
+		const bool CollectionResult,
+		const FString& SuccessCollectionText, 
+		const FLinearColor SuccessCollectionColor,
+		TOptional<FString> FailCollectionText = TOptional<FString>(),
+		TOptional<FLinearColor> FailCollectionColor = TOptional<FLinearColor>()
+		) const;
+	
 	bool bIsWeaponInventoryOpen;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actor Component Class")
 	TSubclassOf<UWeaponInventoryActorComponent> WeaponInventoryComponentClass;
