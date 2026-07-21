@@ -25,41 +25,64 @@ void APickupFood::OnOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor
 	{
 		if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(OtherActor))
 		{
-			if (!Player->GetHasBackpack() && !SpawnedUI)
+			if (!Player->GetHasBackpack())
 			{
-				AddEatingUI();
-				IItemCollector::Execute_AddCollectibleItem(OtherActor, this);
+				if (!EatUI && !FeedUI)
+				{
+					EatUI = CreateUIWidget(EatFoodText, EatFoodTextRightOffset, EatFoodTextVerticalOffset);
+					FeedUI = CreateUIWidget(FeedFoodText, FeedFoodTextRightOffset, FeedFoodTextVerticalOffset);
+					IItemCollector::Execute_AddCollectibleItem(OtherActor, this);
+				}
+				return;
 			}
 		}
-		
-		if (!SpawnedUI)
-		{
-			Super::OnOverlap(OverlapComp, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-		}
+			
+		Super::OnOverlap(OverlapComp, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
 	}
 }
 
-void APickupFood::AddEatingUI()
+void APickupFood::OnEndOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex)
+{
+	if (EatUI)
+	{
+		EatUI->RemoveFromParent();
+		EatUI = nullptr;
+	}
+
+	if (FeedUI)
+	{
+		FeedUI->RemoveFromParent();
+		FeedUI = nullptr;
+	}
+	
+	Super::OnEndOverlap(OverlapComp, OtherActor, OtherComp, OtherBodyIndex);
+}
+
+UPickupUI* APickupFood::CreateUIWidget(const FString& UIText, const float UITextOffsetMultiplier, const FVector& VerticalOffset) const
 {
 	if (PickupUIClass)
 	{
-		SpawnedUI = CreateWidget<UPickupUI>(GetGameInstance(), PickupUIClass);
-		
-		if (SpawnedUI)
+		UPickupUI* NewUI = CreateWidget<UPickupUI>(GetGameInstance(), PickupUIClass);
+		if (NewUI)
 		{
 			if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
 			{
-				FVector UITextOffset = PC->PlayerCameraManager->GetActorRightVector();
-	
-				UITextOffset *= 100;
-
-				UGameplayStatics::ProjectWorldToScreen(GetWorld()->GetFirstPlayerController(), 
-				MeshComponent->GetComponentLocation() + UITextOffset, SpawnedUI->CurrentLocation);
+				FVector UITextOffset = PC->PlayerCameraManager->GetActorRightVector() * UITextOffsetMultiplier + VerticalOffset;
+            
+				FVector2D ScreenPosition;
+				UGameplayStatics::ProjectWorldToScreen(PC, MeshComponent->GetComponentLocation() + UITextOffset, ScreenPosition);
+				NewUI->CurrentLocation = ScreenPosition;
 			}
-			SpawnedUI->SetDisplayText(EatFoodText);
-			SpawnedUI->AddToViewport();
+
+			NewUI->SetDisplayText(UIText);
+			NewUI->AddToViewport();
 		}
+
+		return NewUI;
 	}
+	
+	return nullptr;
 }
 
 // Called every frame

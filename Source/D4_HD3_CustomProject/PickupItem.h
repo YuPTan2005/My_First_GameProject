@@ -49,7 +49,7 @@ protected:
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& 
 		SweepResult);
 	UFUNCTION()
-	void OnEndOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, 
+	virtual void OnEndOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, 
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
 	void AddPickupUI();

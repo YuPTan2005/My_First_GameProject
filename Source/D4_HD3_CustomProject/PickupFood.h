@@ -24,10 +24,31 @@ protected:
 	virtual void OnOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, 
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, 
 		const FHitResult& SweepResult) override;
-	void AddEatingUI();
+	virtual void OnEndOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, 
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY()
+	TObjectPtr<UPickupUI> EatUI;
+	UPROPERTY()
+	TObjectPtr<UPickupUI> FeedUI;
+	
+	UPickupUI* CreateUIWidget(const FString& UIText, 
+		const float UITextOffsetMultiplier,
+		const FVector& VerticalOffset
+		) const;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UI properties")
 	FString EatFoodText = "Press E to eat";
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UI properties")
+	FString FeedFoodText = "Press F to feed";
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UI properties")
+	float EatFoodTextRightOffset = 100.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UI properties")
+	float FeedFoodTextRightOffset = 100.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UI properties")
+	FVector EatFoodTextVerticalOffset = FVector(0, 0, 0);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UI properties")
+	FVector FeedFoodTextVerticalOffset = FVector(0, 0, -50);
 
 public:	
 	// Called every frame
