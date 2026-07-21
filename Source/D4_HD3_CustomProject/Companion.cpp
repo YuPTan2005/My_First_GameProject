@@ -345,12 +345,12 @@ void ACompanion::SetCurrentLevel(const float NewValue)
 	Level = NewValue;
 }
 
-float ACompanion::GetCurrentHealth() const
+float ACompanion::GetCurrentHealth_Implementation() const
 {
 	return CurrentHealth;
 }
 
-float ACompanion::GetMaxHealth() const
+float ACompanion::GetMaxHealth_Implementation() const
 {
 	return MaxHealth;
 }
@@ -487,14 +487,14 @@ void ACompanion::SetTargetPickupFood(APickupFood* NewTargetPickupFood)
 	TargetPickupFood = NewTargetPickupFood;
 }
 
-void ACompanion::SetCurrentHealth(float NewCurrentHealth)
+void ACompanion::SetCurrentHealth_Implementation(const float NewValue)
 {
-	this->CurrentHealth = NewCurrentHealth;
+	this->CurrentHealth = NewValue;
 }
 
-void ACompanion::SetMaxHealth(float NewMaxHealth)
+void ACompanion::SetMaxHealth_Implementation(const float NewValue)
 {
-	this->MaxHealth = NewMaxHealth;
+	this->MaxHealth = NewValue;
 }
 
 void ACompanion::SetDamageValue(float NewDamageValue)

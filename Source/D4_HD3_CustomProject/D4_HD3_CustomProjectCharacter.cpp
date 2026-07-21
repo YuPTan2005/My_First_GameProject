@@ -975,22 +975,22 @@ void AD4_HD3_CustomProjectCharacter::SetMaxExperience(const float NewValue)
 	MaxExperience = NewValue;
 }
 
-float AD4_HD3_CustomProjectCharacter::GetCurrentHealth() const
+float AD4_HD3_CustomProjectCharacter::GetCurrentHealth_Implementation() const
 {
 	return Health;
 }
 
-void AD4_HD3_CustomProjectCharacter::SetCurrentHealth(const float NewValue)
+void AD4_HD3_CustomProjectCharacter::SetCurrentHealth_Implementation(const float NewValue)
 {
 	Health = NewValue;
 }
 
-float AD4_HD3_CustomProjectCharacter::GetMaxHealth() const
+float AD4_HD3_CustomProjectCharacter::GetMaxHealth_Implementation() const
 {
 	return MaxHealth;
 }
 
-void AD4_HD3_CustomProjectCharacter::SetMaxHealth(const float NewValue)
+void AD4_HD3_CustomProjectCharacter::SetMaxHealth_Implementation(const float NewValue)
 {
 	MaxHealth = NewValue;
 }

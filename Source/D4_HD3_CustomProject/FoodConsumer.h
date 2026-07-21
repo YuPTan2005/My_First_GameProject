@@ -24,8 +24,16 @@ class D4_HD3_CUSTOMPROJECT_API IFoodConsumer
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void Eat(AActor* Food);
-	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void GainStarvation(float StarvationAmount);
 	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	float GetCurrentHealth() const;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void SetCurrentHealth(const float NewValue);
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	float GetMaxHealth() const;
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void SetMaxHealth(const float NewValue);
 };

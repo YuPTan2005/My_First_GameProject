@@ -118,8 +118,8 @@ protected:
 
 public:
 	float GetCurrentLevel() const;
-	float GetCurrentHealth() const;
-	float GetMaxHealth() const;
+	virtual float GetCurrentHealth_Implementation() const override;
+	virtual float GetMaxHealth_Implementation() const override;
 	float GetDamageValue() const;
 	float GetStarvationValue() const;
 	float GetMaxStarvationValue() const;
@@ -139,8 +139,8 @@ public:
 	bool GetIsCountDownCalled() const;
 	
 	void SetCurrentLevel(const float NewValue);
-	void SetCurrentHealth(float CurrentHealth);
-	void SetMaxHealth(float MaxHealth);
+	virtual void SetCurrentHealth_Implementation(const float NewValue) override;
+	virtual void SetMaxHealth_Implementation(const float NewValue) override;
 	void SetDamageValue(float DamageValue);
 	void SetStarvationValue(float StarvationValue);
 	void SetMaxStarvationValue(float MaxStarvationValue);

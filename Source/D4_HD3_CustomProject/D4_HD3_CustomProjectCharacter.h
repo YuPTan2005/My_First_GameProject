@@ -297,11 +297,11 @@ public:
 	float GetMaxExperience() const;
 	void SetMaxExperience(const float NewValue);
 	
-	float GetCurrentHealth() const;
-	void SetCurrentHealth(const float NewValue);
+	virtual float GetCurrentHealth_Implementation() const override;
+	virtual void SetCurrentHealth_Implementation(const float NewValue) override;
 	
-	float GetMaxHealth() const;
-	void SetMaxHealth(const float NewValue);
+	virtual float GetMaxHealth_Implementation() const override;
+	virtual void SetMaxHealth_Implementation(const float NewValue) override;
 	
 	float GetStarvationValue() const;
 	void SetStarvationValue(const float NewValue);
