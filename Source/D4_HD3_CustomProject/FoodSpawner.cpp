@@ -52,16 +52,44 @@ FVector AFoodSpawner::GetSpawnPoint()
 			MeshRadius = StaticMesh->GetBounds().SphereRadius;
 		}
 		
-		FVector RandomDirection = FMath::VRand();
-		RandomDirection.Z = 0.0f; 
-		RandomDirection.Normalize();
+		constexpr int8 MaxAttempts = 15; 
+		constexpr float FoodRadius = 30.0f; 
+		const FCollisionShape CollisionSphere = FCollisionShape::MakeSphere(FoodRadius);
+
+		FCollisionQueryParams TraceParams;
+		TraceParams.AddIgnoredActor(this);
 		
-		float RandomRadius = FMath::FRandRange(0.0f, Radius);
-		
-		return SphereCenter + (RandomDirection * (MeshRadius + RandomRadius)) + FVector(0, 0, 15.0f);
+		for (int32 Attempt = 0; Attempt < MaxAttempts; ++Attempt)
+		{
+			FVector RandomDirection = FMath::VRand();
+			RandomDirection.Z = 0.0f; 
+			RandomDirection.Normalize();
+			float RandomRadius = FMath::FRandRange(0.0f, Radius);
+			
+			FVector RandomLocation = SphereCenter + (RandomDirection * (MeshRadius + RandomRadius)) + 
+									 FVector(0, 0, 15.0f) + FVector(0.0f, 0.0f, FoodRadius);
+
+			bool bOverlapsStaticMesh = GetWorld()->OverlapAnyTestByChannel(
+				RandomLocation,
+				FQuat::Identity,
+				ECC_WorldStatic,
+				CollisionSphere,
+				TraceParams
+			);
+
+			if (!bOverlapsStaticMesh)
+			{
+				return RandomLocation; 
+			}
+		}
+	
+		UE_LOG(LogTemp, Error, TEXT("Failed to find a valid location for spawning food item"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("No SphereComponent created for FoodSpawner"));
 	}
 	
-	UE_LOG(LogTemp, Error, TEXT("No SphereComponent created for FoodSpawner"));
 	return FVector::ZeroVector;
 }
 
