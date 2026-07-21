@@ -6,6 +6,7 @@
 #include "BrainComponent.h"
 #include "D4_HD3_CustomProjectCharacter.h"
 #include "EnemyAIController.h"
+#include "ItemDropActorComponent.h"
 #include "NPCStatus.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -243,6 +244,11 @@ void AEnemy::Attack(AActor* Target)
 
 void AEnemy::Dead()
 {
+	if (UItemDropActorComponent* DropComp = FindComponentByClass<UItemDropActorComponent>())
+	{
+		DropComp->SpawnRandomItem();
+	}
+	
 	Destroy();
 }
 
