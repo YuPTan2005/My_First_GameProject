@@ -39,7 +39,7 @@ void USlowFallingActorComponent::FallingAndGroundCheck()
 		HitResult, 
 		BottomLoc, 
 		EndLoc, 
-		ECC_Visibility, 
+		ECC_WorldStatic, 
 		QueryParams
 	);
 
