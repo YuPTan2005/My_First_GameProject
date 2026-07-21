@@ -23,16 +23,16 @@ void AHealingPotion::EatenBy_Implementation(AActor* Character)
 {
 	Super::EatenBy_Implementation(Character);
 	
-	if (AD4_HD3_CustomProjectCharacter* Player = Cast<AD4_HD3_CustomProjectCharacter>(Character))
+	if (Character->Implements<UFoodConsumer>())
 	{
-		const float PlayerMaxHealth = Player->GetMaxHealth();
+		const float PlayerMaxHealth = IFoodConsumer::Execute_GetMaxHealth(Character);
 		float HealAmount = PlayerMaxHealth * HealingPercent;
 		
 		if (HealAmount > MaxHealAmount) HealAmount = MaxHealAmount;
 		if (HealAmount > PlayerMaxHealth) HealAmount = PlayerMaxHealth;
 		
-		float PlayerHealth = Player->GetCurrentHealth() + HealAmount;
+		float PlayerHealth = IFoodConsumer::Execute_GetCurrentHealth(Character) + HealAmount;
 		if (PlayerHealth > PlayerMaxHealth) PlayerHealth = PlayerMaxHealth;
-		Player->SetCurrentHealth(PlayerHealth);
+		IFoodConsumer::Execute_SetCurrentHealth(Character, PlayerHealth);
 	}
 }
