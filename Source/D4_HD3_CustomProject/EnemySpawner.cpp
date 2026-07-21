@@ -10,7 +10,7 @@ AEnemySpawner::AEnemySpawner()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	GameStartEnemyNumber = 3;
-	bCanSpawnDropItemEnemy = false;
+	bCanSpawnRestrictedEnemy = false;
 }
 
 // Called when the game starts or when spawned
@@ -19,13 +19,12 @@ void AEnemySpawner::BeginPlay()
 	Super::BeginPlay();
 	
 	GetWorldTimerManager().SetTimer(
-		DropItemEnemyTimeTracker,
+		RestrictedEnemyTimeTracker,
 		this,
-		&AEnemySpawner::ToggleCanSpawnDropItemEnemy,
-		TimeSpawnDropItemEnemy,
+		&AEnemySpawner::ToggleCanSpawnRestrictedEnemy,
+		TimeSpawnRestrictedEnemy,
 		false
 		);
-
 }
 
 FVector AEnemySpawner::GetSpawnPoint()
@@ -52,7 +51,38 @@ FVector AEnemySpawner::GetSpawnPoint()
 
 bool AEnemySpawner::SpawnObject()
 {
-	if (!EnemyClass.IsEmpty())
+	if (!AlwaysSpawnEnemyClass.IsEmpty())
+	{
+		const int RandomEnemyIndex = FMath::RandRange(0, AlwaysSpawnEnemyClass.Num()-1);
+		TSubclassOf<AEnemy> AlwaysSpawnEnemyClassToSpawn;
+		
+		if (!DropHealPotionEnemyClass.IsEmpty() && FMath::RandRange(0.0f, 1.0f) <= HealPotionEnemyPercent)
+		{
+			AlwaysSpawnEnemyClassToSpawn = DropHealPotionEnemyClass[RandomEnemyIndex];
+		}
+		else
+		{
+			AlwaysSpawnEnemyClassToSpawn = AlwaysSpawnEnemyClass[RandomEnemyIndex];
+		}
+		
+		const FVector SpawnLocation = GetSpawnPoint();
+		const FRotator SpawnRotation = FRotator::ZeroRotator;
+		
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		
+		GetWorld()->SpawnActor<AEnemy>(AlwaysSpawnEnemyClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+		
+		return true;
+	}
+	
+	UE_LOG(LogTemp, Error, TEXT("Enemy fails to be spawned"));
+	return false;
+}
+
+bool AEnemySpawner::SpawnRestrictedEnemy()
+{
+	if (!RestrictedSpawnEnemyClass.IsEmpty())
 	{
 		FVector SpawnLocation = GetSpawnPoint();
 		FRotator SpawnRotation = FRotator::ZeroRotator;
@@ -60,8 +90,8 @@ bool AEnemySpawner::SpawnObject()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 		
-		int RandomEnemyIndex = FMath::RandRange(0, EnemyClass.Num()-1);
-		TSubclassOf<AEnemy> EnemyClassToSpawn = EnemyClass[RandomEnemyIndex];
+		int RandomEnemyIndex = FMath::RandRange(0, RestrictedSpawnEnemyClass.Num()-1);
+		TSubclassOf<AEnemy> EnemyClassToSpawn = RestrictedSpawnEnemyClass[RandomEnemyIndex];
 		
 		GetWorld()->SpawnActor<AEnemy>(EnemyClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
 		
@@ -72,31 +102,9 @@ bool AEnemySpawner::SpawnObject()
 	return false;
 }
 
-bool AEnemySpawner::SpawnDropItemEnemy()
+void AEnemySpawner::ToggleCanSpawnRestrictedEnemy()
 {
-	if (!DeadSpawnItemEnemyClass.IsEmpty())
-	{
-		FVector SpawnLocation = GetSpawnPoint();
-		FRotator SpawnRotation = FRotator::ZeroRotator;
-		
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		
-		int RandomEnemyIndex = FMath::RandRange(0, DeadSpawnItemEnemyClass.Num()-1);
-		TSubclassOf<ADeadSpawnItemEnemy> EnemyClassToSpawn = DeadSpawnItemEnemyClass[RandomEnemyIndex];
-		
-		GetWorld()->SpawnActor<ADeadSpawnItemEnemy>(EnemyClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
-		
-		return true;
-	}
-	
-	UE_LOG(LogTemp, Error, TEXT("Enemy fails to be spawned"));
-	return false;
-}
-
-void AEnemySpawner::ToggleCanSpawnDropItemEnemy()
-{
-	bCanSpawnDropItemEnemy = true;
+	bCanSpawnRestrictedEnemy = true;
 }
 
 // Called every frame
@@ -107,13 +115,13 @@ void AEnemySpawner::Tick(float DeltaTime)
 	TimePast += DeltaTime;
 	if (TimePast >= TimeToSpawn)
 	{
-		if (bCanSpawnDropItemEnemy && 
-			NumberOfDropItemEnemy > 0 &&
-			FMath::RandRange(0.0f, 1.0f) < DropItemEnemySpawnPercent
+		if (bCanSpawnRestrictedEnemy && 
+			NumberOfRestrictedEnemy > 0 &&
+			FMath::RandRange(0.0f, 1.0f) < NumberOfRestrictedEnemy
 			)
 		{
-			SpawnDropItemEnemy();
-			NumberOfDropItemEnemy -= 1;
+			SpawnRestrictedEnemy();
+			NumberOfRestrictedEnemy -= 1;
 		}
 		else
 		{

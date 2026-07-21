@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DeadSpawnItemEnemy.h"
 #include "Enemy.h"
 #include "Spawner.h"
 #include "GameFramework/Actor.h"
@@ -23,27 +22,33 @@ protected:
 	virtual void BeginPlay() override;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn")
-	TArray<TSubclassOf<AEnemy>> EnemyClass;
+	TArray<TSubclassOf<AEnemy>> AlwaysSpawnEnemyClass;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn")
-	TArray<TSubclassOf<ADeadSpawnItemEnemy>> DeadSpawnItemEnemyClass;
+	TArray<TSubclassOf<AEnemy>> DropHealPotionEnemyClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float HealPotionEnemyPercent = 0.3f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn")
+	TArray<TSubclassOf<AEnemy>> RestrictedSpawnEnemyClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float TimeToSpawn = 60.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float TimeSpawnDropItemEnemy = 480.0f;
+	float TimeSpawnRestrictedEnemy = 480.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int NumberOfDropItemEnemy = 1;
+	int NumberOfRestrictedEnemy = 1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float DropItemEnemySpawnPercent = 0.1f;
+	float RestrictedEnemySpawnPercent = 0.1f;
 	float TimePast = 0.0f;
-	bool bCanSpawnDropItemEnemy;
+	bool bCanSpawnRestrictedEnemy;
 	
 	virtual FVector GetSpawnPoint() override;
 	virtual bool SpawnObject() override;
-	virtual bool SpawnDropItemEnemy();
+	virtual bool SpawnRestrictedEnemy();
 	
-	FTimerHandle DropItemEnemyTimeTracker;
-	void ToggleCanSpawnDropItemEnemy();
+	FTimerHandle RestrictedEnemyTimeTracker;
+	void ToggleCanSpawnRestrictedEnemy();
 
 public:	
 	// Called every frame
