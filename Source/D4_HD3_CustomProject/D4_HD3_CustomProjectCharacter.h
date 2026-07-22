@@ -109,7 +109,8 @@ protected:
 	float Level = 1;
 	float MaxLevel = 15;
 	
-	int UpgradeFactor = 3;
+	float DamageUpgradeFactor = 2;
+	float ExperienceUpgradeValue = 15.0f;
 	
 	float MaxStarvationValue = 50;
 	float StarvationValue = 50;

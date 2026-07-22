@@ -562,10 +562,18 @@ void AD4_HD3_CustomProjectCharacter::Eat_Implementation(AActor* Food)
 void AD4_HD3_CustomProjectCharacter::GainExperience(float ExperienceAmount)
 {
 	Experience += ExperienceAmount;
+	
 	if (Experience >= MaxExperience)
 	{
-		Experience -= MaxExperience;
-		Upgrade();
+		if (Level == MaxLevel)
+		{
+			Experience = MaxExperience;
+		}
+		else
+		{
+			Experience -= MaxExperience;
+			Upgrade();
+		}
 	}
 }
 
@@ -733,6 +741,7 @@ void AD4_HD3_CustomProjectCharacter::Upgrade()
 		Damage += UpgradeDamageValue;
 		MaxHealth += 20;
 		Health = MaxHealth;
+		MaxExperience += ExperienceUpgradeValue;
 		Level++;
 		
 		if (Companion)
@@ -747,7 +756,7 @@ void AD4_HD3_CustomProjectCharacter::Upgrade()
 // Function to calculate the upgrade degree, larger level has smaller degree
 float AD4_HD3_CustomProjectCharacter::CalculateIncreaseAmount(float Attribute) const
 {
-	return FMath::CeilToInt(Attribute * UpgradeFactor * (1.0f / FMath::Pow(2, Level)));
+	return FMath::CeilToInt(Attribute * DamageUpgradeFactor * (1.0f / FMath::Pow(2, Level)));
 }
 
 void AD4_HD3_CustomProjectCharacter::Tick(float DeltaSeconds)
