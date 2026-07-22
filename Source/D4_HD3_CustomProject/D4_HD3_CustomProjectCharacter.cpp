@@ -353,9 +353,9 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 		AddInfoUIToViewport(
 			PickupFoodLocation, 
 			AddFoodSuccess,
-			WeaponSuccessCollectedText,
+			FoodSuccessCollectedText,
 			FLinearColor(0.04f, 0.8f, 0.48f),
-			WeaponFailCollectedText,
+			FoodFailCollectedText,
 			FLinearColor(1.0f, 0.25f, 0.38f)
 			);
 	}
