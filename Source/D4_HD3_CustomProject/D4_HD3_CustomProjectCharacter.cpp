@@ -1128,6 +1128,19 @@ void AD4_HD3_CustomProjectCharacter::Attack()
 	if (AttackTimer >= AttackCoolDown)
 	{
 		AttackTimer = 0;
+		
+		FString WeaponName = "None";
+		AActor* DamageActor = this;
+		if (WeaponUsingIndex != -1)
+		{
+			AActor* Item = WeaponInventoryComponent->GetItemAtIndex(WeaponUsingIndex);
+			if (Item && Item->Implements<UInventoryItem>())
+			{
+				DamageActor = Item;
+				WeaponName = IInventoryItem::Execute_GetName(Item);
+			}
+		}
+		
 		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
 		{
 			if (GetCharacterMovement()->MovementMode == MOVE_Flying)
@@ -1143,22 +1156,7 @@ void AD4_HD3_CustomProjectCharacter::Attack()
 					false);
 			}
 			
-			UAnimMontage* AttackMontageToPlay = nullptr;
-			if (WeaponUsingIndex == -1)
-			{
-				AttackMontageToPlay = *AttackAnims.Find("None");
-			}
-			else
-			{
-				AActor* Item = WeaponInventoryComponent->GetItemAtIndex(WeaponUsingIndex);
-				if (Item->Implements<UInventoryItem>())
-				{
-					const FString WeaponName = IInventoryItem::Execute_GetName(Item);
-					AttackMontageToPlay = *AttackAnims.Find(WeaponName);
-				}
-			}
-			
-			if (IsValid(AttackMontageToPlay))
+			if (UAnimMontage* AttackMontageToPlay = *AttackAnims.Find(WeaponName))
 			{
 				int AnimIndex = FMath::RandRange(0, AttackMontageToPlay->GetNumSections() - 1);
 				FName TargetSectionName = AttackMontageToPlay->GetSectionName(AnimIndex);
@@ -1192,7 +1190,7 @@ void AD4_HD3_CustomProjectCharacter::Attack()
 				if (HitActor->Implements<UDamageable>())
 				{
 					HitThisPunch.Add(HitActor);
-					Execute_DealDamage(HitActor, Damage, this);
+					Execute_DealDamage(HitActor, Damage, DamageActor);
 				}
 			}
 		}

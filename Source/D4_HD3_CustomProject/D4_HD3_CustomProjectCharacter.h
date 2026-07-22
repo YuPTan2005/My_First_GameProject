@@ -107,7 +107,7 @@ protected:
 	float Experience = 0;
 	float MaxExperience = 100;
 	float Level = 1;
-	float MaxLevel = 30;
+	float MaxLevel = 15;
 	
 	int UpgradeFactor = 3;
 	
