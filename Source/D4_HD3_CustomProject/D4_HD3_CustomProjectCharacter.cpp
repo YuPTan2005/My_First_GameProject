@@ -379,6 +379,12 @@ void AD4_HD3_CustomProjectCharacter::Eat(AActor* Consumer, const FString& EatenT
 	if (Consumer->Implements<UFoodConsumer>() && !FoodInventoryComponent->GetHasBackpack() && EdibleFood.Num() > 0)
 	{
 		APickupFood* PickupFood = EdibleFood[0];
+		if (!IsValid(PickupFood))
+		{
+			EdibleFood.RemoveAt(0);
+			return; 
+		}
+		
 		AActor* FoodToEat = PickupFood->PickedUp();
 		const FVector PickupFoodLocation = PickupFood->GetActorLocation();
 		
@@ -699,8 +705,6 @@ void AD4_HD3_CustomProjectCharacter::UnuseWeapon(const int8 WeaponIndex)
 	{
 		DisattachWeaponFromSocket(WeaponToDisattach);
 	}
-	
-	WeaponUsingIndex = -1;
 }
 
 void AD4_HD3_CustomProjectCharacter::DisattachWeaponFromSocket(AWeapon* Weapon) const
