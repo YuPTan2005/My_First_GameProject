@@ -21,6 +21,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
+	virtual void OnGameStarted() override;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Spawn")
 	TArray<TSubclassOf<AEnemy>> AlwaysSpawnEnemyClass;
 	
@@ -42,6 +44,10 @@ protected:
 	float RestrictedEnemySpawnPercent = 0.1f;
 	float TimePast = 0.0f;
 	bool bCanSpawnRestrictedEnemy;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SpawnHealthIncreaseValue = 20.0f;
+	float EnemyExtraHealth;
 	
 	virtual FVector GetSpawnPoint() override;
 	virtual bool SpawnObject() override;

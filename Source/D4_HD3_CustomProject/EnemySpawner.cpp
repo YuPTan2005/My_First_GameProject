@@ -11,6 +11,7 @@ AEnemySpawner::AEnemySpawner()
 	PrimaryActorTick.bCanEverTick = true;
 	GameStartEnemyNumber = 3;
 	bCanSpawnRestrictedEnemy = false;
+	EnemyExtraHealth = 0.0f;
 }
 
 // Called when the game starts or when spawned
@@ -25,6 +26,13 @@ void AEnemySpawner::BeginPlay()
 		TimeSpawnRestrictedEnemy,
 		false
 		);
+}
+
+void AEnemySpawner::OnGameStarted()
+{
+	Super::OnGameStarted();
+	
+	EnemyExtraHealth = SpawnHealthIncreaseValue;
 }
 
 FVector AEnemySpawner::GetSpawnPoint()
@@ -71,7 +79,11 @@ bool AEnemySpawner::SpawnObject()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 		
-		GetWorld()->SpawnActor<AEnemy>(AlwaysSpawnEnemyClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+		AEnemy* NewEnemy = GetWorld()->SpawnActor<AEnemy>(AlwaysSpawnEnemyClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+		const float EnemyNewHealth = NewEnemy->GetMaxHealth_Implementation() + EnemyExtraHealth;
+		NewEnemy->SetMaxHealth(EnemyNewHealth);
+		NewEnemy->SetCurrentHealth(EnemyNewHealth);
+		NewEnemy->UpdateStatus();
 		
 		return true;
 	}
@@ -93,7 +105,11 @@ bool AEnemySpawner::SpawnRestrictedEnemy()
 		int RandomEnemyIndex = FMath::RandRange(0, RestrictedSpawnEnemyClass.Num()-1);
 		TSubclassOf<AEnemy> EnemyClassToSpawn = RestrictedSpawnEnemyClass[RandomEnemyIndex];
 		
-		GetWorld()->SpawnActor<AEnemy>(EnemyClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+		AEnemy* NewEnemy = GetWorld()->SpawnActor<AEnemy>(EnemyClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
+		const float EnemyNewHealth = NewEnemy->GetMaxHealth_Implementation() + EnemyExtraHealth;
+		NewEnemy->SetMaxHealth(EnemyNewHealth);
+		NewEnemy->SetCurrentHealth(EnemyNewHealth);
+		NewEnemy->UpdateStatus();
 		
 		return true;
 	}
@@ -128,6 +144,7 @@ void AEnemySpawner::Tick(float DeltaTime)
 			SpawnObject();
 		}
 		
+		EnemyExtraHealth += SpawnHealthIncreaseValue;
 		TimePast = 0.0f;
 	}
 }
