@@ -3,6 +3,8 @@
 
 #include "DestructibleWall.h"
 
+#include "ExtraDamageDealer.h"
+#include "InventoryItem.h"
 #include "Field/FieldSystemActor.h"
 
 // Sets default values
@@ -49,7 +51,20 @@ void ADestructibleWall::Tick(float DeltaTime)
 
 void ADestructibleWall::DealDamage_Implementation(float DamageTaken, AActor* DamagedBy)
 {
-	Super::DealDamage_Implementation(DamageTaken, DamagedBy);
+	float RecalculatedDamage = DamageTaken;
+	
+	if (DamagedBy->Implements<UExtraDamageDealer>())
+	{
+		RecalculatedDamage += IExtraDamageDealer::Execute_GetBaseDamage(DamagedBy);
+		
+		if (DamagedBy->Implements<UInventoryItem>() && 
+		IInventoryItem::Execute_GetName(DamagedBy).Equals("Hammer"))
+		{
+			RecalculatedDamage += IExtraDamageDealer::Execute_GetExtraDamage(DamagedBy);
+		}
+	}
+	
+	Super::DealDamage_Implementation(RecalculatedDamage, DamagedBy);
 	
 	if (CurrentHealth <= 0 && !bIsDead)
 	{

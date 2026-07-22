@@ -131,7 +131,20 @@ float AEnemy::GetMaxHealth_Implementation()
 
 void AEnemy::DealDamage_Implementation(float DamageTaken, AActor* DamagedBy)
 {
-	CurrentHealth = FMath::Clamp(CurrentHealth - DamageTaken, 0.0f, MaxHealth);
+	float RecalculatedDamage = DamageTaken;
+	
+	if (DamagedBy->Implements<UExtraDamageDealer>())
+	{
+		RecalculatedDamage += IExtraDamageDealer::Execute_GetBaseDamage(DamagedBy);
+		
+		if (DamagedBy->Implements<UInventoryItem>() && 
+		IInventoryItem::Execute_GetName(DamagedBy).Equals("Sword"))
+		{
+			RecalculatedDamage += IExtraDamageDealer::Execute_GetExtraDamage(DamagedBy);
+		}
+	}
+	
+	CurrentHealth = FMath::Clamp(CurrentHealth - RecalculatedDamage, 0.0f, MaxHealth);
 	UpdateStatus();
 	
 	if (CurrentHealth <= 0 && !bIsDead)
