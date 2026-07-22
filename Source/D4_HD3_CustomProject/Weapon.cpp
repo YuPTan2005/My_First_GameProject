@@ -33,6 +33,16 @@ FString AWeapon::GetSocketName()
 	return SocketName;
 }
 
+float AWeapon::GetBaseDamage_Implementation()
+{
+	return BaseDamage;
+}
+
+float AWeapon::GetExtraDamage_Implementation()
+{
+	return ExtraDamage;
+}
+
 FString AWeapon::GetName_Implementation()
 {
 	return WeaponName;

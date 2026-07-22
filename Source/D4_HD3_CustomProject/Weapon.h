@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ExtraDamageDealer.h"
 #include "InventoryItem.h"
 #include "GameFramework/Actor.h"
 #include "Weapon.generated.h"
 
 UCLASS()
-class D4_HD3_CUSTOMPROJECT_API AWeapon : public AActor, public IInventoryItem
+class D4_HD3_CUSTOMPROJECT_API AWeapon : public AActor, public IInventoryItem, public IExtraDamageDealer
 {
 	GENERATED_BODY()
 
@@ -34,6 +35,11 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString SocketName = "WeaponSocket";
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseDamage = 10.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ExtraDamage = 100.0f;
 
 public:
 	// Called every frame
@@ -43,6 +49,8 @@ public:
 	virtual FString GetDescription_Implementation() override;
 	UTexture2D* GetWeaponImage() const;
 	FString GetSocketName();
+	virtual float GetBaseDamage_Implementation() override;
+	virtual float GetExtraDamage_Implementation() override;
 	
 	void SetWeaponMeshVisibility(const bool bNewVisibility) const;
 };
