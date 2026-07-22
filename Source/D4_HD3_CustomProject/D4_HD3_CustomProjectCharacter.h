@@ -347,11 +347,7 @@ public:
 	UInputAction* AttackAction;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animations")
-	TArray<UAnimMontage*> DefaultAttackAnims;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animations")
-	TArray<UAnimMontage*> SwordAttackAnims;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animations")
-	TArray<UAnimMontage*> HammerAttackAnims;
+	TMap<FString, UAnimMontage*> AttackAnims;
 	
 	void Attack();
 	

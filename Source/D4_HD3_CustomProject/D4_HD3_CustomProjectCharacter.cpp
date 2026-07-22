@@ -1143,32 +1143,27 @@ void AD4_HD3_CustomProjectCharacter::Attack()
 					false);
 			}
 			
-			TArray<UAnimMontage*> AttackMontageToPlay;
+			UAnimMontage* AttackMontageToPlay = nullptr;
 			if (WeaponUsingIndex == -1)
 			{
-				AttackMontageToPlay = DefaultAttackAnims;
+				AttackMontageToPlay = *AttackAnims.Find("None");
 			}
 			else
 			{
 				AActor* Item = WeaponInventoryComponent->GetItemAtIndex(WeaponUsingIndex);
 				if (Item->Implements<UInventoryItem>())
 				{
-					FString WeaponName = IInventoryItem::Execute_GetName(Item);
-					if (WeaponName == "Sword")
-					{
-						AttackMontageToPlay = SwordAttackAnims;
-					}
-					else if (WeaponName == "Hammer")
-					{
-						AttackMontageToPlay = HammerAttackAnims;
-					}
+					const FString WeaponName = IInventoryItem::Execute_GetName(Item);
+					AttackMontageToPlay = *AttackAnims.Find(WeaponName);
 				}
 			}
 			
-			if (!AttackMontageToPlay.IsEmpty())
+			if (IsValid(AttackMontageToPlay))
 			{
-				int AnimIndex = FMath::RandRange(0, AttackMontageToPlay.Num()-1);
-				AnimInstance->Montage_Play(AttackMontageToPlay[AnimIndex]);
+				int AnimIndex = FMath::RandRange(0, AttackMontageToPlay->GetNumSections() - 1);
+				FName TargetSectionName = AttackMontageToPlay->GetSectionName(AnimIndex);
+				AnimInstance->Montage_Play(AttackMontageToPlay);
+				AnimInstance->Montage_JumpToSection(TargetSectionName, AttackMontageToPlay);
 			}
 		}
 		else
