@@ -264,7 +264,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FLinearColor WeaponOnUsedColor = FLinearColor(0.0f, 0.45f, 0.95f);
 	void UseWeapon(const int8 Index);
-	void UnuseWeapon(const int8 WeaponIndex) const;
+	void UnuseWeapon(const int8 WeaponIndex);
 	void DisattachWeaponFromSocket(AWeapon* Weapon) const;
 	void AttachWeaponToSocket(AWeapon* Weapon, const FString& SocketName) const;
 	

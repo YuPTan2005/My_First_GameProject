@@ -674,7 +674,7 @@ void AD4_HD3_CustomProjectCharacter::UseWeapon(const int8 Index)
 	}
 }
 
-void AD4_HD3_CustomProjectCharacter::UnuseWeapon(const int8 WeaponIndex) const
+void AD4_HD3_CustomProjectCharacter::UnuseWeapon(const int8 WeaponIndex)
 {
 	if (PlayerUI)
 	{
@@ -691,6 +691,8 @@ void AD4_HD3_CustomProjectCharacter::UnuseWeapon(const int8 WeaponIndex) const
 	{
 		DisattachWeaponFromSocket(WeaponToDisattach);
 	}
+	
+	WeaponUsingIndex = -1;
 }
 
 void AD4_HD3_CustomProjectCharacter::DisattachWeaponFromSocket(AWeapon* Weapon) const
