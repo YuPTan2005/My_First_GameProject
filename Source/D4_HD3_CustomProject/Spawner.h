@@ -25,7 +25,7 @@ protected:
 	virtual bool SpawnObject() PURE_VIRTUAL(ASpawner::SpawnObject, return true;);
 	
 	UFUNCTION()
-	void OnGameStarted();
+	virtual void OnGameStarted();
 
 public:	
 	// Called every frame
