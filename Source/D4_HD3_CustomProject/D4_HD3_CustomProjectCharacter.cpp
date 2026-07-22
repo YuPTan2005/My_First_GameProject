@@ -516,11 +516,11 @@ void AD4_HD3_CustomProjectCharacter::SwapWeapon()
 		if (WeaponInventorySize != 0)
 		{
 			const int8 PreviousIndex = WeaponUsingIndex;
-
-			WeaponUsingIndex++;
-			if (WeaponUsingIndex >= WeaponInventorySize)
+			
+			int8 NextIndex = PreviousIndex + 1;
+			if (NextIndex >= WeaponInventorySize)
 			{
-				WeaponUsingIndex = -1;
+				NextIndex = -1;
 			}
 			
 			if (PreviousIndex >= 0 && PreviousIndex < WeaponInventorySize)
@@ -528,9 +528,9 @@ void AD4_HD3_CustomProjectCharacter::SwapWeapon()
 				UnuseWeapon(PreviousIndex);
 			}
 			
-			if (WeaponUsingIndex >= 0 && WeaponUsingIndex < WeaponInventorySize)
+			if (NextIndex >= 0 && NextIndex < WeaponInventorySize)
 			{
-				UseWeapon(WeaponUsingIndex);
+				UseWeapon(NextIndex);
 			}
 		}
 	}
@@ -705,6 +705,8 @@ void AD4_HD3_CustomProjectCharacter::UnuseWeapon(const int8 WeaponIndex)
 	{
 		DisattachWeaponFromSocket(WeaponToDisattach);
 	}
+	
+	WeaponUsingIndex = -1;
 }
 
 void AD4_HD3_CustomProjectCharacter::DisattachWeaponFromSocket(AWeapon* Weapon) const
