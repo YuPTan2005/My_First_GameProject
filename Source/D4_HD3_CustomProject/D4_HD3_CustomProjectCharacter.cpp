@@ -237,7 +237,7 @@ void AD4_HD3_CustomProjectCharacter::Look(const FInputActionValue& Value)
 void AD4_HD3_CustomProjectCharacter::DoMove(float Right, float Forward)
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-	if (AnimInstance && AnimInstance->Montage_IsPlaying(AttackAnims))
+	if (AnimInstance && AnimInstance->IsAnyMontagePlaying())
 	{
 		return; 
 	}
@@ -1128,30 +1128,45 @@ void AD4_HD3_CustomProjectCharacter::Attack()
 		AttackTimer = 0;
 		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
 		{
-			if (AttackAnims)
+			if (GetCharacterMovement()->MovementMode == MOVE_Flying)
 			{
-				int LastAnimIndex = 1;
-				if (GetCharacterMovement()->MovementMode == MOVE_Flying)
-				{
-					GetCharacterMovement()->BrakingDecelerationFlying = DashFlyBrake;
+				GetCharacterMovement()->BrakingDecelerationFlying = DashFlyBrake;
 			
-					GetWorldTimerManager().ClearTimer(FlyDashTimerHandle);
-					GetWorldTimerManager().SetTimer(
-						FlyDashTimerHandle, 
-						this, 
-						&AD4_HD3_CustomProjectCharacter::RestoreFlyBrake, 
-						0.3f, 
-						false);
-
-					LastAnimIndex = 2;
-				}
-				int AnimIndex = FMath::RandRange(0, AttackAnims->GetNumSections() - LastAnimIndex);
-				AnimInstance->Montage_Play(AttackAnims);
-				AnimInstance->Montage_JumpToSection(AttackAnims->GetSectionName(AnimIndex), AttackAnims);
+				GetWorldTimerManager().ClearTimer(FlyDashTimerHandle);
+				GetWorldTimerManager().SetTimer(
+					FlyDashTimerHandle, 
+					this, 
+					&AD4_HD3_CustomProjectCharacter::RestoreFlyBrake, 
+					0.3f, 
+					false);
+			}
+			
+			TArray<UAnimMontage*> AttackMontageToPlay;
+			if (WeaponUsingIndex == -1)
+			{
+				AttackMontageToPlay = DefaultAttackAnims;
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("%s doesn't have attack montage"), *GetName());
+				AActor* Item = WeaponInventoryComponent->GetItemAtIndex(WeaponUsingIndex);
+				if (Item->Implements<UInventoryItem>())
+				{
+					FString WeaponName = IInventoryItem::Execute_GetName(Item);
+					if (WeaponName == "Sword")
+					{
+						AttackMontageToPlay = SwordAttackAnims;
+					}
+					else if (WeaponName == "Hammer")
+					{
+						AttackMontageToPlay = HammerAttackAnims;
+					}
+				}
+			}
+			
+			if (!AttackMontageToPlay.IsEmpty())
+			{
+				int AnimIndex = FMath::RandRange(0, AttackMontageToPlay.Num()-1);
+				AnimInstance->Montage_Play(AttackMontageToPlay[AnimIndex]);
 			}
 		}
 		else

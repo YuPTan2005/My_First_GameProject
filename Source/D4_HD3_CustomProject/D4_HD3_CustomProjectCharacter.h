@@ -346,8 +346,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UInputAction* AttackAction;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAnimMontage* AttackAnims;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animations")
+	TArray<UAnimMontage*> DefaultAttackAnims;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animations")
+	TArray<UAnimMontage*> SwordAttackAnims;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Animations")
+	TArray<UAnimMontage*> HammerAttackAnims;
 	
 	void Attack();
 	
