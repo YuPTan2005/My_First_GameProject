@@ -188,6 +188,16 @@ EGameTeam AEnemy::GetTeam_Implementation()
 	return EGameTeam::Enemies;
 }
 
+void AEnemy::SetCurrentHealth(const float NewValue)
+{
+	CurrentHealth = NewValue;
+}
+
+void AEnemy::SetMaxHealth(const float NewValue)
+{
+	MaxHealth = NewValue;
+}
+
 void AEnemy::UpdateStatus()
 {
 	if (StatusWidget)

@@ -63,6 +63,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<UUserWidget> EnemyStatusClass;
 	
+	void SetCurrentHealth(const float NewValue);
+	void SetMaxHealth(const float NewValue);
 	void UpdateStatus();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
