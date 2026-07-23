@@ -6,12 +6,21 @@
 #include "D4_HD3_CustomProjectCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+void UDeathUI::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+	
+	BackgroundButton->SetVisibility(ESlateVisibility::Visible);
+	
+	ReplayButton->OnClicked.AddDynamic(this, &UDeathUI::OnReplayButtonClicked);
+	QuitButton->OnClicked.AddDynamic(this, &UDeathUI::OnQuitButtonClicked);
+}
+
 void UDeathUI::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	ReplayButton->OnClicked.AddDynamic(this, &UDeathUI::OnReplayButtonClicked);
-	QuitButton->OnClicked.AddDynamic(this, &UDeathUI::OnQuitButtonClicked);
+	UIContainer->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UDeathUI::OnReplayButtonClicked()
@@ -28,4 +37,9 @@ void UDeathUI::OnQuitButtonClicked()
 		EQuitPreference::Quit,
 		false
 		);
+}
+
+void UDeathUI::ShowUIWidget() const
+{
+	UIContainer->SetVisibility(ESlateVisibility::Visible);
 }

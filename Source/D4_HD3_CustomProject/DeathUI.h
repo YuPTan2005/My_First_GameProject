@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
+#include "Components/VerticalBox.h"
 #include "DeathUI.generated.h"
 
 /**
@@ -15,20 +16,30 @@ class D4_HD3_CUSTOMPROJECT_API UDeathUI : public UUserWidget
 {
 	GENERATED_BODY()
 	
-public:
-	UPROPERTY(meta=(BindWidget))
-	UButton* ReplayButton;
-	
-	UPROPERTY(meta=(BindWidget))
-	UButton* QuitButton;
-	
-	ACharacter* Owner;
-	
+protected:
+	virtual void NativeOnInitialized() override;
 	virtual void NativeConstruct() override;
 	
+	UPROPERTY(meta=(BindWidget))
+	UVerticalBox* UIContainer;
+	
+	UPROPERTY(meta=(BindWidget))
+	UButton* ReplayButton;
 	UFUNCTION()
 	void OnReplayButtonClicked();
 	
+	UPROPERTY(meta=(BindWidget))
+	UButton* QuitButton;
 	UFUNCTION()
 	void OnQuitButtonClicked();
+	
+	UPROPERTY(meta=(BindWidget))
+	UButton* BackgroundButton;
+
+public:
+	UPROPERTY()
+	ACharacter* Owner;
+	
+	void ShowUIWidget() const;
+	
 };
