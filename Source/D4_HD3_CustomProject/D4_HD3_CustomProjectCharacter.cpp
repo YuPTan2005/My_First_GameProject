@@ -769,11 +769,11 @@ void AD4_HD3_CustomProjectCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	
-	if (StarvationValue < 0 && !bIsCountDownCalled)
+	if (StarvationValue < 0 && !bIsCountDownCalled && !bIsDead)
 	{
 		DeathCountDown();
 	}
-	else if (bIsStarvationDecrement && StarvationValue >= 0)
+	else if (bIsStarvationDecrement && StarvationValue >= 0 && !bIsDead)
 	{
 		StarvationValue += StarvationDecrementValue * DeltaSeconds;
 	}
