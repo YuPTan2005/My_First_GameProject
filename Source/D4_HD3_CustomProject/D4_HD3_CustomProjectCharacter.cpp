@@ -828,30 +828,31 @@ void AD4_HD3_CustomProjectCharacter::Dead()
 	GetMesh()->SetCollisionProfileName("Ragdoll");
 	GetMesh()->SetSimulatePhysics(true);
 	GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
-	GetWorldTimerManager().SetTimer(
-		ShowDeathUITimer,
-		this,
-		&AD4_HD3_CustomProjectCharacter::ShowDeathUI,
-		2.0f,
-		false
-		);
-	if (PlayerController)
-	{
-		PlayerController->SetInputMode(FInputModeUIOnly());
-		PlayerController->SetShowMouseCursor(true);
-	}
-}
-
-void AD4_HD3_CustomProjectCharacter::ShowDeathUI()
-{
-	if (DeathUI)
+	
+	if (PlayerController && DeathUI)
 	{
 		DeathUI->AddToViewport();
 		DeathUI->Owner = this;
-		if (PlayerController)
-		{
-			PlayerController->SetShowMouseCursor(true);
-		}
+		FInputModeUIOnly InputMode;
+		InputMode.SetWidgetToFocus(DeathUI->TakeWidget());
+		PlayerController->SetInputMode(InputMode);
+		PlayerController->SetShowMouseCursor(true);
+		
+		GetWorldTimerManager().SetTimer(
+		ShowDeathUITimer,
+		this,
+		&AD4_HD3_CustomProjectCharacter::ShowDeathUIWidget,
+		2.0f,
+		false
+		);
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::ShowDeathUIWidget() const
+{
+	if (DeathUI && DeathUI->IsInViewport())
+	{
+		DeathUI->ShowUIWidget();
 	}
 }
 

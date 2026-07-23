@@ -182,7 +182,7 @@ protected:
 	bool bIsCountDownCalled = false;
 	void DeathCountDown();
 	void Dead();
-	void ShowDeathUI();
+	void ShowDeathUIWidget() const;
 	FTimerHandle ShowDeathUITimer;
 
 	bool bIsStarvationDecrement = true;
