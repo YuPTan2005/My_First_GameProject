@@ -30,7 +30,7 @@ FReply UInventoryWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKey
 {
 	FKey PressedKey = InKeyEvent.GetKey();
 	
-	if (PressedKey == EKeys::B)
+	if (PressedKey == EKeys::V)
 	{
 		if (Owner)
 		{
