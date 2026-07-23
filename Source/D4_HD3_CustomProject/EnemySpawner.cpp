@@ -30,6 +30,9 @@ void AEnemySpawner::BeginPlay()
 
 void AEnemySpawner::OnGameStarted()
 {
+	EnemyExtraHealth = 0.0f;
+	TimePast = 0.0f;
+	
 	Super::OnGameStarted();
 	
 	EnemyExtraHealth = SpawnHealthIncreaseValue;
