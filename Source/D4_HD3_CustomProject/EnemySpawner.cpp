@@ -52,16 +52,23 @@ FVector AEnemySpawner::GetSpawnPoint()
 		APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 		const FVector PlayerLocation = PlayerPawn ? PlayerPawn->GetActorLocation() : FVector::ZeroVector;
 		
-		for (int32 Attempt = 0; Attempt < 15; ++Attempt)
+		FNavLocation RandomNavPoint;
+		bool SuccessSpawn = false;
+		
+		while (!SuccessSpawn)
 		{
-			FNavLocation RandomNavPoint;
 			if (NavSys->GetRandomPoint(RandomNavPoint, TargetNavData))
 			{
 				if (!PlayerPawn || FVector::DistSquared(RandomNavPoint.Location, PlayerLocation) >= FMath::Square(2500.0f))
 				{
-					return RandomNavPoint.Location;
+					SuccessSpawn = true;
 				}
 			}
+		}
+		
+		if (SuccessSpawn)
+		{
+			return RandomNavPoint.Location;
 		}
 	}
 	

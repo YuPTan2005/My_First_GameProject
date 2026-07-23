@@ -32,33 +32,32 @@ FVector ABagSpawner::GetSpawnPoint()
 
 	FNavLocation RandomNavPoint;
 
-	constexpr int32 MaxAttempts = 15; 
-	constexpr float BackpackRadius = 40.0f; 
+	bool bOverlapsStaticMesh = true;
+	constexpr float BackpackRadius = 70.0f; 
 	const FCollisionShape CollisionSphere = FCollisionShape::MakeSphere(BackpackRadius);
 
 	FCollisionQueryParams TraceParams;
 	TraceParams.AddIgnoredActor(this);
 
-	for (int32 Attempt = 0; Attempt < MaxAttempts; ++Attempt)
+	while (bOverlapsStaticMesh)
 	{
 		if (NavSys->GetRandomPoint(RandomNavPoint))
 		{
-			FVector TestLocation = RandomNavPoint.Location + FVector(0, 0, 15.0f) +
-									FVector(0.0f, 0.0f, BackpackRadius);
+			FVector TestLocation = RandomNavPoint.Location + FVector(0.0f, 0.0f, BackpackRadius);
 
-			bool bOverlapsStaticMesh = GetWorld()->OverlapAnyTestByChannel(
+			bOverlapsStaticMesh = GetWorld()->OverlapAnyTestByChannel(
 				TestLocation,
 				FQuat::Identity,
 				ECC_WorldStatic,
 				CollisionSphere,
 				TraceParams
 			);
-
-			if (!bOverlapsStaticMesh)
-			{
-				return RandomNavPoint.Location - FVector(0.0f, 0.0f, BackpackRadius); 
-			}
 		}
+	}
+	
+	if (!bOverlapsStaticMesh)
+	{
+		return RandomNavPoint.Location;
 	}
 	
 	UE_LOG(LogTemp, Error, TEXT("Failed to find a valid NavMesh for spawning enemy"));
