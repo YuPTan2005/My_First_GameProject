@@ -63,7 +63,7 @@ UPickupUI* APickupFood::CreateUIWidget(const FString& UIText, const float UIText
 {
 	if (PickupUIClass)
 	{
-		UPickupUI* NewUI = CreateWidget<UPickupUI>(GetGameInstance(), PickupUIClass);
+		UPickupUI* NewUI = CreateWidget<UPickupUI>(GetWorld(), PickupUIClass);
 		if (NewUI)
 		{
 			if (APlayerController* PC = GetWorld()->GetFirstPlayerController())

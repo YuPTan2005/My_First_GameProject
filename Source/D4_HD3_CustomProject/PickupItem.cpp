@@ -69,7 +69,7 @@ void APickupItem::AddPickupUI()
 {
 	if (PickupUIClass)
 	{
-		SpawnedUI = CreateWidget<UPickupUI>(GetGameInstance(), PickupUIClass);
+		SpawnedUI = CreateWidget<UPickupUI>(GetWorld(), PickupUIClass);
 		if (SpawnedUI)
 		{
 			if (APlayerController* PC = GetWorld()->GetFirstPlayerController())
