@@ -35,7 +35,7 @@ void AFoodSpawner::Tick(float DeltaTime)
 	if (TimePast >= TimeToSpawn)
 	{
 		TimePast = 0.0f;
-		SpawnObject();
+		SpawnDefaultActor();
 	}
 }
 
@@ -79,7 +79,7 @@ FVector AFoodSpawner::GetSpawnPoint()
 
 			if (!bOverlapsStaticMesh)
 			{
-				return RandomLocation; 
+				return RandomLocation - FVector(0.0f, 0.0f, FoodRadius); 
 			}
 		}
 	
@@ -93,32 +93,29 @@ FVector AFoodSpawner::GetSpawnPoint()
 	return FVector::ZeroVector;
 }
 
-bool AFoodSpawner::SpawnObject()
+bool AFoodSpawner::SpawnDefaultActor()
 {
 	if (PickupFoodClass)
 	{
-		FVector SpawnLocation = GetSpawnPoint();
-		FRotator SpawnRotation = FRotator::ZeroRotator;
+		AActor* ActorSpawned = Super::SpawnObject(PickupFoodClass);
 		
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		
-		if (FoodMesh && FoodMaterial && PickupUIClass)
+		if (IsValid(ActorSpawned))
 		{
-			APickupFood* PickupFoodSpawned = GetWorld()->
-			SpawnActor<APickupFood>(PickupFoodClass, SpawnLocation, SpawnRotation, SpawnParams);
-			
-			PickupFoodSpawned->MeshComponent->SetStaticMesh(FoodMesh);
-			PickupFoodSpawned->MeshComponent->SetMaterial(0, FoodMaterial);
-			PickupFoodSpawned->PickupUIClass = PickupUIClass;
+			if (APickupFood* PickupFoodSpawned = Cast<APickupFood>(ActorSpawned))
+			{
+				if (FoodMesh && FoodMaterial && PickupUIClass)
+				{
+					PickupFoodSpawned->MeshComponent->SetStaticMesh(FoodMesh);
+					PickupFoodSpawned->MeshComponent->SetMaterial(0, FoodMaterial);
+					PickupFoodSpawned->PickupUIClass = PickupUIClass;
+					
+					return true;
+				}
+				
+				UE_LOG(LogTemp, Warning, 
+					TEXT("No FoodMesh, FoodMaterial, and PickupUIClass attached to %s"), *GetName());
+			}
 		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, 
-				TEXT("No FoodMesh, FoodMaterial, and PickupUIClass attached to %s"), *GetName());
-		}
-		
-		return true;
 	}
 	
 	UE_LOG(LogTemp, Error, TEXT("Food fails to be spawned"));

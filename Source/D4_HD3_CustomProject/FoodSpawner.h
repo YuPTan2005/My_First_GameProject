@@ -49,6 +49,6 @@ protected:
 	float TimePast = 0.0f;
 	
 	virtual FVector GetSpawnPoint() override;
-	virtual bool SpawnObject() override;
+	virtual bool SpawnDefaultActor() override;
 	
 };

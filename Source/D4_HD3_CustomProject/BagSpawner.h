@@ -21,7 +21,7 @@ protected:
 	virtual void BeginPlay() override;
 	
 	virtual FVector GetSpawnPoint() override;
-	virtual bool SpawnObject() override;
+	virtual bool SpawnDefaultActor() override;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Spawn")
 	TSubclassOf<AActor> BagClassToSpawn;

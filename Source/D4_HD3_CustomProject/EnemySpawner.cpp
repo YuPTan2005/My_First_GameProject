@@ -69,35 +69,26 @@ FVector AEnemySpawner::GetSpawnPoint()
 	return FVector::ZeroVector;
 }
 
-bool AEnemySpawner::SpawnObject()
+bool AEnemySpawner::SpawnDefaultActor()
 {
 	if (!AlwaysSpawnEnemyClass.IsEmpty())
 	{
 		const int RandomEnemyIndex = FMath::RandRange(0, AlwaysSpawnEnemyClass.Num()-1);
-		TSubclassOf<AEnemy> AlwaysSpawnEnemyClassToSpawn;
+		TSubclassOf<AEnemy> SpawnEnemyClass;
 		
 		if (!DropHealPotionEnemyClass.IsEmpty() && FMath::RandRange(0.0f, 1.0f) <= HealPotionEnemyPercent)
 		{
-			AlwaysSpawnEnemyClassToSpawn = DropHealPotionEnemyClass[RandomEnemyIndex];
+			SpawnEnemyClass = DropHealPotionEnemyClass[RandomEnemyIndex];
 		}
 		else
 		{
-			AlwaysSpawnEnemyClassToSpawn = AlwaysSpawnEnemyClass[RandomEnemyIndex];
+			SpawnEnemyClass = AlwaysSpawnEnemyClass[RandomEnemyIndex];
 		}
 		
-		const FVector SpawnLocation = GetSpawnPoint();
-		const FRotator SpawnRotation = FRotator::ZeroRotator;
-		
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		
-		AEnemy* NewEnemy = GetWorld()->SpawnActor<AEnemy>(AlwaysSpawnEnemyClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
-		const float EnemyNewHealth = NewEnemy->GetMaxHealth_Implementation() + EnemyExtraHealth;
-		NewEnemy->SetMaxHealth(EnemyNewHealth);
-		NewEnemy->SetCurrentHealth(EnemyNewHealth);
-		NewEnemy->UpdateStatus();
-		
-		return true;
+		if (IsValid(SpawnObject(SpawnEnemyClass)))
+		{
+			return true;
+		}
 	}
 	
 	UE_LOG(LogTemp, Error, TEXT("Enemy fails to be spawned"));
@@ -108,22 +99,13 @@ bool AEnemySpawner::SpawnRestrictedEnemy()
 {
 	if (!RestrictedSpawnEnemyClass.IsEmpty())
 	{
-		FVector SpawnLocation = GetSpawnPoint();
-		FRotator SpawnRotation = FRotator::ZeroRotator;
-		
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		
 		int RandomEnemyIndex = FMath::RandRange(0, RestrictedSpawnEnemyClass.Num()-1);
-		TSubclassOf<AEnemy> EnemyClassToSpawn = RestrictedSpawnEnemyClass[RandomEnemyIndex];
+		TSubclassOf<AEnemy> SpawnEnemyClass = RestrictedSpawnEnemyClass[RandomEnemyIndex];
 		
-		AEnemy* NewEnemy = GetWorld()->SpawnActor<AEnemy>(EnemyClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
-		const float EnemyNewHealth = NewEnemy->GetMaxHealth_Implementation() + EnemyExtraHealth;
-		NewEnemy->SetMaxHealth(EnemyNewHealth);
-		NewEnemy->SetCurrentHealth(EnemyNewHealth);
-		NewEnemy->UpdateStatus();
-		
-		return true;
+		if (IsValid(SpawnObject(SpawnEnemyClass)))
+		{
+			return true;
+		}
 	}
 	
 	UE_LOG(LogTemp, Error, TEXT("Enemy fails to be spawned"));
@@ -153,7 +135,7 @@ void AEnemySpawner::Tick(float DeltaTime)
 		}
 		else
 		{
-			SpawnObject();
+			SpawnDefaultActor();
 		}
 		
 		EnemyExtraHealth += SpawnHealthIncreaseValue;

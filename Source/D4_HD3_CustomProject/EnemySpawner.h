@@ -50,7 +50,7 @@ protected:
 	float EnemyExtraHealth;
 	
 	virtual FVector GetSpawnPoint() override;
-	virtual bool SpawnObject() override;
+	virtual bool SpawnDefaultActor() override;
 	virtual bool SpawnRestrictedEnemy();
 	
 	FTimerHandle RestrictedEnemyTimeTracker;

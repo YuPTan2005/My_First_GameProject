@@ -33,7 +33,7 @@ FVector ABagSpawner::GetSpawnPoint()
 	FNavLocation RandomNavPoint;
 
 	constexpr int32 MaxAttempts = 15; 
-	constexpr float BackpackRadius = 50.0f; 
+	constexpr float BackpackRadius = 40.0f; 
 	const FCollisionShape CollisionSphere = FCollisionShape::MakeSphere(BackpackRadius);
 
 	FCollisionQueryParams TraceParams;
@@ -43,7 +43,8 @@ FVector ABagSpawner::GetSpawnPoint()
 	{
 		if (NavSys->GetRandomPoint(RandomNavPoint))
 		{
-			FVector TestLocation = RandomNavPoint.Location + FVector(0.0f, 0.0f, BackpackRadius);
+			FVector TestLocation = RandomNavPoint.Location + FVector(0, 0, 15.0f) +
+									FVector(0.0f, 0.0f, BackpackRadius);
 
 			bool bOverlapsStaticMesh = GetWorld()->OverlapAnyTestByChannel(
 				TestLocation,
@@ -55,7 +56,7 @@ FVector ABagSpawner::GetSpawnPoint()
 
 			if (!bOverlapsStaticMesh)
 			{
-				return RandomNavPoint.Location; 
+				return RandomNavPoint.Location - FVector(0.0f, 0.0f, BackpackRadius); 
 			}
 		}
 	}
@@ -64,19 +65,14 @@ FVector ABagSpawner::GetSpawnPoint()
 	return FVector::ZeroVector;
 }
 
-bool ABagSpawner::SpawnObject()
+bool ABagSpawner::SpawnDefaultActor()
 {
 	if (BagClassToSpawn)
 	{
-		FVector SpawnLocation = GetSpawnPoint();
-		FRotator SpawnRotation = FRotator::ZeroRotator;
-		
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
-		
-		GetWorld()->SpawnActor<AActor>(BagClassToSpawn, SpawnLocation, SpawnRotation, SpawnParams);
-		
-		return true;
+		if (IsValid(Super::SpawnObject(BagClassToSpawn)))
+		{
+			return true;
+		}
 	}
 	
 	UE_LOG(LogTemp, Error, TEXT("No value attached to BagClassToSpawn variable in %s. Bag fails to be spawned"), *GetName());
