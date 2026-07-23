@@ -22,7 +22,8 @@ protected:
 	int GameStartEnemyNumber = 0;
 	
 	virtual FVector GetSpawnPoint() PURE_VIRTUAL(ASpawner::GetSpawnPoint, return FVector(0););
-	virtual bool SpawnObject() PURE_VIRTUAL(ASpawner::SpawnObject, return true;);
+	virtual bool SpawnDefaultActor() PURE_VIRTUAL(ASpawner::SpawnObject, return true;);
+	virtual AActor* SpawnObject(const TSubclassOf<AActor> SpawnActorClass);
 	
 	UFUNCTION()
 	virtual void OnGameStarted();

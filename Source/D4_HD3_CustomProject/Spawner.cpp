@@ -26,11 +26,27 @@ void ASpawner::BeginPlay()
 	}
 }
 
+AActor* ASpawner::SpawnObject(const TSubclassOf<AActor> SpawnActorClass)
+{
+	const FVector SpawnLocation = GetSpawnPoint();
+	const FRotator SpawnRotation = FRotator::ZeroRotator;
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	AActor* NewActor = GetWorld()->SpawnActor<AActor>(SpawnActorClass, SpawnLocation, SpawnRotation, SpawnParams);
+
+	const float ActorHalfHeight = NewActor->GetRootComponent()->Bounds.SphereRadius;
+	NewActor->SetActorLocation(SpawnLocation + FVector(0, 0, ActorHalfHeight));
+	
+	return NewActor;
+}
+
 void ASpawner::OnGameStarted()
 {
 	for (int i=1; i<=GameStartEnemyNumber; i++)
 	{
-		SpawnObject();
+		SpawnDefaultActor();
 	}
 }
 
