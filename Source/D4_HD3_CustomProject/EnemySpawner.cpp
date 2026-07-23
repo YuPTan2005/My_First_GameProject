@@ -10,7 +10,7 @@ AEnemySpawner::AEnemySpawner()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	GameStartEnemyNumber = 3;
+	GameStartEnemyNumber = 2;
 	bCanSpawnRestrictedEnemy = false;
 	EnemyExtraHealth = 0.0f;
 }
@@ -92,9 +92,18 @@ bool AEnemySpawner::SpawnDefaultActor()
 			SpawnEnemyClass = AlwaysSpawnEnemyClass[RandomEnemyIndex];
 		}
 		
-		if (IsValid(SpawnObject(SpawnEnemyClass)))
+		AActor* SpawnedActor = SpawnObject(SpawnEnemyClass);
+		if (IsValid(SpawnedActor))
 		{
-			return true;
+			if (AEnemy* SpawnedEnemy = Cast<AEnemy>(SpawnedActor))
+			{
+				float EnemyAdjustedHealth = SpawnedEnemy->GetMaxHealth_Implementation() + EnemyExtraHealth;
+				SpawnedEnemy->SetMaxHealth(EnemyAdjustedHealth);
+				SpawnedEnemy->SetCurrentHealth(EnemyAdjustedHealth);
+				SpawnedEnemy->UpdateStatus();
+				
+				return true;
+			}
 		}
 	}
 	
@@ -109,9 +118,18 @@ bool AEnemySpawner::SpawnRestrictedEnemy()
 		int RandomEnemyIndex = FMath::RandRange(0, RestrictedSpawnEnemyClass.Num()-1);
 		TSubclassOf<AEnemy> SpawnEnemyClass = RestrictedSpawnEnemyClass[RandomEnemyIndex];
 		
-		if (IsValid(SpawnObject(SpawnEnemyClass)))
+		AActor* SpawnedActor = SpawnObject(SpawnEnemyClass);
+		if (IsValid(SpawnedActor))
 		{
-			return true;
+			if (AEnemy* SpawnedEnemy = Cast<AEnemy>(SpawnedActor))
+			{
+				float EnemyAdjustedHealth = SpawnedEnemy->GetMaxHealth_Implementation() + EnemyExtraHealth;
+				SpawnedEnemy->SetMaxHealth(EnemyAdjustedHealth);
+				SpawnedEnemy->SetCurrentHealth(EnemyAdjustedHealth);
+				SpawnedEnemy->UpdateStatus();
+				
+				return true;
+			}
 		}
 	}
 	
