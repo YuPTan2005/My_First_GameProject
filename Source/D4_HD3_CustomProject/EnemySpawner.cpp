@@ -3,6 +3,7 @@
 
 #include "EnemySpawner.h"
 #include "NavigationSystem.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
@@ -48,11 +49,19 @@ FVector AEnemySpawner::GetSpawnPoint()
 		
 		ANavigationData* TargetNavData = NavSys->GetNavDataForProps(AgentProps);
 		
-		FNavLocation RandomNavPoint;
+		APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+		const FVector PlayerLocation = PlayerPawn ? PlayerPawn->GetActorLocation() : FVector::ZeroVector;
 		
-		if (NavSys->GetRandomPoint(RandomNavPoint, TargetNavData))
+		for (int32 Attempt = 0; Attempt < 15; ++Attempt)
 		{
-			return RandomNavPoint.Location;
+			FNavLocation RandomNavPoint;
+			if (NavSys->GetRandomPoint(RandomNavPoint, TargetNavData))
+			{
+				if (!PlayerPawn || FVector::DistSquared(RandomNavPoint.Location, PlayerLocation) >= FMath::Square(2500.0f))
+				{
+					return RandomNavPoint.Location;
+				}
+			}
 		}
 	}
 	
