@@ -27,6 +27,25 @@ void UDeathUI::OnReplayButtonClicked()
 {
 	RemoveFromParent();
 	Owner->Destroy();
+	
+	if (LoadingPage)
+	{
+		if (APlayerController* Controller = GetWorld()->GetFirstPlayerController())
+		{
+			if (URespawnLoadingUI* LoadingPageWidget = CreateWidget<URespawnLoadingUI>(GetGameInstance(), LoadingPage))
+			{
+				LoadingPageWidget->AddToViewport();
+			
+				Controller->SetShowMouseCursor(false);
+				
+				FInputModeUIOnly InputMode;
+				InputMode.SetWidgetToFocus(LoadingPageWidget->TakeWidget());
+				Controller->SetInputMode(InputMode);
+			
+				LoadingPageWidget->StartLoading();
+			}
+		}
+	}
 }
 
 void UDeathUI::OnQuitButtonClicked()

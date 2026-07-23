@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "RespawnLoadingUI.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Components/VerticalBox.h"
@@ -35,6 +36,9 @@ protected:
 	
 	UPROPERTY(meta=(BindWidget))
 	UButton* BackgroundButton;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<URespawnLoadingUI> LoadingPage;
 
 public:
 	UPROPERTY()
