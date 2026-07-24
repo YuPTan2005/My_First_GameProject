@@ -8,6 +8,7 @@
 #include "Engine/DirectionalLight.h"
 #include "Engine/ExponentialHeightFog.h"
 #include "Engine/SkyLight.h"
+#include "Engine/StaticMeshActor.h"
 #include "DayNightCycle.generated.h"
 
 /**
