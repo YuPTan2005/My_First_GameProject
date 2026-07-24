@@ -152,6 +152,10 @@ void AEnemy::DealDamage_Implementation(float DamageTaken, AActor* DamagedBy)
 			}
 		}
 	}
+	else
+	{
+		HitAudioActorComponent->PlayHitSound("Fist");
+	}
 	
 	CurrentHealth = FMath::Clamp(CurrentHealth - RecalculatedDamage, 0.0f, MaxHealth);
 	UpdateStatus();
