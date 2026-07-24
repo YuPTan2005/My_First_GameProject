@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Damageable.h"
+#include "HitAudioActorComponent.h"
 #include "NPCInterface.h"
 #include "NPCStatusComponent.h"
 #include "GameFramework/Character.h"
@@ -29,6 +30,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	FVector StatusComponentOffset = FVector(0.0f, 0.0f, 0.0f);
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Audio")
+	UHitAudioActorComponent* HitAudioActorComponent;
 
 public:
 	// Called every frame

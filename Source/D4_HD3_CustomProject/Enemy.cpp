@@ -25,6 +25,8 @@ AEnemy::AEnemy()
 	StatusComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	StatusComponent->SetDrawAtDesiredSize(true);
 	
+	HitAudioActorComponent = CreateDefaultSubobject<UHitAudioActorComponent>(TEXT("Hit Audio Component"));
+	
 	GetCharacterMovement()->NavAgentProps.bCanFly = true;
 	this->GetCharacterMovement()->BrakingDecelerationFlying = 2000;
 	this->GetCharacterMovement()->MaxFlySpeed = 450;
@@ -137,10 +139,17 @@ void AEnemy::DealDamage_Implementation(float DamageTaken, AActor* DamagedBy)
 	{
 		RecalculatedDamage += IExtraDamageDealer::Execute_GetBaseDamage(DamagedBy);
 		
-		if (DamagedBy->Implements<UInventoryItem>() && 
-		IInventoryItem::Execute_GetName(DamagedBy).Equals("Sword"))
+		if (DamagedBy->Implements<UInventoryItem>())
 		{
-			RecalculatedDamage += IExtraDamageDealer::Execute_GetExtraDamage(DamagedBy);
+			if (IInventoryItem::Execute_GetName(DamagedBy).Equals("Sword"))
+			{
+				RecalculatedDamage += IExtraDamageDealer::Execute_GetExtraDamage(DamagedBy);
+				HitAudioActorComponent->PlayHitSound("Sword");
+			}
+			else if (IInventoryItem::Execute_GetName(DamagedBy).Equals("Hammer"))
+			{
+				HitAudioActorComponent->PlayHitSound("Hammer");
+			}
 		}
 	}
 	
