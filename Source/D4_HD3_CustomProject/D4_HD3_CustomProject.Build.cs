@@ -23,7 +23,7 @@ public class D4_HD3_CustomProject : ModuleRules
 			"NavigationSystem",
 			"AIModule",
 			"GameplayTasks",
-			"EnvironmentQueryEditor",
+			"AIModule",
 			"GeometryCollectionEngine"
 		});
 
