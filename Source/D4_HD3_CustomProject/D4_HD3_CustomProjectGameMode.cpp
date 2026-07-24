@@ -11,6 +11,17 @@ AD4_HD3_CustomProjectGameMode::AD4_HD3_CustomProjectGameMode()
 	// stub
 }
 
+void AD4_HD3_CustomProjectGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	if (APlayerController* Controller = GetWorld()->GetFirstPlayerController())
+	{
+		Controller->SetInputMode(FInputModeGameOnly());
+		Controller->SetShowMouseCursor(false);
+	}
+}
+
 void AD4_HD3_CustomProjectGameMode::RespawnPlayer(const ACharacter* Player)
 {
 	if (!Player)

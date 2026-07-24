@@ -21,6 +21,8 @@ public:
 	
 	/** Constructor */
 	AD4_HD3_CustomProjectGameMode();
+	
+	virtual void BeginPlay() override;
 
 	UPROPERTY(BlueprintAssignable, Category = "Game Events")
 	FOnPlayerRespawned OnPlayerRespawned;
