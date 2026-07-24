@@ -30,6 +30,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UInputAction;
 struct FInputActionValue;
+class USoundBase;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -205,6 +206,19 @@ protected:
 		AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, 
 		FVector HitLocation, FVector HitNormal, FVector NormalImpulse, 
 		const FHitResult& Hit) override;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio")
+	UAudioComponent* WindAmbientAudioComp;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
+	float WindAudioMultiplier = 0.7f;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio")
+	UAudioComponent* BirdAmbientAudioComp;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
+	float BirdAudioMultiplier = 0.7f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
+	TArray<USoundBase*> AttackSounds;
 
 public:
 
@@ -351,10 +365,13 @@ public:
 	TMap<FString, UAnimMontage*> AttackAnims;
 	
 	void Attack();
+	void PlayAttackSound();
 	
 	void ShowCompanionStarvationUI() const;
 	void ClearCompanionStarvationUI() const;
 	void OnCompanionDie() const;
+	
+	void PlayAmbientSound() const;
 
 public:
 

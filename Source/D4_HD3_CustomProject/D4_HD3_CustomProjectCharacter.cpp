@@ -3,6 +3,7 @@
 #include "D4_HD3_CustomProjectCharacter.h"
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
+#include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "CompanionStarvationUI.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -18,6 +19,7 @@
 #include "Enemy.h"
 #include "Food.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundBase.h"
 
 AD4_HD3_CustomProjectCharacter::AD4_HD3_CustomProjectCharacter()
 {
@@ -61,6 +63,14 @@ AD4_HD3_CustomProjectCharacter::AD4_HD3_CustomProjectCharacter()
 	GetCharacterMovement()->NavAgentProps.bCanFly = true;
 	this->GetCharacterMovement()->BrakingDecelerationFlying = OriginalFlyBrake;
 	this->GetCharacterMovement()->MaxFlySpeed = 1000;
+	
+	WindAmbientAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("WindAmbientAudioComp"));
+	WindAmbientAudioComp->SetupAttachment(RootComponent);
+	WindAmbientAudioComp->bAutoActivate = false;
+	
+	BirdAmbientAudioComp = CreateDefaultSubobject<UAudioComponent>(TEXT("BirdAmbientAudioComp"));
+	BirdAmbientAudioComp->SetupAttachment(RootComponent);
+	BirdAmbientAudioComp->bAutoActivate = false;
 	
 	bIsInventoryOpen = false;
 	bIsWeaponInventoryOpen = false;
@@ -1222,6 +1232,26 @@ void AD4_HD3_CustomProjectCharacter::Attack()
 				}
 			}
 		}
+		
+		PlayAttackSound();
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::PlayAttackSound()
+{
+	if (AttackSounds.IsEmpty())
+	{
+		return;
+	}
+	
+	const int32 RandomIndex = FMath::RandRange(0, AttackSounds.Num() - 1);
+	if (USoundBase* SelectedSound = AttackSounds[RandomIndex])
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+			this,
+			SelectedSound,
+			GetActorLocation()
+		);
 	}
 }
 
@@ -1251,4 +1281,19 @@ void AD4_HD3_CustomProjectCharacter::OnCompanionDie() const
 		PlayerUI->UpdateCompanionValues();
 	}
 	if (FoodInventoryWidget) FoodInventoryWidget->CancelFeedButton();
+}
+
+void AD4_HD3_CustomProjectCharacter::PlayAmbientSound() const
+{
+	if (WindAmbientAudioComp)
+	{
+		WindAmbientAudioComp->Play();
+		WindAmbientAudioComp->SetVolumeMultiplier(WindAudioMultiplier);
+	}
+	
+	if (BirdAmbientAudioComp)
+	{
+		BirdAmbientAudioComp->Play();
+		WindAmbientAudioComp->SetVolumeMultiplier(BirdAudioMultiplier);
+	}
 }
