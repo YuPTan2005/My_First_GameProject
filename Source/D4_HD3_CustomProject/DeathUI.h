@@ -30,9 +30,9 @@ protected:
 	void OnReplayButtonClicked();
 	
 	UPROPERTY(meta=(BindWidget))
-	UButton* QuitButton;
+	UButton* BackToMainMenuButton;
 	UFUNCTION()
-	void OnQuitButtonClicked();
+	void OnBackToMainMenuButtonClicked();
 	
 	UPROPERTY(meta=(BindWidget))
 	UButton* BackgroundButton;

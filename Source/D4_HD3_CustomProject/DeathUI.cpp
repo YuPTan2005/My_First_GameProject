@@ -4,7 +4,7 @@
 #include "DeathUI.h"
 
 #include "D4_HD3_CustomProjectCharacter.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 void UDeathUI::NativeOnInitialized()
 {
@@ -13,7 +13,7 @@ void UDeathUI::NativeOnInitialized()
 	BackgroundButton->SetVisibility(ESlateVisibility::Visible);
 	
 	ReplayButton->OnClicked.AddDynamic(this, &UDeathUI::OnReplayButtonClicked);
-	QuitButton->OnClicked.AddDynamic(this, &UDeathUI::OnQuitButtonClicked);
+	BackToMainMenuButton->OnClicked.AddDynamic(this, &UDeathUI::OnBackToMainMenuButtonClicked);
 }
 
 void UDeathUI::NativeConstruct()
@@ -48,14 +48,9 @@ void UDeathUI::OnReplayButtonClicked()
 	}
 }
 
-void UDeathUI::OnQuitButtonClicked()
+void UDeathUI::OnBackToMainMenuButtonClicked()
 {
-	UKismetSystemLibrary::QuitGame(
-		GetWorld(),
-		GetWorld()->GetFirstPlayerController(),
-		EQuitPreference::Quit,
-		false
-		);
+	UGameplayStatics::OpenLevel(this, FName("L_MainMenu"));
 }
 
 void UDeathUI::ShowUIWidget() const
