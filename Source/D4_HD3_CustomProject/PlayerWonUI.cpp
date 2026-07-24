@@ -3,6 +3,8 @@
 
 #include "PlayerWonUI.h"
 
+#include "Kismet/GameplayStatics.h"
+
 void UPlayerWonUI::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -21,7 +23,8 @@ void UPlayerWonUI::NativeConstruct()
 
 void UPlayerWonUI::BackToMainMenu()
 {
-	
+	UGameplayStatics::SetGamePaused(GetWorld(), false);
+	UGameplayStatics::OpenLevel(this, FName("L_MainMenu"));
 }
 
 void UPlayerWonUI::ShowUIWidget() const
