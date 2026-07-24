@@ -35,7 +35,7 @@ protected:
 	TArray<TSubclassOf<AEnemy>> RestrictedSpawnEnemyClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float TimeToSpawn = 50.0f;
+	float TimeToSpawn = 40.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float TimeSpawnRestrictedEnemy = 480.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
