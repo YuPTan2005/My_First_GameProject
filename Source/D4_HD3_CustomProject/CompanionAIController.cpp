@@ -156,7 +156,7 @@ void ACompanionAIController::SetTargetFood(APickupFood* Food)
 	BlackboardComponent->SetValueAsObject("Food", TargetFood);
 }
 
-void ACompanionAIController::ClearFoodTarget() const
+void ACompanionAIController::ClearFoodTarget()
 {
 	if (BlackboardComponent && ControlledCharacter)
 	{
@@ -164,6 +164,7 @@ void ACompanionAIController::ClearFoodTarget() const
 		BlackboardComponent->SetValueAsBool("CanCollect", false);
 		BlackboardComponent->SetValueAsObject("Food", nullptr);
 		ControlledCharacter->SetTargetPickupFood(nullptr);
+		TargetFood = nullptr;
 	}
 }
 

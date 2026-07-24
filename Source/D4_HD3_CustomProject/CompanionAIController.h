@@ -37,7 +37,7 @@ public:
 	void SetTargetEnemy(AActor* Enemy);
 	void SetTargetFood(APickupFood* Food);
 	
-	void ClearFoodTarget() const;
+	void ClearFoodTarget();
 	
 protected:
 	UPROPERTY()
