@@ -13,6 +13,18 @@ AChestWeapon::AChestWeapon()
 void AChestWeapon::NotifyCollectible_Implementation()
 {
 	bIsCollectible = true;
+	
+	TArray<AActor*> OverlappingActors;
+	GetOverlappingActors(OverlappingActors); 
+	PickupCollider->GetOverlappingActors(OverlappingActors);
+
+	for (AActor* OverlappingActor : OverlappingActors)
+	{
+		if (OverlappingActor)
+		{
+			Super::OnOverlap(nullptr, OverlappingActor, nullptr, 0, false, FHitResult());
+		}
+	}
 }
 
 void AChestWeapon::OnOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
