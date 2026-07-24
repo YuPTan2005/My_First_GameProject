@@ -175,6 +175,8 @@ void AD4_HD3_CustomProjectCharacter::BeginPlay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No Companion class attached to %s"), *GetName())
 	}
+	
+	PlayAmbientSound();
 }
 
 void AD4_HD3_CustomProjectCharacter::Destroyed()
@@ -312,6 +314,7 @@ void AD4_HD3_CustomProjectCharacter::DoJumpStart()
 			bUseControllerRotationYaw = true;
 			bUseControllerRotationPitch = true;
 			GetCharacterMovement()->bOrientRotationToMovement = false;
+			StarvationDecrementValue = -1.5f;
 			break;
 		case 3:
 			GetCharacterMovement()->SetMovementMode(MOVE_Falling);
@@ -319,6 +322,7 @@ void AD4_HD3_CustomProjectCharacter::DoJumpStart()
 			bUseControllerRotationPitch = false;
 			GetCharacterMovement()->bOrientRotationToMovement = true;
 			ResetState();
+			StarvationDecrementValue = -1.0f;
 			break;
 		}
 	}
