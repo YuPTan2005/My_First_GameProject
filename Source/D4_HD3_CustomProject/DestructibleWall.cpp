@@ -6,6 +6,7 @@
 #include "ExtraDamageDealer.h"
 #include "InventoryItem.h"
 #include "Field/FieldSystemActor.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ADestructibleWall::ADestructibleWall()
@@ -39,6 +40,15 @@ void ADestructibleWall::OnDestructed()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Could not find the Blueprint function by %s!"), *GetName());
+	}
+	
+	if (ExplosionSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+		  this,
+		  ExplosionSound,
+		  GetActorLocation()
+	   );
 	}
 }
 

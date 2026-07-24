@@ -27,6 +27,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Destruction")
 	AFieldSystemActor* MasterField;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Audio")
+	USoundBase* ExplosionSound;
+	
 	virtual void OnDestructed() override;
 
 public:	
