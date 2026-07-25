@@ -82,33 +82,41 @@ void ACompanionAIController::Attack_Implementation()
 void ACompanionAIController::UpdateMoveToTargetFoodCheck()
 {
 	if (!BlackboardComponent || !CompanionOwner || !ControlledCharacter) return;
-
-	FVector CompanionLocation = ControlledCharacter->GetActorLocation();
-	FVector OwnerLocation = CompanionOwner->GetActorLocation();
-    
-	float DistanceToOwner = FVector::Dist(CompanionLocation, OwnerLocation);
-	float CollectRadius = ControlledCharacter->GetCollectRadius();
-
-	if (DistanceToOwner > CollectRadius)
-	{
-		ClearFoodTarget();
-		return; 
-	}
-
-	if (!TargetFood)
+	
+	if (!IsValid(TargetFood))
 	{
 		ControlledCharacter->SelectNextFoodTarget();
 	}
-
-	if (TargetFood)
+    
+	if (IsValid(TargetFood))
 	{
+		FVector OwnerLocation = CompanionOwner->GetActorLocation();
+		FVector FoodLocation = TargetFood->GetActorLocation();
+
+		float OwnerMeshRadius = CompanionOwner->GetRootComponent()->Bounds.SphereRadius;
+		float FoodRadius = TargetFood->GetRootComponent()->Bounds.SphereRadius;
+       
+		float DistanceFromOwnerToFood = FVector::Dist(OwnerLocation, FoodLocation) - (OwnerMeshRadius + FoodRadius);
+		float CollectRadius = ControlledCharacter->GetCollectRadius();
+
+		if (DistanceFromOwnerToFood > CollectRadius)
+		{
+			ClearFoodTarget();
+			BlackboardComponent->SetValueAsBool("GoToFood", false);
+			return; 
+		}
+
 		BlackboardComponent->SetValueAsBool("GoToFood", true);
+	}
+	else
+	{
+		BlackboardComponent->SetValueAsBool("GoToFood", false);
 	}
 }
 
 void ACompanionAIController::UpdateCollectible()
 {
-	if (TargetFood && BlackboardComponent && 
+	if (IsValid(TargetFood) && BlackboardComponent && CompanionOwner &&
 		CompanionOwner->Implements<UDamageable>() && !IDamageable::Execute_IsDead(CompanionOwner))
 	{
 		float TargetFoodRadius = TargetFood->GetRootComponent()->Bounds.SphereRadius;
@@ -152,7 +160,6 @@ void ACompanionAIController::SetTargetEnemy(AActor* Enemy)
 void ACompanionAIController::SetTargetFood(APickupFood* Food)
 {
 	TargetFood = Food;
-	BlackboardComponent->SetValueAsBool("GoToFood", true);
 	BlackboardComponent->SetValueAsObject("Food", TargetFood);
 }
 
