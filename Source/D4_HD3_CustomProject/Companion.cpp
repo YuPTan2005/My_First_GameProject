@@ -288,7 +288,7 @@ void ACompanion::Upgrade()
 	}
 	
 	CurrentHealth = MaxHealth;
-	StarvationValue = MaxStarvationValue;
+	GainStarvation_Implementation(MaxStarvationValue);
 }
 
 void ACompanion::AddCollectibleItem_Implementation(APickupItem* Item)

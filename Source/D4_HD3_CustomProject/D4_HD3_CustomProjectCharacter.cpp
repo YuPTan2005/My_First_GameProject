@@ -339,8 +339,13 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 	if (FoodInventoryComponent->GetHasBackpack() && CollectibleFood.Num() > 0)
 	{
 		APickupFood* PickupFood = CollectibleFood[0];
-		const FVector PickupFoodLocation = PickupFood->GetActorLocation();
+		if (!IsValid(PickupFood))
+		{
+			CollectibleFood.RemoveAt(0);
+			return;
+		}
 		
+		const FVector PickupFoodLocation = PickupFood->GetActorLocation();
 		bool AddFoodSuccess = false;
 		
 		if (!FoodInventoryComponent->IsFull())
