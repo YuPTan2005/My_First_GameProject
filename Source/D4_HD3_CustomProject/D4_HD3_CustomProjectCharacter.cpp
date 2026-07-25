@@ -370,7 +370,7 @@ void AD4_HD3_CustomProjectCharacter::Collect()
 			if (FoodToAdd && AddItem(FoodToAdd))
 			{
 				CollectibleFood.RemoveSingle(PickupFood);
-				if (Companion)
+				if (IsValid(Companion))
 				{
 					Companion->RemoveCollectibleItem_Implementation(PickupFood);
 				}
@@ -422,11 +422,12 @@ void AD4_HD3_CustomProjectCharacter::Eat(AActor* Consumer, const FString& EatenT
 		AActor* FoodToEat = PickupFood->PickedUp();
 		const FVector PickupFoodLocation = PickupFood->GetActorLocation();
 		
-		if (FoodToEat->Implements<UEdible>() && Companion)
+		if (FoodToEat->Implements<UEdible>())
 		{
+			if (IsValid(Companion)) Companion->RemoveCollectibleItem_Implementation(PickupFood);
+			
 			Execute_Eat(Consumer, FoodToEat);
 			EdibleFood.RemoveSingle(PickupFood);
-			Companion->RemoveCollectibleItem_Implementation(PickupFood);
 			PickupFood->Destroy();
 			
 			AddInfoUIToViewport(
