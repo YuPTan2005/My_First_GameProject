@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "D4_HD3_CustomProjectCharacter.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/AudioComponent.h"
@@ -194,6 +195,8 @@ void AD4_HD3_CustomProjectCharacter::Destroyed()
 			
 			if (AD4_HD3_CustomProjectGameMode* MainCharacterGameMode = Cast<AD4_HD3_CustomProjectGameMode>(GameMode))
 			{
+				StopPlayAmbientSound();
+				UWidgetLayoutLibrary::RemoveAllWidgets(this);
 				MainCharacterGameMode->RespawnPlayer(this);
 			}
 		}
@@ -1316,5 +1319,18 @@ void AD4_HD3_CustomProjectCharacter::PlayAmbientSound() const
 	{
 		BirdAmbientAudioComp->Play();
 		WindAmbientAudioComp->SetVolumeMultiplier(BirdAudioMultiplier);
+	}
+}
+
+void AD4_HD3_CustomProjectCharacter::StopPlayAmbientSound() const
+{
+	if (WindAmbientAudioComp)
+	{
+		WindAmbientAudioComp->Stop();
+	}
+	
+	if (BirdAmbientAudioComp)
+	{
+		BirdAmbientAudioComp->Stop();
 	}
 }

@@ -372,6 +372,7 @@ public:
 	void OnCompanionDie() const;
 	
 	void PlayAmbientSound() const;
+	void StopPlayAmbientSound() const;
 
 public:
 
