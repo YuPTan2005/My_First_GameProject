@@ -48,7 +48,7 @@ void ADestructibleChest::OnDestructed()
 	
 	for (APickupItem* Item : ChestItems)
 	{
-		if (Item->Implements<UChestItem>())
+		if (IsValid(Item) && Item->Implements<UChestItem>())
 		{
 			IChestItem::Execute_NotifyCollectible(Item);
 		}
