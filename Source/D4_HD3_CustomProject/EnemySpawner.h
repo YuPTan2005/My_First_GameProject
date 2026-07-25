@@ -35,7 +35,7 @@ protected:
 	TArray<TSubclassOf<AEnemy>> RestrictedSpawnEnemyClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float TimeToSpawn = 40.0f;
+	float TimeToSpawn = 25.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float TimeSpawnRestrictedEnemy = 480.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -46,7 +46,7 @@ protected:
 	bool bCanSpawnRestrictedEnemy;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float SpawnHealthIncreaseValue = 20.0f;
+	float SpawnHealthIncreaseValue = 30.0f;
 	float EnemyExtraHealth;
 	
 	virtual FVector GetSpawnPoint() override;
