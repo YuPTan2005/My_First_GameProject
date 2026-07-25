@@ -450,6 +450,12 @@ void AD4_HD3_CustomProjectCharacter::Pickup()
 	{
 		bool AddWeaponSuccess = false;
 		APickupWeapon* PickupWeapon = CollectibleWeapon[0];
+		if (!IsValid(PickupWeapon))
+		{
+			CollectibleWeapon.RemoveAt(0);
+			return;
+		}
+		
 		const FVector PickupWeaponLocation = PickupWeapon->GetActorLocation();
 		
 		if (!WeaponInventoryComponent->IsFull())
