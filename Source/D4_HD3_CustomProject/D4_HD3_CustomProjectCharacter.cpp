@@ -215,16 +215,28 @@ void AD4_HD3_CustomProjectCharacter::PossessedBy(AController* NewController)
 			PlayerUI->UpdatePlayerValues();
 			PlayerUI->AddToViewport();
 		}
+		if (FoodInventoryWidget)
+		{
+			FoodInventoryWidget->CancelFeedButton();
+		}
 		InitialiseCompanionUI();
 	}
 }
 
 void AD4_HD3_CustomProjectCharacter::InitialiseCompanionUI()
 {
-	if (PlayerUI)
+	if (IsValid(Companion))
 	{
-		PlayerUI->SetCompanion(Companion);
-		PlayerUI->UpdateCompanionValues();
+		if (PlayerUI)
+		{
+			PlayerUI->SetCompanion(Companion);
+			PlayerUI->UpdateCompanionValues();
+		}
+		
+		if (FoodInventoryWidget)
+		{
+			FoodInventoryWidget->EnableFeedButton();
+		}
 	}
 }
 

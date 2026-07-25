@@ -31,6 +31,11 @@ void UFoodInventoryWidget::CancelFeedButton() const
 	FeedCompanionButton->SetIsEnabled(false);
 }
 
+void UFoodInventoryWidget::EnableFeedButton() const
+{
+	FeedCompanionButton->SetIsEnabled(true);
+}
+
 void UFoodInventoryWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();

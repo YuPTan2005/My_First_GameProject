@@ -17,6 +17,7 @@ class D4_HD3_CUSTOMPROJECT_API UFoodInventoryWidget : public UInventoryWidget
 	
 public:
 	void CancelFeedButton() const;
+	void EnableFeedButton() const;
 	
 protected:
 	UPROPERTY(meta=(BindWidget))
