@@ -55,6 +55,15 @@ void ADestructibleChest::Reset()
 	
 	CurrentHealth = MaxHealth;
 	
+	for (APickupItem* Item : ChestItems)
+	{
+		if (IsValid(Item))
+		{
+			Item->Destroy();
+		}
+	}
+	ChestItems.Empty();
+	
 	SetupChestItems();
 }
 
