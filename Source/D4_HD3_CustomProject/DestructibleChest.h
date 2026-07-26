@@ -22,7 +22,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnConstruction(const FTransform& Transform) override;
+	virtual void Reset() override;
 	
+	FTransform ChestTopInitial;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Mesh")
 	UMeshComponent* ChestTopMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Mesh")
@@ -31,7 +33,11 @@ protected:
 	UPhysicsConstraintComponent* ChestHinge;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TSubclassOf<APickupItem>> ChestItemsClasses;
+	UPROPERTY()
 	TArray<APickupItem*> ChestItems;
+	
+	virtual void SetupChestItems();
 	
 	virtual void OnDestructed() override;
 	
