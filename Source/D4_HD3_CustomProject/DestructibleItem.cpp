@@ -251,6 +251,7 @@ void ADestructibleItem::OnDestructed()
 {
 	if (HealthWidgetComponent)
 	{
+		bIsShowingUI = false;
 		HealthWidgetComponent->SetVisibility(false);
 	}
 	
