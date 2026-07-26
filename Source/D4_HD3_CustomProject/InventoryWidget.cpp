@@ -71,6 +71,8 @@ void UInventoryWidget::RefreshInventory(TArray<AActor*> Items)
 			UE_LOG(LogTemp, Error, TEXT("Item in inventory widget does not implement InventoryItem interface"));
 		}
 	}
+	
+	ResetDisplayItem();
 }
 
 void UInventoryWidget::SetSelectedItemIndex(const int8 NewValue)

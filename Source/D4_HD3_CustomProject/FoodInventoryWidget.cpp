@@ -10,20 +10,17 @@ void UFoodInventoryWidget::OnUseButtonClicked()
 	if (SelectedItemIndex != -1)
 	{
 		Owner->UseItem(SelectedItemIndex);
-		ResetDisplayItem();
 	}
 }
 
 void UFoodInventoryWidget::OnDeleteButtonClicked()
 {
 	Owner->DeleteItemAtIndex(SelectedItemIndex);
-	ResetDisplayItem();
 }
 
 void UFoodInventoryWidget::OnFeedButtonClicked()
 {
 	Owner->FeedItem(SelectedItemIndex);
-	ResetDisplayItem();
 }
 
 void UFoodInventoryWidget::CancelFeedButton() const
