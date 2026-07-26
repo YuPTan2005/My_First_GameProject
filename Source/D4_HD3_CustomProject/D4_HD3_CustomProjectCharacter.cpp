@@ -186,19 +186,26 @@ void AD4_HD3_CustomProjectCharacter::Destroyed()
 	
 	if (UWorld* World = GetWorld())
 	{
-		if (AGameModeBase* GameMode = World->GetAuthGameMode())
+		if (AD4_HD3_CustomProjectGameMode* MainCharacterGameMode = Cast<AD4_HD3_CustomProjectGameMode>(World->GetAuthGameMode()))
 		{
-			if (Companion)
+			// Remove all side effects from current game
+			
+			if (IsValid(Companion))
 			{
 				Companion->Destroy();
 			}
 			
-			if (AD4_HD3_CustomProjectGameMode* MainCharacterGameMode = Cast<AD4_HD3_CustomProjectGameMode>(GameMode))
+			StopPlayAmbientSound();
+			
+			UWidgetLayoutLibrary::RemoveAllWidgets(this);
+			
+			int8 WeaponInventorySize = WeaponInventoryComponent->GetInventoryItemSize();
+			for (int8 WeaponIndex=0; WeaponIndex<WeaponInventorySize; WeaponIndex++)
 			{
-				StopPlayAmbientSound();
-				UWidgetLayoutLibrary::RemoveAllWidgets(this);
-				MainCharacterGameMode->RespawnPlayer(this);
+				DeleteWeaponAtIndex(WeaponIndex);
 			}
+			
+			MainCharacterGameMode->RespawnPlayer(this);
 		}
 	}
 }
@@ -215,6 +222,7 @@ void AD4_HD3_CustomProjectCharacter::PossessedBy(AController* NewController)
 		PlayerController->AttachUIWidget(this);
 		if (PlayerUI)
 		{
+			PlayerUI->SetWeaponUIVisibility(true);
 			PlayerUI->UpdatePlayerValues();
 			PlayerUI->AddToViewport();
 		}
@@ -685,14 +693,15 @@ AActor* AD4_HD3_CustomProjectCharacter::GetWeaponAtIndex(const int8 Index) const
 	return WeaponInventoryComponent->GetItemAtIndex(Index);
 }
 
-void AD4_HD3_CustomProjectCharacter::DeleteWeaponAtIndex(const int8 Index) const
+void AD4_HD3_CustomProjectCharacter::DeleteWeaponAtIndex(const int8 Index)
 {
+	UnuseWeapon(Index);
+	
 	WeaponInventoryComponent->DeleteItemAtIndex(Index);
 	WeaponInventoryWidget->RefreshInventory(WeaponInventoryComponent->GetAllItems());
 	if (PlayerUI)
 	{
 		PlayerUI->RemoveWeaponImage(Index);
-		PlayerUI->ResetWeaponBorderColor(Index);
 	}
 }
 
@@ -723,7 +732,7 @@ void AD4_HD3_CustomProjectCharacter::UseWeapon(const int8 Index)
 	
 		if (WeaponInventoryWidget)
 		{
-			WeaponInventoryWidget->SetSelectedItemIndex(WeaponUsingIndex);
+			WeaponInventoryWidget->SetSelectedItemIndex(Index);
 			WeaponInventoryWidget->SetButtonBorderColor(Index, WeaponOnUsedColor);
 		}
 	}

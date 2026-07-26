@@ -274,7 +274,7 @@ public:
 	void ToggleWeaponInventory();
 	
 	AActor* GetWeaponAtIndex(const int8 Index) const;
-	void DeleteWeaponAtIndex(const int8 Index) const;
+	void DeleteWeaponAtIndex(const int8 Index);
 	bool AddWeapon(AActor* NewItem) const;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FLinearColor WeaponOnUsedColor = FLinearColor(0.0f, 0.45f, 0.95f);
