@@ -36,3 +36,7 @@ void AChestWeapon::OnOverlap(UPrimitiveComponent* OverlapComp, AActor* OtherActo
 	}
 }
 
+void AChestWeapon::Reset()
+{
+}
+
