@@ -32,6 +32,8 @@ public:
 	void RefreshInventory(TArray<AActor*> Items);
 	
 	void SetSelectedItemIndex(const int8 NewValue);
+	
+	virtual void ResetDisplayItem();
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -49,7 +51,6 @@ protected:
 	
 	virtual void NativeOnInitialized() override;
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
-	virtual void ResetDisplayItem();
 
 	UPROPERTY()
 	TArray<UInventoryButtonWidget*> ButtonList;
