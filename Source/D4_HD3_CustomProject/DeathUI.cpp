@@ -25,16 +25,13 @@ void UDeathUI::NativeConstruct()
 
 void UDeathUI::OnReplayButtonClicked()
 {
-	RemoveFromParent();
-	Owner->Destroy();
-	
 	if (LoadingPage)
 	{
 		if (APlayerController* Controller = GetWorld()->GetFirstPlayerController())
 		{
 			if (URespawnLoadingUI* LoadingPageWidget = CreateWidget<URespawnLoadingUI>(GetGameInstance(), LoadingPage))
 			{
-				LoadingPageWidget->AddToViewport();
+				LoadingPageWidget->AddToViewport(100);
 			
 				Controller->SetShowMouseCursor(false);
 				
@@ -45,6 +42,20 @@ void UDeathUI::OnReplayButtonClicked()
 				LoadingPageWidget->StartLoading();
 			}
 		}
+	}
+	
+	SetVisibility(ESlateVisibility::Hidden);
+	
+	if (Owner)
+	{
+		Owner->GetWorldTimerManager().SetTimerForNextTick([this]()
+		{
+			if (Owner)
+			{
+				Owner->Destroy();
+			}
+			RemoveFromParent();
+		});
 	}
 }
 

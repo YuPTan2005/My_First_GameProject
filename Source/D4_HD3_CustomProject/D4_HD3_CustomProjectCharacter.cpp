@@ -197,7 +197,20 @@ void AD4_HD3_CustomProjectCharacter::Destroyed()
 			
 			StopPlayAmbientSound();
 			
-			UWidgetLayoutLibrary::RemoveAllWidgets(this);
+			if (PlayerUI && PlayerUI->IsInViewport())
+			{
+				PlayerUI->RemoveFromParent();
+			}
+			
+			if (FoodInventoryWidget && FoodInventoryWidget->IsInViewport())
+			{
+				FoodInventoryWidget->RemoveFromParent();
+			}
+			
+			if (WeaponInventoryWidget && WeaponInventoryWidget->IsInViewport())
+			{
+				WeaponInventoryWidget->RemoveFromParent();
+			}
 			
 			int8 WeaponInventorySize = WeaponInventoryComponent->GetInventoryItemSize();
 			for (int8 WeaponIndex=0; WeaponIndex<WeaponInventorySize; WeaponIndex++)
@@ -881,6 +894,7 @@ void AD4_HD3_CustomProjectCharacter::Dead()
 	
 	if (PlayerController && DeathUI)
 	{
+		DeathUI->SetVisibility(ESlateVisibility::Visible);
 		DeathUI->AddToViewport();
 		DeathUI->Owner = this;
 		FInputModeUIOnly InputMode;

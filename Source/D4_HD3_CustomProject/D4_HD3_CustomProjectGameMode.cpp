@@ -51,9 +51,6 @@ void AD4_HD3_CustomProjectGameMode::RespawnPlayer(const ACharacter* Player)
 				{
 					PlayerController->Possess(SpawnedPawn);
 				}
-			
-				PlayerController->SetInputMode(FInputModeGameOnly());
-				PlayerController->SetShowMouseCursor(false);
 			}
 		}
 	}
